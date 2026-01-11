@@ -19,7 +19,6 @@ function AboutComponent(){
                         threshold={0.1}
                         rootMargin="-100px"
                         textAlign="left"
-                        onLetterAnimationComplete={() => console.log("")}
                     />
 
                     <p>Our community brings together passionate programmers creating a vibrant ecosystem of knowledge sharing and skill development.Engage in challenging coding competitions, hackathons, and coding challenges that push your limits and help you become a better programmer.</p>
