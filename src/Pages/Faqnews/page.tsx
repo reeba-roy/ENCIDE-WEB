@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import React, { useEffect } from "react";
+import SplitText from "../../components/SplitText.tsx"; 
 export default function Faqnews() {
   useEffect(() => {
     getNews();
@@ -39,9 +40,22 @@ export default function Faqnews() {
       </div>
       <section id="contact" className=" col-span-1 p-4 bg-[#121212]">
         <div className=" p-4 pt-8 w-full ">
-          <h1 className=" text-center text-5xl text-white font-semibold ">
-            Contact Us
-          </h1>
+          <div className="w-full flex justify-center">
+            <SplitText
+              text="CONTACT US"
+              className="text-[40px] font-[550] mb-8 text-white"
+              delay={100}
+              duration={0.3}
+              ease="power3.out"
+              splitType="chars"
+              from={{ opacity: 0, y: 40 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.6}
+              rootMargin="-100px"
+              textAlign="center"
+            />
+          </div>
+
           <form
             action=""
             className="pb-8 p-3 text-white bg-transparent grid gap-3 shadow-2xl rounded-lg mt-5 "

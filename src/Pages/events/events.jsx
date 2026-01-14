@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import CarouselComponent from "../../components/carousel";
+import SplitText from "../../components/SplitText.tsx"; 
 
 import icl2 from "../../assets/images/icl2.jpg"
 import cloneitup from "../../assets/images/cloneitup.jpg"
@@ -11,7 +12,9 @@ import encode from "../../assets/images/encode.jpg"
 import excite from "../../assets/images/excite.jpg"
 import tech from "../../assets/images/tech-trial.jpg"
 import turtle from "../../assets/images/turtle.jpg"
+const upcomingimages = [
 
+];
 const images = [
   {
     img: "/image.png",
@@ -114,11 +117,69 @@ function EventComponent() {
 
   return (
     <section id="events" className="px-4 py-8 md:px-24 flex flex-col">
+      <SplitText
+        text="EVENTS"
+        className="text-6xl text-[40px] font-[550] mb-8 text-white"
+        delay={100}
+        duration={0.8}
+        ease="power3.out"
+        splitType="chars" 
+        from={{ opacity: 0, y: 40 }}
+        to={{ opacity: 1, y: 0 }}
+        threshold={0.1}
+        rootMargin="-100px"
+        textAlign="left"
+      />
+
+      {upcomingimages && upcomingimages.length > 0 && (
+        <div className="mb-12">
+          <div className="text-2xl text-[#DB9EE5] font-semibold mb-8">
+            Upcoming Events
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {upcomingimages.map((event, index) => (
+              <div
+                key={index}
+                className="bg-[#1a1a1a] rounded-lg overflow-hidden border border-[#9A00B3] hover:border-[#DB9EE5] transition-all duration-300 hover:shadow-lg hover:shadow-[#9A00B3]/50"
+              >
+
+                <div className="relative aspect-square bg-black overflow-hidden">
+                  <img
+                    src={event.img}
+                    alt={event.ename}
+                    className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+
+                <div className="p-4">
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    {event.ename}
+                  </h3>
+
+                  <div className="text-sm text-[#DB9EE5] font-semibold mb-2">
+                    Date: {event.date}
+                  </div>
+
+                  <p className="text-sm text-slate-300 mb-4 line-clamp-2">
+                    {event.desc}
+                  </p>
+
+                  <button className="w-full bg-[#9A00B3] hover:bg-[#DB9EE5] text-white font-semibold py-2 px-4 rounded transition-colors duration-300 hover:text-black">
+                    Register
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+
       <div className="grid grid-cols-1 sm:grid-cols-2 pb-8">
         <div className="flex flex-col col-span-1 pb-4 sm:pb-0">
-          <div className="text-5xl font-semibold text-white">EVENTS</div>
           <div className="text-2xl text-[#DB9EE5] font-semibold">
-            Our Current and Upcoming Events
+            Our Past Events
           </div>
         </div>
         <div

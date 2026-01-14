@@ -27,8 +27,8 @@ function App() {
               <Hero loading={() => setLoad(false)} />
               <AboutComponent />
               <EventComponent />
-              <Practice />
               <Teams />
+              <Practice />
               <Faqnews />
             </>
           }

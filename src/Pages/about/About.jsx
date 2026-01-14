@@ -1,12 +1,26 @@
 import "./about.css";
 import grpic from "./d1.jpg";
+import SplitText from "../../components/SplitText.tsx"; 
 
 function AboutComponent(){
     return(
         <section id='about' className='Abt_Us'>
             <div className='abt_us_1'>
                 <div className='abt_us_cont'>
-                    <h1>ABOUT US</h1>
+                    <SplitText
+                        text="ABOUT US"
+                        className="about-title"
+                        delay={100}
+                        duration={0.8}
+                        ease="power3.out"
+                        splitType="chars" 
+                        from={{ opacity: 0, y: 40 }}
+                        to={{ opacity: 1, y: 0 }}
+                        threshold={0.1}
+                        rootMargin="-100px"
+                        textAlign="left"
+                    />
+
                     <p>Our community brings together passionate programmers creating a vibrant ecosystem of knowledge sharing and skill development.Engage in challenging coding competitions, hackathons, and coding challenges that push your limits and help you become a better programmer.</p>
                 </div>
                 <img className='grpic' src={grpic} alt='grpic'></img>
