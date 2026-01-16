@@ -47,7 +47,7 @@ function LoginForm({ onLoad }) {
   };
 
   return (
-    <>
+    <div className="flex items-center justify-center h-screen">
       {error ? <p color="#FF0000">{error}</p> : null}
       <form>
         <input
@@ -76,7 +76,7 @@ function LoginForm({ onLoad }) {
           Login
         </button>
       </form>
-    </>
+    </div>
   );
 }
 

@@ -21,18 +21,6 @@ function NavComponent() {
     }
   }, [location]);
 
-  const handleClick = (e) => {
-    // e.preventDefault();
-
-    const section = document.getElementById(e.target.dataset.section);
-    if (section) {
-      section.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  };
-
   useEffect(() => {
     if (location.pathname === "/login") {
       setActiveSection("login");
@@ -115,7 +103,6 @@ function NavComponent() {
         <nav className="MobileNav">
           <Link
             to="/#home"
-            onClick={handleClick}
             className={`mob nav_link ${
               activeSection === "home" ? "active" : ""
             }`}
@@ -131,7 +118,6 @@ function NavComponent() {
           </Link>
           <Link
             to="/#about"
-            onClick={handleClick}
             className={`mob nav_link ${
               activeSection === "about" ? "active" : ""
             }`}
@@ -147,7 +133,6 @@ function NavComponent() {
           </Link>
           <Link
             to="/#events"
-            onClick={handleClick}
             className={`mob nav_link ${
               activeSection === "events" ? "active" : ""
             }`}
@@ -163,7 +148,6 @@ function NavComponent() {
           </Link>
           <Link
             to="/#team"
-            onClick={handleClick}
             className={`mob nav_link ${
               activeSection === "team" ? "active" : ""
             }`}
@@ -179,7 +163,6 @@ function NavComponent() {
           </Link>
           <Link
             to="/#contact"
-            onClick={handleClick}
             className={`mob nav_link ${
               activeSection === "contact" ? "active" : ""
             }`}
@@ -223,9 +206,9 @@ function NavComponent() {
       >
         <nav className="p-4 px-4 navbar sm:px-16">
           <div className="text-2xl font-bold logo">
-            <a href="#home">
+            <Link to="/#home">
               ENCIDE <span className="text-[#9a00b3] font-extrabold">MACE</span>
-            </a>
+            </Link>
           </div>
           <ul className="flex text-base nav_main gap-x-12">
             <li
@@ -233,40 +216,58 @@ function NavComponent() {
                 activeSection === "home" ? "active" : ""
               }`}
             >
-              <a href="#home">HOME</a>
+              <Link to="/#home">HOME</Link>
             </li>
             <li
               className={`cur nav_link ${
                 activeSection === "about" ? "active" : ""
               }`}
             >
-              <a href="#about">ABOUT</a>
+              <Link to="/#about">ABOUT</Link>
             </li>
             <li
               className={`cur nav_link ${
                 activeSection === "team" ? "active" : ""
               }`}
             >
-              <a href="#team">TEAM</a>
+              <Link to="/#team">TEAM</Link>
             </li>
             <li
               className={`cur nav_link ${
                 activeSection === "contact" ? "active" : ""
               }`}
             >
-              <a href="#contact">CONTACT</a>
+              <Link to="/#contact">CONTACT</Link>
             </li>
             <li className="events nav_link">
               <li className="p-1 px-4 in_bord">
-                <a
-                  href="#events"
+                <Link
+                  to="/#events"
                   className={`nav_link ${
                     activeSection === "events" ? "active" : ""
                   }`}
                 >
                   EVENTS
-                </a>
+                </Link>
               </li>
+            </li>
+            <li
+              className={`mob nav_link ${
+                activeSection === "login" ? "active" : ""
+              }`}
+            >
+              {!user ? (
+                <Link to="/login">
+                  <svg
+                    className="icons"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                  >
+                    <path d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z" />
+                  </svg>
+                  <p className="icontext">Login</p>
+                </Link>
+              ) : null}
             </li>
           </ul>
         </nav>
