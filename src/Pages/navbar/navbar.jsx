@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import "./navbar.css";
 
@@ -10,8 +10,9 @@ function NavComponent() {
   let lastScrollTop = 0;
   let scrollTimeout = null;
 
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
 
+  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
@@ -90,6 +91,10 @@ function NavComponent() {
       });
     };
   }, []);
+
+  const handleLogout = () => {
+    logout().finally(() => navigate("/"));
+  };
 
   return (
     <>
@@ -177,7 +182,23 @@ function NavComponent() {
             <p className="icontext">Contact</p>
           </Link>
 
-          {!user ? (
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className={`mob nav_link ${
+                activeSection === "login" ? "active" : ""
+              }`}
+            >
+              <svg
+                className="icons"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+              >
+                <path d="M160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0zM502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z" />
+              </svg>
+              <p className="icontext">Logout</p>
+            </button>
+          ) : (
             <Link
               to="/login"
               className={`mob nav_link ${
@@ -193,7 +214,7 @@ function NavComponent() {
               </svg>
               <p className="icontext">Login</p>
             </Link>
-          ) : null}
+          )}
         </nav>
       </div>
 
@@ -252,11 +273,22 @@ function NavComponent() {
               </li>
             </li>
             <li
-              className={`mob nav_link ${
+              className={`cur nav_link ${
                 activeSection === "login" ? "active" : ""
               }`}
             >
-              {!user ? (
+              {user ? (
+                <button onClick={handleLogout}>
+                  <svg
+                    className="icons"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                  >
+                    <path d="M160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0zM502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z" />
+                  </svg>
+                  <p className="icontext">Logout</p>
+                </button>
+              ) : (
                 <Link to="/login">
                   <svg
                     className="icons"
@@ -267,7 +299,7 @@ function NavComponent() {
                   </svg>
                   <p className="icontext">Login</p>
                 </Link>
-              ) : null}
+              )}
             </li>
           </ul>
         </nav>
