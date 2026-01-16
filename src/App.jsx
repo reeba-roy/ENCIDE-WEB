@@ -9,6 +9,7 @@ import Loader from "./Pages/loader/page";
 import NavComponent from "./Pages/navbar/navbar";
 import Practice from "./Pages/Practice/Practice";
 import Teams from "./Pages/Teams/teams.jsx";
+import LoginForm from "./Pages/login/Login.jsx";
 import RegistrationForm from "./Pages/Execom/execom.jsx";
 
 function App() {
@@ -32,6 +33,10 @@ function App() {
               <Faqnews />
             </>
           }
+        />
+        <Route
+          path="/login"
+          element={<LoginForm onLoad={() => setLoad(false)} />}
         />
         <Route
           path="/registration"
