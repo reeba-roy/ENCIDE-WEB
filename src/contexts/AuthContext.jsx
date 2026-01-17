@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import {
   createUserWithEmailAndPassword,
+  deleteUser,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
@@ -34,8 +35,12 @@ function AuthProvider({ children }) {
     return signOut(auth);
   };
 
+  const deleteCurrentUser = () => deleteUser(user);
+
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout }}>
+    <AuthContext.Provider
+      value={{ user, login, signup, logout, deleteCurrentUser }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );

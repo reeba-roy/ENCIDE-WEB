@@ -10,6 +10,7 @@ import NavComponent from "./Pages/navbar/navbar";
 import Practice from "./Pages/Practice/Practice";
 import Teams from "./Pages/Teams/teams.jsx";
 import LoginForm from "./Pages/login/Login.jsx";
+import SignUpForm from "./Pages/signup/SignUp.jsx";
 import RegistrationForm from "./Pages/Execom/execom.jsx";
 
 function App() {
@@ -37,6 +38,10 @@ function App() {
         <Route
           path="/login"
           element={<LoginForm onLoad={() => setLoad(false)} />}
+        />
+        <Route
+          path="/signup"
+          element={<SignUpForm onLoad={() => setLoad(false)} />}
         />
         <Route
           path="/registration"

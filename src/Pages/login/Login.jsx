@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 
 function LoginForm({ onLoad }) {
@@ -63,9 +63,10 @@ function LoginForm({ onLoad }) {
   };
 
   return (
-    <div id="login-form" className="flex items-center justify-center h-screen">
-      {error ? <p color="#FF0000">{error}</p> : null}
-      <form>
+    <div className="flex flex-col items-center justify-center h-screen">
+      {error ? <p className="text-red-500">{error}</p> : null}
+
+      <form id="login-form" className="my-6">
         <input
           type="email"
           name="email"
@@ -74,6 +75,9 @@ function LoginForm({ onLoad }) {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+        <br />
+        <br />
+
         <input
           type="password"
           name="password"
@@ -82,6 +86,8 @@ function LoginForm({ onLoad }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        <br />
+        <br />
 
         {/* change the class of the button */}
         <button
@@ -92,6 +98,13 @@ function LoginForm({ onLoad }) {
           Login
         </button>
       </form>
+
+      <p>
+        Haven't signed up yet?{" "}
+        <Link to="/signup" className="text-blue-500 underline">
+          Sign Up
+        </Link>
+      </p>
     </div>
   );
 }
