@@ -17,6 +17,11 @@ export default function Hero(props: Props) {
             <button
               className="rounded-sm about-us-text"
               style={{ display: "flex", alignItems: "center" }}
+              onClick={() =>
+                document
+                  .getElementById("about")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
             >
               ABOUT US{" "}
               <i style={{ paddingTop: ".3rem", paddingLeft: ".3rem" }}>
