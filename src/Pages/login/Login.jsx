@@ -17,37 +17,53 @@ function LoginForm({ onLoad }) {
   const { login, user } = useContext(AuthContext);
   if (user) return <Navigate to="/"></Navigate>;
 
+  const handleAuthError = (errorCode) => {
+    setPassword("");
+    switch (errorCode) {
+      case "auth/invalid-email":
+        setError("Error: The email entered is invalid.");
+        break;
+      case "auth/missing-password":
+        setError("Error: Password is required.");
+        break;
+      case "auth/invalid-credential":
+        setError("Error: The email or password provided is incorrect.");
+        break;
+      case "auth/internal-error":
+      default:
+        setError("Error: Something went wrong. Please retry.");
+    }
+
+    setTimeout(() => setError(""), 3000);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    login(email, password)
-      .then(() => {
-        setError("");
-        navigate("/");
-      })
-      .catch((err) => {
-        setPassword("");
-        switch (err.code) {
-          case "auth/invalid-email":
-            setError("Error: The email entered is invalid.");
-            break;
-          case "auth/invalid-credential":
-            setError("Error: The email or password provided is incorrect.");
-            break;
-          case "auth/internal-error":
-          default:
-            setError("Error: Something went wrong. Please retry.");
-        }
-        console.log(error);
+    const inputs = document
+      .getElementById("login-form")
+      .querySelectorAll("input");
 
-        setTimeout(() => setError(""), 3000);
-      })
-      .finally(() => setLoading(false));
+    const allValid = [...inputs].every((input) => input.reportValidity());
+    if (!allValid) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await login(email, password);
+      setError("");
+      navigate("/");
+    } catch (err) {
+      handleAuthError(err.code);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div id="login-form" className="flex items-center justify-center h-screen">
       {error ? <p color="#FF0000">{error}</p> : null}
       <form>
         <input
