@@ -1,29 +1,43 @@
 import { useState, useRef } from "react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../../firebase";
 import { motion, useInView } from "framer-motion";
 import { Send, Mail, MapPin, Phone, CheckCircle } from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
+
 const ContactSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
   });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSuccess(true);
-    setTimeout(() => setIsSuccess(false), 5000);
-    setFormData({ name: "", email: "", subject: "", message: "" });
+
+    try {
+      await addDoc(collection(db, "contact-us"), {
+        ...formData,
+        createdAt: serverTimestamp(),
+      });
+
+      toast.success("Message sent successfully");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      console.error("Error submitting form: ", error);
+      toast.error("Failed to send message !");
+    }
     setIsSubmitting(false);
   };
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
   const contactInfo = [
     {
       icon: Mail,
@@ -44,6 +58,7 @@ const ContactSection = () => {
       href: "#",
     },
   ];
+
   return (
     <section id="contact" className="py-24 bg-neutral-950" ref={ref}>
       <div className="container mx-auto px-4 lg:px-16">
@@ -114,7 +129,7 @@ const ContactSection = () => {
               onSubmit={handleSubmit}
               className="bg-neutral-900/80 backdrop-blur-sm rounded-2xl p-8 border border-neutral-800 shadow-2xl relative overflow-hidden"
             >
-              {isSuccess && (
+              {/* {isSuccess && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -125,7 +140,8 @@ const ContactSection = () => {
                     Message sent successfully! We'll get back to you soon.
                   </p>
                 </motion.div>
-              )}
+              )} */}
+
               <div className="grid sm:grid-cols-2 gap-6 mb-6 pt-2">
                 <div>
                   <label
@@ -219,6 +235,7 @@ const ContactSection = () => {
           </motion.div>
         </div>
       </div>
+      <Toaster position="bottom-right" reverseOrder={false} />
     </section>
   );
 };
