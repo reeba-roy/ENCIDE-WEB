@@ -24,7 +24,7 @@ function SignUpForm({ onLoad }) {
   const [loading, setLoading] = useState(false);
 
   const { user, signup, deleteCurrentUser } = useContext(AuthContext);
-  if (user) return <Navigate to="/"></Navigate>;
+  if (user) return <Navigate to='/'></Navigate>;
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -67,6 +67,7 @@ function SignUpForm({ onLoad }) {
         semester: formData.semester,
         department: formData.department,
         college: formData.college,
+        events: [],
         isAdmin: false,
       });
 
@@ -110,14 +111,14 @@ function SignUpForm({ onLoad }) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      {error ? <p className="text-red-500">{error}</p> : null}
+    <div className='flex flex-col items-center justify-center h-screen'>
+      {error ? <p className='text-red-500'>{error}</p> : null}
 
-      <form id="signup-form" className="my-6">
-        <label htmlFor="name">Full name </label>
+      <form id='signup-form' className='my-6'>
+        <label htmlFor='name'>Full name </label>
         <input
-          type="text"
-          id="name"
+          type='text'
+          id='name'
           value={formData.name}
           onChange={handleChange}
           required
@@ -125,10 +126,10 @@ function SignUpForm({ onLoad }) {
         <br />
         <br />
 
-        <label htmlFor="email">Email address </label>
+        <label htmlFor='email'>Email address </label>
         <input
-          type="email"
-          id="email"
+          type='email'
+          id='email'
           value={formData.email}
           onChange={handleChange}
           required
@@ -136,12 +137,12 @@ function SignUpForm({ onLoad }) {
         <br />
         <br />
 
-        <label htmlFor="semester">Semester </label>
+        <label htmlFor='semester'>Semester </label>
         <input
-          type="number"
-          min="1"
-          max="8"
-          id="semester"
+          type='number'
+          min='1'
+          max='8'
+          id='semester'
           value={formData.semester}
           onChange={handleChange}
           required
@@ -149,11 +150,11 @@ function SignUpForm({ onLoad }) {
         <br />
         <br />
 
-        <label htmlFor="department">Department </label>
+        <label htmlFor='department'>Department </label>
         <input
-          type="text"
-          id="department"
-          placeholder="eg. Data Science A"
+          type='text'
+          id='department'
+          placeholder='eg. Data Science A'
           value={formData.department}
           onChange={handleChange}
           required
@@ -161,10 +162,10 @@ function SignUpForm({ onLoad }) {
         <br />
         <br />
 
-        <label htmlFor="college">College </label>
+        <label htmlFor='college'>College </label>
         <input
-          type="text"
-          id="college"
+          type='text'
+          id='college'
           value={formData.college}
           onChange={handleChange}
           required
@@ -172,10 +173,10 @@ function SignUpForm({ onLoad }) {
         <br />
         <br />
 
-        <label htmlFor="password">Password </label>
+        <label htmlFor='password'>Password </label>
         <input
-          type="password"
-          id="password"
+          type='password'
+          id='password'
           value={formData.password}
           onChange={handleChange}
           required
@@ -183,10 +184,10 @@ function SignUpForm({ onLoad }) {
         <br />
         <br />
 
-        <label htmlFor="confirmPassword">Confirm Password </label>
+        <label htmlFor='confirmPassword'>Confirm Password </label>
         <input
-          type="password"
-          id="confirmPassword"
+          type='password'
+          id='confirmPassword'
           value={formData.confirmPassword}
           onChange={handleChange}
           required
@@ -196,7 +197,7 @@ function SignUpForm({ onLoad }) {
 
         {/* change the class of the button */}
         <button
-          className="text-white"
+          className='text-white'
           onClick={handleSubmit}
           disabled={loading}
         >
@@ -206,7 +207,7 @@ function SignUpForm({ onLoad }) {
 
       <p>
         Already have an account?{" "}
-        <Link to="/login" className="text-blue-500 underline">
+        <Link to='/login' className='text-blue-500 underline'>
           Login
         </Link>
       </p>
