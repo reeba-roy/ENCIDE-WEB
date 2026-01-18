@@ -10,6 +10,7 @@ import NavComponent from "./Pages/navbar/navbar";
 import Practice from "./Pages/Practice/Practice";
 import Teams from "./Pages/Teams/teams.jsx";
 import RegistrationForm from "./Pages/Execom/execom.jsx";
+import Dashboard from "./Pages/dashboard/Dashboard.jsx";
 
 function App() {
   const [load, setLoad] = useState(true);
@@ -21,7 +22,7 @@ function App() {
 
       <Routes>
         <Route
-          path="/"
+          path='/'
           element={
             <>
               <Hero loading={() => setLoad(false)} />
@@ -34,8 +35,12 @@ function App() {
           }
         />
         <Route
-          path="/registration"
+          path='/registration'
           element={<RegistrationForm onLoad={() => setLoad(false)} />}
+        />
+        <Route
+          path='/dashboard'
+          element={<Dashboard onLoad={() => setLoad(false)} />}
         />
       </Routes>
     </Router>
