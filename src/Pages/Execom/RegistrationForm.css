@@ -22,7 +22,9 @@
   color: palevioletred;
 }
 
-.registration-form p{color:white;}
+.registration-form p {
+  color: white;
+}
 
 .registration-form section {
   margin-bottom: 20px;
@@ -37,18 +39,24 @@
   color: white;
 }
 
-input:active,select:active,textarea:active{
-  outline:3px solid  rgba(255, 0, 255, 0.591);
-  border:none;
+input:active,
+select:active,
+textarea:active {
+  outline: 3px solid rgba(255, 0, 255, 0.591);
+  border: none;
 }
 
-input:focus,select:focus,textarea:focus{
-  outline:3px solid  rgba(255, 0, 255, 0.591);
-  border:none;
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 3px solid rgba(255, 0, 255, 0.591);
+  border: none;
 }
 
-label input,label input:active,label input:focus{
-  outline:none;
+label input,
+label input:active,
+label input:focus {
+  outline: none;
 }
 
 .registration-form input[type="text"],

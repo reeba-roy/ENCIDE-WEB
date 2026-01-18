@@ -1,20 +1,18 @@
 import { useState, useEffect } from "react";
 import CarouselComponent from "../../components/carousel";
-import SplitText from "../../components/SplitText.tsx"; 
+import SplitText from "../../components/SplitText.tsx";
 
-import icl2 from "../../assets/images/icl2.jpg"
-import cloneitup from "../../assets/images/cloneitup.jpg"
-import ace from "../../assets/images/aceplacements.jpg"
-import code2 from "../../assets/images/code2job.jpg"
-import ctf from "../../assets/images/ctf.jpg"
-import dsa from "../../assets/images/dsa-blitz.jpg"
-import encode from "../../assets/images/encode.jpg"
-import excite from "../../assets/images/excite.jpg"
-import tech from "../../assets/images/tech-trial.jpg"
-import turtle from "../../assets/images/turtle.jpg"
-const upcomingimages = [
-
-];
+import icl2 from "../../assets/images/icl2.jpg";
+import cloneitup from "../../assets/images/cloneitup.jpg";
+import ace from "../../assets/images/aceplacements.jpg";
+import code2 from "../../assets/images/code2job.jpg";
+import ctf from "../../assets/images/ctf.jpg";
+import dsa from "../../assets/images/dsa-blitz.jpg";
+import encode from "../../assets/images/encode.jpg";
+import excite from "../../assets/images/excite.jpg";
+import tech from "../../assets/images/tech-trial.jpg";
+import turtle from "../../assets/images/turtle.jpg";
+const upcomingimages = [];
 const images = [
   {
     img: "/image.png",
@@ -84,7 +82,6 @@ const images = [
   },
 ];
 
-
 function EventComponent() {
   const [tab, setTab] = useState(0);
   const [transition, setTransition] = useState("");
@@ -116,14 +113,14 @@ function EventComponent() {
   };
 
   return (
-    <section id="events" className="px-4 py-8 md:px-24 flex flex-col">
+    <section id="events" className="flex flex-col px-4 py-8 md:px-24">
       <SplitText
         text="EVENTS"
         className="text-6xl text-[40px] font-[550] mb-8 text-white"
         delay={100}
         duration={0.8}
         ease="power3.out"
-        splitType="chars" 
+        splitType="chars"
         from={{ opacity: 0, y: 40 }}
         to={{ opacity: 1, y: 0 }}
         threshold={0.1}
@@ -137,23 +134,22 @@ function EventComponent() {
             Upcoming Events
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {upcomingimages.map((event, index) => (
               <div
                 key={index}
                 className="bg-[#1a1a1a] rounded-lg overflow-hidden border border-[#9A00B3] hover:border-[#DB9EE5] transition-all duration-300 hover:shadow-lg hover:shadow-[#9A00B3]/50"
               >
-
-                <div className="relative aspect-square bg-black overflow-hidden">
+                <div className="relative overflow-hidden bg-black aspect-square">
                   <img
                     src={event.img}
                     alt={event.ename}
-                    className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
+                    className="object-contain w-full h-full transition-transform duration-300 hover:scale-105"
                   />
                 </div>
 
                 <div className="p-4">
-                  <h3 className="text-xl font-bold text-white mb-2">
+                  <h3 className="mb-2 text-xl font-bold text-white">
                     {event.ename}
                   </h3>
 
@@ -161,7 +157,7 @@ function EventComponent() {
                     Date: {event.date}
                   </div>
 
-                  <p className="text-sm text-slate-300 mb-4 line-clamp-2">
+                  <p className="mb-4 text-sm text-slate-300 line-clamp-2">
                     {event.desc}
                   </p>
 
@@ -175,17 +171,13 @@ function EventComponent() {
         </div>
       )}
 
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 pb-8">
+      <div className="grid grid-cols-1 pb-8 sm:grid-cols-2">
         <div className="flex flex-col col-span-1 pb-4 sm:pb-0">
           <div className="text-2xl text-[#DB9EE5] font-semibold">
             Our Past Events
           </div>
         </div>
-        <div
-          className="cols-span-1 flex items-center justify-start sm:justify-end 
-        "
-        >
+        <div className="flex items-center justify-start cols-span-1 sm:justify-end ">
           {/* <button
             onClick={handlePrev}
             className="flex items-center text-slate-300 pb-1 px-4 rounded border-2 border-slate-300 text-xl font-semibold justify-center bg-[#9A00B3] hover:bg-transparent hover:border-[#9A00B3] hover:text-[#9A00B3] duration-300"
@@ -197,7 +189,7 @@ function EventComponent() {
       {screen && (
         <div>
           <div className="event-carousel flex relative overflow-hidden h-[60vh]">
-            <div className="relative h-full w-full flex items-center justify-center">
+            <div className="relative flex items-center justify-center w-full h-full">
               <div className="w-full absolute left-[25%] flex">
                 <img
                   className={`three absolute -left-60 scale-[0.85] h-full -z-10 blur-md aspect-square w-[360px] ${transition}`}
@@ -218,12 +210,12 @@ function EventComponent() {
                   <div className="pl-4 pb-2 text-2xl scale-y-[1.2] font-arial font-bold text-white">
                     {images[tab].ename}
                   </div>
-                  <div className="pl-4 pb-4">
+                  <div className="pb-4 pl-4">
                     <div className="text-lg scale-y-[1.2] font-arial font-semibold text-slate-200">
                       Date : {images[tab].date}
                     </div>
                   </div>
-                 
+
                   <div className="pl-4 pb-4 flex scale-y-[1.2]  font-mono font-normal text-slate-200">
                     {images[tab].desc}
                   </div>
