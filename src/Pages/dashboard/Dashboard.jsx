@@ -1,15 +1,22 @@
-import { useState, useEffect } from "react";
-
-import { db } from "../../config/firebase";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { db } from "../../firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 const Dashboard = ({ onLoad }) => {
+  const { user: authUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (onLoad) onLoad();
-  }, []);
+  }, [onLoad]);
 
-  // TODO: Change hardcoded value to get user from context
-  const username = "example_user";
+  useEffect(() => {
+    if (!authUser) {
+      navigate("/login");
+    }
+  }, [authUser, navigate]);
 
   const [user, setUser] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,13 +24,13 @@ const Dashboard = ({ onLoad }) => {
 
   useEffect(() => {
     const loadUserDetails = async () => {
+      if (!authUser) return;
       try {
-        const ref = doc(db, "users", username);
+        const ref = doc(db, "users", authUser.uid);
         const snap = await getDoc(ref);
         if (snap.exists()) {
           setUser(snap.data());
           setFormData(snap.data());
-          console.log(snap.data());
         }
       } catch (err) {
         console.error("Error loading user:", err);
@@ -31,7 +38,7 @@ const Dashboard = ({ onLoad }) => {
     };
 
     loadUserDetails();
-  }, []);
+  }, [authUser]);
 
   const handleOpenModal = () => {
     setFormData(user);
@@ -52,8 +59,9 @@ const Dashboard = ({ onLoad }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!authUser) return;
     try {
-      const ref = doc(db, "users", username);
+      const ref = doc(db, "users", authUser.uid);
       await updateDoc(ref, {
         name: formData.name,
         college: formData.college,
@@ -70,18 +78,18 @@ const Dashboard = ({ onLoad }) => {
   };
 
   return (
-    <div className='p-4'>
-      <div className='mb-4'>
+    <div className='p-4 pt-28 bg-[#121212] min-h-screen'>
+      <div className='mb-4 relative z-10'>
         <h1 className='text-xl font-bold mb-2 text-white'>User Dashboard</h1>
         <button
           onClick={handleOpenModal}
-          className='border px-4 py-2 text-white'
+          className='inline-flex items-center px-3 py-2 border rounded text-white'
         >
           Edit Profile
         </button>
       </div>
 
-      <div className='border'>
+      <div className='border border-gray-600 rounded'>
         <table className='w-full'>
           <tbody>
             <tr className='border-b'>
@@ -118,48 +126,45 @@ const Dashboard = ({ onLoad }) => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center'>
-          <div className='bg-white p-4 w-96 border'>
-            <h2 className='text-lg font-bold mb-4 text-black'>Edit Profile</h2>
+        <div>
+          <div>
+            <h2>Edit Profile</h2>
             <form onSubmit={handleSubmit}>
-              <div className='mb-2'>
-                <label className='block mb-1 text-black'>Name</label>
+              <div>
+                <label className='text-white'>Name</label>
                 <input
                   type='text'
                   name='name'
                   value={formData?.name || ""}
                   onChange={handleInputChange}
-                  className='w-full border p-2'
                   required
                 />
               </div>
 
-              <div className='mb-2'>
-                <label className='block mb-1 text-black'>College</label>
+              <div>
+                <label className='text-white'>College</label>
                 <input
                   type='text'
                   name='college'
                   value={formData?.college || ""}
                   onChange={handleInputChange}
-                  className='w-full border p-2'
                   required
                 />
               </div>
 
-              <div className='mb-2'>
-                <label className='block mb-1 text-black'>Department</label>
+              <div>
+                <label className='text-white'>Department</label>
                 <input
                   type='text'
                   name='department'
                   value={formData?.department || ""}
                   onChange={handleInputChange}
-                  className='w-full border p-2'
                   required
                 />
               </div>
 
-              <div className='mb-4'>
-                <label className='block mb-1 text-black'>Semester</label>
+              <div>
+                <label className='text-white'>Semester</label>
                 <input
                   type='number'
                   name='semester'
@@ -167,20 +172,19 @@ const Dashboard = ({ onLoad }) => {
                   onChange={handleInputChange}
                   min='1'
                   max='8'
-                  className='w-full border p-2'
                   required
                 />
               </div>
 
-              <div className='flex gap-2'>
+              <div>
                 <button
                   type='button'
                   onClick={handleCloseModal}
-                  className='border px-4 py-2 text-black'
+                  className='text-white'
                 >
                   Cancel
                 </button>
-                <button type='submit' className='border px-4 py-2 text-black'>
+                <button type='submit' className='text-white'>
                   Save Changes
                 </button>
               </div>
