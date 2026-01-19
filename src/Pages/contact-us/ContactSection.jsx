@@ -129,19 +129,6 @@ const ContactSection = () => {
               onSubmit={handleSubmit}
               className="bg-neutral-900/80 backdrop-blur-sm rounded-2xl p-8 border border-neutral-800 shadow-2xl relative overflow-hidden"
             >
-              {/* {isSuccess && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="absolute top-0 left-0 w-full bg-emerald-500/10 border-b border-emerald-500/20 p-4 flex items-center gap-2 text-emerald-400"
-                >
-                  <CheckCircle className="w-5 h-5" />
-                  <p className="text-sm font-medium">
-                    Message sent successfully! We'll get back to you soon.
-                  </p>
-                </motion.div>
-              )} */}
-
               <div className="grid sm:grid-cols-2 gap-6 mb-6 pt-2">
                 <div>
                   <label

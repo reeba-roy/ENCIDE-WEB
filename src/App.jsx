@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import AboutComponent from "./Pages/about/About.jsx";
 import EventComponent from "./Pages/events/events";
-import Faqnews from "./Pages/Faqnews/page";
 import Hero from "./Pages/hero/page";
 import Loader from "./Pages/loader/page";
 import NavComponent from "./Pages/navbar/navbar";
@@ -11,6 +10,7 @@ import Practice from "./Pages/Practice/Practice";
 import Teams from "./Pages/Teams/teams.jsx";
 import LoginForm from "./Pages/login/Login.jsx";
 import SignUpForm from "./Pages/signup/SignUp.jsx";
+import SignUpForm2 from "./Pages/signup/signUp2.jsx";
 import RegistrationForm from "./Pages/Execom/execom.jsx";
 import Dashboard from "./Pages/dashboard/Dashboard.jsx";
 import ContactSection from "./Pages/contact-us/ContactSection.jsx";
@@ -32,8 +32,7 @@ function App() {
               <AboutComponent />
               <EventComponent />
               <Teams />
-              <Practice />
-              {/* <Faqnews /> */}
+              {/* <Practice /> */}
               <ContactSection/>
             </>
           }
@@ -44,7 +43,7 @@ function App() {
         />
         <Route
           path='/signup'
-          element={<SignUpForm onLoad={() => setLoad(false)} />}
+          element={<SignUpForm2 onLoad={() => setLoad(false)} />}
         />
         <Route
           path='/registration'
