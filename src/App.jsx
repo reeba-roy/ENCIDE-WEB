@@ -10,7 +10,6 @@ import Practice from "./Pages/Practice/Practice";
 import Teams from "./Pages/Teams/teams.jsx";
 import LoginForm from "./Pages/login/Login.jsx";
 import SignUpForm from "./Pages/signup/SignUp.jsx";
-import SignUpForm2 from "./Pages/signup/signUp2.jsx";
 import RegistrationForm from "./Pages/Execom/execom.jsx";
 import Dashboard from "./Pages/dashboard/Dashboard.jsx";
 import ContactSection from "./Pages/contact-us/ContactSection.jsx";
@@ -43,7 +42,7 @@ function App() {
         />
         <Route
           path='/signup'
-          element={<SignUpForm2 onLoad={() => setLoad(false)} />}
+          element={<SignUpForm onLoad={() => setLoad(false)} />}
         />
         <Route
           path='/registration'

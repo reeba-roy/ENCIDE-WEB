@@ -12,8 +12,6 @@ function LoginForm({ onLoad }) {
 
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +25,6 @@ function LoginForm({ onLoad }) {
   if (user) return <Navigate to="/"></Navigate>;
 
   const handleAuthError = (errorCode) => {
-    setPassword("");
     switch (errorCode) {
       case "auth/invalid-email":
         setError("Error: The email entered is invalid.");
