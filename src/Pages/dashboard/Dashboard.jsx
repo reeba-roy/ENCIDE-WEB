@@ -22,6 +22,8 @@ const Dashboard = ({ onLoad }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({});
   const [toast, setToast] = useState(null);
+  const [registeredEvents, setRegisteredEvents] = useState([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
   const toastTimeoutRef = useRef(null);
 
   useEffect(() => {
@@ -31,11 +33,38 @@ const Dashboard = ({ onLoad }) => {
         const ref = doc(db, "users", authUser.uid);
         const snap = await getDoc(ref);
         if (snap.exists()) {
-          setUser(snap.data());
-          setFormData(snap.data());
+          const userData = snap.data();
+          setUser(userData);
+          setFormData(userData);
+
+          if (userData.events && userData.events.length > 0) {
+            const eventDetails = [];
+            for (const eventRef of userData.events) {
+              try {
+                const eventSnap = await getDoc(eventRef);
+                if (eventSnap.exists()) {
+                  const eventData = eventSnap.data();
+                  let dateStr = "TBA";
+                  if (eventData.date) {
+                    dateStr = eventData.date.toDate().toLocaleDateString();
+                  }
+                  eventDetails.push({
+                    id: eventRef.id,
+                    name: eventData.name || "Unknown Event",
+                    date: dateStr,
+                  });
+                }
+              } catch (err) {
+                console.error(`Error fetching event ${eventRef.id}:`, err);
+              }
+            }
+            setRegisteredEvents(eventDetails);
+          }
         }
       } catch (err) {
         console.error("Error loading user:", err);
+      } finally {
+        setEventsLoading(false);
       }
     };
 
@@ -134,14 +163,43 @@ const Dashboard = ({ onLoad }) => {
                   {user?.semester || "Loading..."}
                 </td>
               </tr>
-              <tr>
-                <td className='p-4 font-semibold text-white'>Events</td>
-                <td className='p-4 text-gray-300'>
-                  {user?.events?.length || 0} registered
-                </td>
-              </tr>
             </tbody>
           </table>
+        </div>
+
+        {/* Registered Events Table */}
+        <div className='mt-8'>
+          <h2 className='mb-4 text-lg font-semibold text-white'>
+            Registered Events
+          </h2>
+          <div className='overflow-hidden rounded-xl border border-[#262626] bg-[#141414] shadow-lg'>
+            {eventsLoading ? (
+              <p className='p-4 text-gray-300'>Loading...</p>
+            ) : registeredEvents.length > 0 ? (
+              <table className='w-full text-sm'>
+                <thead className='border-b border-[#262626] bg-[#1a1a1a]'>
+                  <tr>
+                    <th className='p-4 text-left font-semibold text-white'>
+                      Event Name
+                    </th>
+                    <th className='p-4 text-left font-semibold text-white'>
+                      Date
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className='divide-y divide-[#262626]'>
+                  {registeredEvents.map((event) => (
+                    <tr key={event.id}>
+                      <td className='p-4 text-gray-300'>{event.name}</td>
+                      <td className='p-4 text-gray-300'>{event.date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className='p-4 text-gray-400'>No events registered</p>
+            )}
+          </div>
         </div>
       </div>
 
