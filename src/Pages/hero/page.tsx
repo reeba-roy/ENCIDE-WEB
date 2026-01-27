@@ -10,7 +10,7 @@ export default function Hero(props: Props) {
             className="font-mono font-semibold text-7xl"
             style={{ maxWidth: "26rem" }}
           >
-            CODE WHAT YOU CANT
+            CODE WHAT YOU <a className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">CANT</a>
           </h1>
           <div>
             {" "}
