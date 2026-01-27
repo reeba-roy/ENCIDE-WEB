@@ -1,248 +1,297 @@
-import { useState, useEffect } from "react";
-import CarouselComponent from "../../components/carousel";
-import SplitText from "../../components/SplitText.tsx";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState, useContext } from "react";
+import { Calendar, MapPin, ArrowRight, Clock, Users, Zap } from "lucide-react";
+import Countdown from "../../components/Countdown";
+import { useNavigate } from "react-router-dom";
 
-import icl2 from "../../assets/images/icl2.jpg";
-import cloneitup from "../../assets/images/cloneitup.jpg";
-import ace from "../../assets/images/aceplacements.jpg";
-import code2 from "../../assets/images/code2job.jpg";
-import ctf from "../../assets/images/ctf.jpg";
-import dsa from "../../assets/images/dsa-blitz.jpg";
-import encode from "../../assets/images/encode.jpg";
-import excite from "../../assets/images/excite.jpg";
-import tech from "../../assets/images/tech-trial.jpg";
-import turtle from "../../assets/images/turtle.jpg";
-const upcomingimages = [];
-const images = [
-  {
-    img: "/image.png",
-    ename: "DAWN 1.0",
-    date: "22 MAY 2023",
-    desc: "Intro to CP basics",
-  },
-  {
-    img: icl2,
-    ename: "Interclass Coding League",
-    date: "22 JULY 2024",
-    desc: "Interclass coding competition",
-  },
-  {
-    img: cloneitup,
-    ename: "CloneItUp",
-    date: "11 SEPTEMBER 2024",
-    desc: "Beginner coding challenge",
-  },
-  {
-    img: ace,
-    ename: "Strategies to Ace Placements",
-    date: "JULY 31",
-    desc: "Placement preparation strategies",
-  },
-  {
-    img: code2,
-    ename: "Code2Job",
-    date: "AUG 7",
-    desc: "Career-focused coding event",
-  },
-  {
-    img: ctf,
-    ename: "CaptureTheFlag",
-    date: "17 AUGUST 2024",
-    desc: "CTF hacking challenge",
-  },
-  {
-    img: dsa,
-    ename: "DSA Blitz",
-    date: "AUGUST 3",
-    desc: "Quick DSA practice",
-  },
-  {
-    img: encode,
-    ename: "XTREME ENCODE",
-    date: "22 JULY 2024",
-    desc: "Advanced encoding contest",
-  },
-  {
-    img: excite,
-    ename: "EXCITE",
-    date: "12 APRIL 2024",
-    desc: "Exciting tech showdown",
-  },
-  {
-    img: tech,
-    ename: "TECH TRIAL",
-    date: "27 SEPTEMBER 2024",
-    desc: "Tech skills competition",
-  },
-  {
-    img: turtle,
-    ename: "TURTLE POOKALAM",
-    date: "18 SEPTEMBER 2024",
-    desc: "Cultural design contest",
-  },
-];
+import {
+  doc,
+  updateDoc,
+  arrayUnion,
+  increment,
+  getDoc,
+} from "firebase/firestore";
+import { db } from "../../firebase";
+import Model from "../../components/Model";
+import { AuthContext } from "../../contexts/AuthContext";
 
-function EventComponent() {
-  const [tab, setTab] = useState(0);
-  const [transition, setTransition] = useState("");
-  const [screen, setScreen] = useState(true);
+import { useQuery } from "@tanstack/react-query";
+import { fetchEvents, fetchFeaturedEvent } from "../../lib/getEvents";
 
-  const isSmallScreen = () =>
-    window.innerWidth <= 768 ? setScreen(false) : setScreen(true);
+const EventsSection = () => {
 
-  useEffect(() => {
-    isSmallScreen();
-    window.addEventListener("resize", isSmallScreen);
-    return () => window.removeEventListener("resize", isSmallScreen);
-  }, []);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const handleNext = () => {
-    setTransition("fade-out");
-    setTimeout(() => {
-      setTab((tab + 1) % images.length);
-      setTransition("fade-in");
-    }, 300);
+  const [isEventAlreadyRegistered, setEventAlreadyRegistered] = useState(false);
+
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const RegistrationModal = ({ event, onClose }) => {
+    const [step, setStep] = useState("confirm");
+    if (!user) {
+      navigate("/login");
+      return <></>;
+    }
+    const userRef = doc(db, "users", user.uid);
+    const eventRef = doc(db, "events", event.id);
+
+    (async function () {
+      try {
+        const eventSnap = await getDoc(eventRef);
+
+        if (!eventSnap.exists()) {
+          throw new Error("Event not found");
+        }
+
+        const eventData = eventSnap.data();
+
+        if (eventData.participants?.includes(user.uid)) {
+          setEventAlreadyRegistered(true);
+        }
+      } catch (error) {
+        console.log(error);
+        // alert("Some error occured : ", error);
+      }
+    })();
+
+    const handleConfirm = async () => {
+      try {
+        await Promise.all([
+          // Add event to user
+          updateDoc(userRef, {
+            events: arrayUnion(event.id),
+          }),
+
+          // Add user to event + increment count
+          updateDoc(eventRef, {
+            participants: arrayUnion(user.uid),
+            participants_count: increment(1),
+          }),
+        ]);
+        setStep("success");
+      } catch (error) {
+        console.log("Some error occured : ", error);
+      }
+    };
+    return (
+      <Model
+        event={event}
+        handleConfirm={handleConfirm}
+        onClose={onClose}
+        step={step}
+        isEventAlreadyRegistered={isEventAlreadyRegistered}
+      />
+    );
   };
 
-  const handlePrev = () => {
-    setTransition("fade-out");
-    setTimeout(() => {
-      setTab((tab - 1 + images.length) % images.length);
-      setTransition("fade-in");
-    }, 300);
-  };
+  const { data: events, isLoading } = useQuery({
+    queryKey: ["events"],
+    queryFn: fetchEvents,
+    refetchOnWindowFocus: false,
+  });
+
+  const { data: featuredEvent } = useQuery({
+    queryKey: ["featured-event"],
+    queryFn: fetchFeaturedEvent,
+    refetchOnWindowFocus: false,
+  });
 
   return (
-    <section id="events" className="flex flex-col px-4 py-8 md:px-24">
-      <SplitText
-        text="EVENTS"
-        className="text-6xl text-[40px] font-[550] mb-8 text-white"
-        delay={100}
-        duration={0.8}
-        ease="power3.out"
-        splitType="chars"
-        from={{ opacity: 0, y: 40 }}
-        to={{ opacity: 1, y: 0 }}
-        threshold={0.1}
-        rootMargin="-100px"
-        textAlign="left"
-      />
-
-      {upcomingimages && upcomingimages.length > 0 && (
-        <div className="mb-12">
-          <div className="text-2xl text-[#DB9EE5] font-semibold mb-8">
-            Upcoming Events
+    <section
+      id="events"
+      className="pt-12 pb-24 md:pt-16 md:pb-32 bg-neutral-950 relative overflow-hidden"
+      ref={ref}
+    >
+      {/* Background Effects */}
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.08),transparent_50%)] pointer-events-none" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-fuchsia-600/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="container mx-auto px-4 md:px-8 lg:px-16 relative z-10">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12 md:mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 mb-4 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)]">
+            <Zap className="w-3.5 h-3.5 text-violet-400" />
+            <span className="text-violet-400 font-medium text-sm">
+              Upcoming Events
+            </span>
           </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {upcomingimages.map((event, index) => (
-              <div
-                key={index}
-                className="bg-[#1a1a1a] rounded-lg overflow-hidden border border-[#9A00B3] hover:border-[#DB9EE5] transition-all duration-300 hover:shadow-lg hover:shadow-[#9A00B3]/50"
-              >
-                <div className="relative overflow-hidden bg-black aspect-square">
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+            Don't Miss{" "}
+            <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+              What's Next
+            </span>
+          </h2>
+          <p className="text-neutral-400 max-w-2xl mx-auto">
+            From hackathons to workshops, our events challenge and connect you
+            with like-minded individuals.
+          </p>
+        </motion.div>
+        {/* Featured Event - Full Width */}
+        {featuredEvent && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mb-8"
+          >
+            <div className="relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900/50 backdrop-blur-sm group hover:border-violet-500/30 transition-all duration-500 hover:shadow-[0_0_40px_-10px_rgba(124,58,237,0.15)]">
+              {/* Gradient overlay border effect */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="grid lg:grid-cols-[42%_58%] gap-0">
+                {/* Image Side */}
+                <div className="relative h-64 lg:h-auto min-h-[300px] overflow-hidden">
                   <img
-                    src={event.img}
-                    alt={event.ename}
-                    className="object-contain w-full h-full transition-transform duration-300 hover:scale-105"
+                    src={featuredEvent.image}
+                    alt={featuredEvent.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                </div>
-
-                <div className="p-4">
-                  <h3 className="mb-2 text-xl font-bold text-white">
-                    {event.ename}
-                  </h3>
-
-                  <div className="text-sm text-[#DB9EE5] font-semibold mb-2">
-                    Date: {event.date}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-neutral-900/80 lg:block hidden" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/50 to-transparent lg:hidden" />
+                  {/* Floating badge */}
+                  <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-violet-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-violet-600/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    {featuredEvent.tag}
                   </div>
-
-                  <p className="mb-4 text-sm text-slate-300 line-clamp-2">
-                    {event.desc}
+                </div>
+                {/* Content Side */}
+                <div className="p-6 md:p-8 flex flex-col justify-center relative">
+                  <h3 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 group-hover:text-violet-200 transition-colors">
+                    {featuredEvent.title}
+                  </h3>
+                  <p className="text-neutral-400 mb-6 text-sm md:text-base leading-relaxed">
+                    {featuredEvent.description}
                   </p>
-
-                  <button className="w-full bg-[#9A00B3] hover:bg-[#DB9EE5] text-white font-semibold py-2 px-4 rounded transition-colors duration-300 hover:text-black">
-                    Register
+                  {/* Event Meta */}
+                  <div className="flex flex-wrap gap-4 mb-6 text-sm">
+                    <div className="flex items-center gap-2 text-neutral-400">
+                      <Calendar className="w-4 h-4 text-violet-400" />
+                      <span>{featuredEvent.date.toDateString()}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-neutral-400">
+                      <MapPin className="w-4 h-4 text-violet-400" />
+                      <span>{featuredEvent.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-neutral-400">
+                      <Users className="w-4 h-4 text-violet-400" />
+                      <span>
+                        {featuredEvent.participants_count}+ Participants
+                      </span>
+                    </div>
+                  </div>
+                  {/* Countdown */}
+                  {featuredEvent.deadline.toString() && (
+                    <div className="mb-8">
+                      <p className="text-xs text-neutral-500 uppercase tracking-wider mb-3 flex items-center gap-1.5 font-medium">
+                        <Clock className="w-3.5 h-3.5" />
+                        Registration closes in
+                      </p>
+                      <Countdown targetDate={featuredEvent.deadline} />
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setSelectedEvent(featuredEvent)}
+                    className="w-fit group/btn inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-medium transition-all shadow-[0_0_20px_-5px_theme(colors.violet.500/0.5)] hover:shadow-[0_0_25px_-5px_theme(colors.violet.500/0.7)] hover:scale-[1.02]"
+                  >
+                    Register Now
+                    <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 pb-8 sm:grid-cols-2">
-        <div className="flex flex-col col-span-1 pb-4 sm:pb-0">
-          <div className="text-2xl text-[#DB9EE5] font-semibold">
-            Our Past Events
-          </div>
-        </div>
-        <div className="flex items-center justify-start cols-span-1 sm:justify-end ">
-          {/* <button
-            onClick={handlePrev}
-            className="flex items-center text-slate-300 pb-1 px-4 rounded border-2 border-slate-300 text-xl font-semibold justify-center bg-[#9A00B3] hover:bg-transparent hover:border-[#9A00B3] hover:text-[#9A00B3] duration-300"
-          >
-            Previous Events
-          </button> */}
-        </div>
-      </div>
-      {screen && (
-        <div>
-          <div className="event-carousel flex relative overflow-hidden h-[60vh]">
-            <div className="relative flex items-center justify-center w-full h-full">
-              <div className="w-full absolute left-[25%] flex">
-                <img
-                  className={`three absolute -left-60 scale-[0.85] h-full -z-10 blur-md aspect-square w-[360px] ${transition}`}
-                  src={images[(tab + 2) % images.length].img}
-                  alt="Event"
-                />
-                <img
-                  className={`two absolute -left-32 scale-[0.925] h-full -z-10 blur-sm aspect-square w-[360px] ${transition}`}
-                  src={images[(tab + 1) % images.length].img}
-                  alt="Event"
-                />
-                <img
-                  className={`one aspect-square w-[360px] ${transition}`}
-                  src={images[tab].img}
-                  alt="Event"
-                />
-                <div className="bg-[#7b2e87] w-[35%] p-4 scale-y-[0.85]">
-                  <div className="pl-4 pb-2 text-2xl scale-y-[1.2] font-arial font-bold text-white">
-                    {images[tab].ename}
+            </div>
+          </motion.div>
+        )}
+        {/* Other Events Grid */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {events?.map((event, index) => (
+            <motion.article
+              key={event.id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+              className="group relative bg-neutral-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-neutral-800 hover:border-violet-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            >
+              <div className="flex flex-col sm:flex-row h-full">
+                {/* Image */}
+                <div className="relative w-full h-48 sm:w-72 sm:h-auto shrink-0 overflow-hidden">
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-neutral-900/80 hidden sm:block" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 to-transparent sm:hidden" />
+                  <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-neutral-950/80 border border-neutral-800 text-white text-xs font-medium backdrop-blur-md">
+                    {event.tag}
+                  </span>
+                </div>
+                {/* Content */}
+                <div className="p-5 flex flex-col justify-center flex-1 min-w-0">
+                  <h3 className="font-display text-lg font-bold text-white mb-2 group-hover:text-violet-300 transition-colors truncate">
+                    {event.title}
+                  </h3>
+                  <p className="text-neutral-400 text-sm mb-4 line-clamp-2">
+                    {event.description}
+                  </p>
+                  <div className="flex flex-wrap gap-3 text-xs text-neutral-500 mb-4">
+                    <span className="flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-violet-500" />
+                      {event.date.toDateString()}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-violet-500" />
+                      {event.location}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-violet-500" />
+                      {event.participants_count}+
+                    </span>
+                    {event.deadline && (
+                      <span className="flex items-center gap-1.5 ">
+                        <Clock className="w-3.5 h-3.5 text-violet-500" />
+                        By{" "}
+                        {event.deadline.toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                        })}{" "}
+                        @{" "}
+                        {event.deadline.toLocaleTimeString(undefined, {
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}
+                      </span>
+                    )}
                   </div>
-                  <div className="pb-4 pl-4">
-                    <div className="text-lg scale-y-[1.2] font-arial font-semibold text-slate-200">
-                      Date : {images[tab].date}
-                    </div>
-                  </div>
-
-                  <div className="pl-4 pb-4 flex scale-y-[1.2]  font-mono font-normal text-slate-200">
-                    {images[tab].desc}
-                  </div>
+                  <button
+                    onClick={() => setSelectedEvent(event)}
+                    className="w-fit mt-auto px-4 py-2 rounded-lg bg-neutral-800 hover:bg-violet-600 text-white text-sm font-medium transition-all duration-300 flex items-center gap-2 group/btn border border-neutral-700 hover:border-violet-500 hover:shadow-lg hover:shadow-violet-500/20"
+                  >
+                    Register Now
+                    <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                  </button>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={handlePrev}
-              className="px-4 py-2 mx-2 min-w-[120px] rounded border-2 text-xl font-semibold bg-transparent border-[#9A00B3] text-[#9A00B3] duration-300 hover:bg-[#9A00B3] hover:text-[#111010] outline outline-transparent hover:outline-black -outline-offset-4"
-            >
-              Previous
-            </button>
-            <button
-              onClick={handleNext}
-              className=" px-4 py-2 mx-2 min-w-[120px] rounded border-2 text-xl font-semibold bg-transparent border-[#9A00B3] text-[#9A00B3] duration-300 hover:bg-[#9A00B3] hover:text-[#111010] outline outline-transparent hover:outline-black -outline-offset-4"
-            >
-              Next
-            </button>
-          </div>
+            </motion.article>
+          ))}
         </div>
-      )}
-
-      {!screen && <CarouselComponent images={images} />}
+      </div>
+      <AnimatePresence>
+        {selectedEvent && (
+          <RegistrationModal
+            event={selectedEvent}
+            onClose={() => setSelectedEvent(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
-}
-
-export default EventComponent;
+};
+export default EventsSection;

@@ -76,6 +76,7 @@ function SignUpForm({ onLoad }) {
     try {
       await setDoc(doc(db, "users", userId), {
         name: formData.name,
+        email: formData.email,
         semester: formData.semester,
         department: formData.department,
         college: formData.college,
