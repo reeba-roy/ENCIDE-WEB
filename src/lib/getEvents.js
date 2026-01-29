@@ -1,14 +1,4 @@
-import {
-  collection,
-  getDocs,
-  doc,
-  updateDoc,
-  arrayUnion,
-  increment,
-  getDoc,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
 const normalizeDate = (field) => {
@@ -61,6 +51,3 @@ export const fetchPastEvents = async () => {
     date: normalizeDate(doc.data().date),
   }));
 };
-
-
-
