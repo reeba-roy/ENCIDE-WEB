@@ -19,7 +19,6 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchEvents, fetchFeaturedEvent } from "../../lib/getEvents";
 
 const EventsSection = () => {
-
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -134,7 +133,6 @@ const EventsSection = () => {
             with like-minded individuals.
           </p>
         </motion.div>
-        {/* Featured Event - Full Width */}
         {featuredEvent && (
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -143,10 +141,8 @@ const EventsSection = () => {
             className="mb-8"
           >
             <div className="relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900/50 backdrop-blur-sm group hover:border-violet-500/30 transition-all duration-500 hover:shadow-[0_0_40px_-10px_rgba(124,58,237,0.15)]">
-              {/* Gradient overlay border effect */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <div className="grid lg:grid-cols-[42%_58%] gap-0">
-                {/* Image Side */}
                 <div className="relative h-64 lg:h-auto min-h-[300px] overflow-hidden">
                   <img
                     src={featuredEvent.image}
@@ -155,21 +151,18 @@ const EventsSection = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-neutral-900/80 lg:block hidden" />
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/50 to-transparent lg:hidden" />
-                  {/* Floating badge */}
                   <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-violet-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-violet-600/20">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                     {featuredEvent.tag}
                   </div>
                 </div>
-                {/* Content Side */}
                 <div className="p-6 md:p-8 flex flex-col justify-center relative">
-                  <h3 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 group-hover:text-violet-200 transition-colors">
+                  <h3 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3  transition-colors">
                     {featuredEvent.title}
                   </h3>
                   <p className="text-neutral-400 mb-6 text-sm md:text-base leading-relaxed">
                     {featuredEvent.description}
                   </p>
-                  {/* Event Meta */}
                   <div className="flex flex-wrap gap-4 mb-6 text-sm">
                     <div className="flex items-center gap-2 text-neutral-400">
                       <Calendar className="w-4 h-4 text-violet-400" />
@@ -186,7 +179,6 @@ const EventsSection = () => {
                       </span>
                     </div>
                   </div>
-                  {/* Countdown */}
                   {featuredEvent.deadline.toString() && (
                     <div className="mb-8">
                       <p className="text-xs text-neutral-500 uppercase tracking-wider mb-3 flex items-center gap-1.5 font-medium">
@@ -208,7 +200,6 @@ const EventsSection = () => {
             </div>
           </motion.div>
         )}
-        {/* Other Events Grid */}
         <div className="grid lg:grid-cols-2 gap-6">
           {events?.map((event, index) => (
             <motion.article
