@@ -11,7 +11,7 @@ import ContactSection from "./Pages/contact-us/ContactSection.jsx";
 import TeamSection from "./Pages/Teams/TeamSection.jsx";
 import AboutComponent from "./Pages/about/About.jsx";
 import Footer from "./Pages/Footer/Footer.jsx";
-import EventsSection from "./Pages/events/Events.jsx";
+import EventsSection from "./Pages/events/events.jsx";
 import PastEventsSection from "./Pages/past-events/PastEvents.jsx";
 import Dashboard from "./Pages/dashboard/Dashboard.jsx";
 
@@ -67,3 +67,4 @@ function App() {
 }
 
 export default App;
+
