@@ -36,7 +36,8 @@ const Dashboard = ({ onLoad }) => {
     queryKey: ["user-data"],
     queryFn: () => getUserDetails(user.uid),
     enabled: !!user?.uid,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true
   });
 
   const { data: allEvents, isPending } = useQuery({
