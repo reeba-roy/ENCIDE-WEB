@@ -16,6 +16,7 @@ import PastEventsSection from "./Pages/past-events/PastEvents.jsx";
 import Dashboard from "./Pages/dashboard/Dashboard.jsx";
 
 import { AuthContext } from "./contexts/AuthContext.jsx";
+import HeroSection from "./Pages/hero/HeroSection.jsx";
 
 function App() {
   const [load, setLoad] = useState(true);
@@ -32,7 +33,8 @@ function App() {
           element={
             <>
               <NavComponent />
-              <Hero loading={() => setLoad(false)} />
+              {/* <Hero loading={() => setLoad(false)} /> */}
+                <HeroSection loading={() => setLoad(false)}/>
               <AboutComponent />
               <EventsSection />
               <PastEventsSection />

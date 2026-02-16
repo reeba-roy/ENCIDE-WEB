@@ -3,8 +3,6 @@ import {
   Twitter,
   Linkedin,
   Youtube,
-  Heart,
-  Sparkles,
 } from "lucide-react";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -35,7 +33,7 @@ const Footer = () => {
     { icon: Youtube, href: "#", label: "YouTube" },
   ];
   return (
-    <footer className="bg-neutral-950 border-t border-neutral-800 pt-16 pb-8 relative overflow-hidden">
+    <footer className="bg-neutral-950/70 border-t border-neutral-800 pt-16 pb-8 relative overflow-hidden">
       <div className="container mx-auto md:px-6 lg:px-16 relative z-10">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
           {/* Brand */}

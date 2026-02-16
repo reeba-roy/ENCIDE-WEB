@@ -1,5 +1,5 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState, useContext } from "react";
+import { useRef, useState, useContext, useEffect } from "react";
 import { Calendar, MapPin, ArrowRight, Clock, Users, Zap } from "lucide-react";
 import Countdown from "../../components/Countdown";
 import { useNavigate } from "react-router-dom";
@@ -23,65 +23,92 @@ const EventsSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const [isEventAlreadyRegistered, setEventAlreadyRegistered] = useState(false);
-
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const RegistrationModal = ({ event, onClose }) => {
-    const [step, setStep] = useState("confirm");
-    if (!user) {
-      navigate("/login");
-      return <></>;
-    }
+    const { user } = useContext(AuthContext);
+
+    const [status, setStatus] = useState("checking");
+    const [isRegistered, setIsRegistered] = useState(false);
+
     const userRef = doc(db, "users", user.uid);
     const eventRef = doc(db, "events", event.id);
 
-    (async function () {
-      try {
-        const eventSnap = await getDoc(eventRef);
+    // Check registration once
+    useEffect(() => {
+      let mounted = true;
 
-        if (!eventSnap.exists()) {
-          throw new Error("Event not found");
+      const check = async () => {
+        try {
+          const snap = await getDoc(eventRef);
+
+          if (!snap.exists()) {
+            setStatus("error");
+            return;
+          }
+
+          const data = snap.data();
+
+          if (mounted) {
+            const exists = data.participants?.includes(user.uid);
+            setIsRegistered(!!exists);
+            setStatus("ready");
+          }
+        } catch (err) {
+          console.error(err);
+          if (mounted) setStatus("error");
         }
+      };
 
-        const eventData = eventSnap.data();
+      check();
 
-        if (eventData.participants?.includes(user.uid)) {
-          setEventAlreadyRegistered(true);
-        }
-      } catch (error) {
-        console.log(error);
-        // alert("Some error occured : ", error);
-      }
-    })();
+      return () => {
+        mounted = false;
+      };
+    }, [event.id, user.uid]);
 
     const handleConfirm = async () => {
+      if (isRegistered) {
+        onClose();
+        return;
+      }
+
       try {
+        setStatus("submitting");
+
+        const start = Date.now();
+
         await Promise.all([
-          // Add event to user
           updateDoc(userRef, {
             events: arrayUnion(event.id),
           }),
-
-          // Add user to event + increment count
           updateDoc(eventRef, {
             participants: arrayUnion(user.uid),
             participants_count: increment(1),
           }),
         ]);
-        setStep("success");
-      } catch (error) {
-        console.log("Some error occured : ", error);
+
+        // Ensure loader is visible at least 600ms
+        const elapsed = Date.now() - start;
+        const delay = Math.max(600 - elapsed, 0);
+
+        setTimeout(() => {
+          setStatus("success");
+        }, delay);
+      } catch (err) {
+        console.error(err);
+        setStatus("error");
       }
     };
+
     return (
       <Model
         event={event}
-        handleConfirm={handleConfirm}
         onClose={onClose}
-        step={step}
-        isEventAlreadyRegistered={isEventAlreadyRegistered}
+        onConfirm={handleConfirm}
+        status={status}
+        isRegistered={isRegistered}
       />
     );
   };
@@ -106,7 +133,7 @@ const EventsSection = () => {
     >
       {/* Background Effects */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.08),transparent_50%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.08),transparent_40%)] pointer-events-none" />
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-fuchsia-600/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="container mx-auto px-4 md:px-8 lg:px-16 relative z-10">
         {/* Section Header */}
@@ -140,14 +167,14 @@ const EventsSection = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="mb-8"
           >
-            <div className="relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900/50 backdrop-blur-sm group hover:border-violet-500/30 transition-all duration-500 hover:shadow-[0_0_40px_-10px_rgba(124,58,237,0.15)]">
+            <div className="relative rounded-2xl overflow-hidden border border-neutral-800  backdrop-blur-sm group hover:border-violet-500/30 transition-all duration-500">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <div className="grid lg:grid-cols-[42%_58%] gap-0">
                 <div className="relative h-64 lg:h-auto min-h-[300px] overflow-hidden">
                   <img
                     src={featuredEvent.image}
                     alt={featuredEvent.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="w-full h-full object-cover transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-neutral-900/80 lg:block hidden" />
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/50 to-transparent lg:hidden" />
@@ -207,7 +234,7 @@ const EventsSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-              className="group relative bg-neutral-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-neutral-800 hover:border-violet-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              className="group relative backdrop-blur-sm rounded-xl overflow-hidden border border-neutral-800 hover:border-violet-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
               <div className="flex flex-col sm:flex-row h-full">
                 {/* Image */}
@@ -215,7 +242,7 @@ const EventsSection = () => {
                   <img
                     src={event.image}
                     alt={event.title}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-neutral-900/80 hidden sm:block" />
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 to-transparent sm:hidden" />
