@@ -17,6 +17,7 @@ import Dashboard from "./Pages/dashboard/Dashboard.jsx";
 
 import { AuthContext } from "./contexts/AuthContext.jsx";
 import HeroSection from "./Pages/hero/HeroSection.jsx";
+import Admin from "./Pages/admin/Admin.jsx";
 
 function App() {
   const [load, setLoad] = useState(true);
@@ -59,6 +60,11 @@ function App() {
           <Route
             path="/dashboard"
             element={user ? <Dashboard onLoad={() => setLoad(false)} /> : <></>}
+          />
+
+          <Route
+          path="/admin-dashboard"
+          element={<Admin onLoad={() => setLoad(false)} />}
           />
 
       </Routes>

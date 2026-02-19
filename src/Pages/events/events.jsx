@@ -23,8 +23,6 @@ const EventsSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const RegistrationModal = ({ event, onClose }) => {
     const { user } = useContext(AuthContext);

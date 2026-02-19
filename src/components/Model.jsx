@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Calendar, MapPin, X, CheckCircle2, Loader2 } from "lucide-react";
 
 function Model({ event, onClose, onConfirm, status, isRegistered }) {
@@ -28,14 +28,6 @@ function Model({ event, onClose, onConfirm, status, isRegistered }) {
         >
           <X className="w-5 h-5" />
         </button>
-
-        {/* Checking State */}
-        {isChecking && (
-          <div className="flex flex-col items-center justify-center gap-4 text-neutral-400">
-            <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
-            <p>Checking registration...</p>
-          </div>
-        )}
 
         {/* Ready / Confirm State */}
         <div className="relative flex-1 flex flex-col justify-center">
