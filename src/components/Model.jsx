@@ -19,17 +19,14 @@ function Model({
   const isSuccess = status === "success";
   const isReady = status === "ready";
 
-  // ✅ Team name validation
+
   const isTeamNameValid = memberCount === 1 || teamName.trim().length > 0;
 
-  // ✅ Validate ONLY visible/required fields
   const areMembersValid = members.slice(0, memberCount).every((m, index) => {
     if (index === 0) {
-      // Team lead must have phone filled
       return m.phone?.trim().length > 0;
     }
 
-    // Other members must have all fields
     return (
       m.name?.trim().length > 0 &&
       m.email?.trim().length > 0 &&

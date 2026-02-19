@@ -17,6 +17,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchEvents, fetchFeaturedEvent } from "../../lib/getEvents";
+import { getUserDetails } from "../../lib/getUserDetails";
 
 const EventsSection = () => {
   const ref = useRef(null);
@@ -31,18 +32,32 @@ const EventsSection = () => {
 
     const [memberCount, setMemberCount] = useState(1);
     const [teamName, setTeamName] = useState("");
-    const [members, setMembers] = useState([
-      {
-        name: user.displayName || "",
-        email: user.email || "",
-        phone: "",
-      },
-    ]);
+
+    const { data: userData, isLoading } = useQuery({
+      queryKey: ["user-data"],
+      queryFn: () => getUserDetails(user.uid),
+      enabled: !!user?.uid,
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+    });
+
+    const [members, setMembers] = useState([]);
+
+    useEffect(() => {
+      if (userData) {
+        setMembers([
+          {
+            name: userData.name || "",
+            email: userData.email || "",
+            phone: userData.phone || "",
+          },
+        ]);
+      }
+    }, [userData]);
 
     const userRef = doc(db, "users", user.uid);
     const eventRef = doc(db, "events", event.id);
 
-    // Keep members array synced with memberCount
     useEffect(() => {
       setMembers((prev) => {
         const updated = [...prev];
@@ -55,25 +70,20 @@ const EventsSection = () => {
       });
     }, [memberCount]);
 
-    // Check registration once (NEW STRUCTURE SAFE)
     useEffect(() => {
       let mounted = true;
 
       const check = async () => {
         try {
           const snap = await getDoc(eventRef);
-
           if (!snap.exists()) {
             setStatus("error");
             return;
           }
-
           const data = snap.data();
-
           const exists = data.participants?.some(
             (team) => team.team_lead_id === user.uid,
           );
-
           if (mounted) {
             setIsRegistered(!!exists);
             setStatus("ready");
@@ -85,7 +95,6 @@ const EventsSection = () => {
       };
 
       check();
-
       return () => {
         mounted = false;
       };
@@ -99,9 +108,7 @@ const EventsSection = () => {
 
       try {
         setStatus("submitting");
-
         const start = Date.now();
-
         const finalTeamName =
           memberCount === 1
             ? members[0].name
@@ -153,7 +160,7 @@ const EventsSection = () => {
     );
   };
 
-  const { data: events, isLoading } = useQuery({
+  const { data: events, } = useQuery({
     queryKey: ["events"],
     queryFn: fetchEvents,
     refetchOnWindowFocus: false,
