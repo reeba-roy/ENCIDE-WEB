@@ -23,17 +23,39 @@ const EventsSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-
   const RegistrationModal = ({ event, onClose }) => {
     const { user } = useContext(AuthContext);
 
     const [status, setStatus] = useState("checking");
     const [isRegistered, setIsRegistered] = useState(false);
 
+    const [memberCount, setMemberCount] = useState(1);
+    const [teamName, setTeamName] = useState("");
+    const [members, setMembers] = useState([
+      {
+        name: user.displayName || "",
+        email: user.email || "",
+        phone: "",
+      },
+    ]);
+
     const userRef = doc(db, "users", user.uid);
     const eventRef = doc(db, "events", event.id);
 
-    // Check registration once
+    // Keep members array synced with memberCount
+    useEffect(() => {
+      setMembers((prev) => {
+        const updated = [...prev];
+
+        while (updated.length < memberCount) {
+          updated.push({ name: "", email: "", phone: "" });
+        }
+
+        return updated.slice(0, memberCount);
+      });
+    }, [memberCount]);
+
+    // Check registration once (NEW STRUCTURE SAFE)
     useEffect(() => {
       let mounted = true;
 
@@ -48,8 +70,11 @@ const EventsSection = () => {
 
           const data = snap.data();
 
+          const exists = data.participants?.some(
+            (team) => team.team_lead_id === user.uid,
+          );
+
           if (mounted) {
-            const exists = data.participants?.includes(user.uid);
             setIsRegistered(!!exists);
             setStatus("ready");
           }
@@ -77,17 +102,28 @@ const EventsSection = () => {
 
         const start = Date.now();
 
+        const finalTeamName =
+          memberCount === 1
+            ? members[0].name
+            : teamName.trim() || "Untitled Team";
+
+        const teamObject = {
+          team_lead_id: user.uid,
+          team_name: finalTeamName,
+          members,
+          count: memberCount,
+        };
+
         await Promise.all([
           updateDoc(userRef, {
             events: arrayUnion(event.id),
           }),
           updateDoc(eventRef, {
-            participants: arrayUnion(user.uid),
+            participants: arrayUnion(teamObject),
             participants_count: increment(1),
           }),
         ]);
 
-        // Ensure loader is visible at least 600ms
         const elapsed = Date.now() - start;
         const delay = Math.max(600 - elapsed, 0);
 
@@ -107,6 +143,12 @@ const EventsSection = () => {
         onConfirm={handleConfirm}
         status={status}
         isRegistered={isRegistered}
+        memberCount={memberCount}
+        setMemberCount={setMemberCount}
+        teamName={teamName}
+        setTeamName={setTeamName}
+        members={members}
+        setMembers={setMembers}
       />
     );
   };
