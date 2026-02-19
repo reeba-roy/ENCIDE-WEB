@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import planetHorizon from "../../assets/planet-horizon.png";
-import encideLogo from "../../assets/encideLogo.png"
+import encideLogo from "../../assets/encideLogo.png";
 
 const codeSnippets = [
   "const future = await dream.build();",
@@ -180,11 +180,10 @@ const OrbitingElement = ({ icon: Icon, delay, radius, duration }) => (
     <Icon className="w-5 h-5 text-violet-400" />
   </motion.div>
 );
-const HeroSection = ({loading}) => {
-
-  useEffect(()=>{
-    loading()
-  },[loading])
+const HeroSection = ({ loading }) => {
+  useEffect(() => {
+    loading();
+  }, [loading]);
 
   const particles = Array.from({ length: 8 }, (_, i) => ({
     delay: i * 2,
@@ -204,7 +203,7 @@ const HeroSection = ({loading}) => {
         className="absolute inset-0 pointer-events-none"
       >
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 blur-md"
           style={{
             backgroundImage: `url(${planetHorizon})`,
             backgroundSize: "cover",
@@ -239,18 +238,6 @@ const HeroSection = ({loading}) => {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left column - Text content */}
           <div className="text-center lg:text-left">
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 mb-6"
-            >
-              <Terminal className="w-4 h-4 text-violet-400" />
-              <span className="text-sm font-mono text-violet-200/80">
-                &lt;/&gt; The Coding Club
-              </span>
-            </motion.div>
             {/* Main heading - ENCIDE */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -258,19 +245,7 @@ const HeroSection = ({loading}) => {
               transition={{ duration: 0.7, delay: 0.1 }}
               className="mb-4"
             >
-              {/* <h1 className="font-display text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white">
-                <span className="relative inline-block">
-                  <span className="relative z-10">ENCIDE</span>
-                  <span className="absolute inset-0 text-violet-600 blur-2xl opacity-50">
-                    ENCIDE
-                  </span>
-                </span>
-              </h1> */}
-
               <img src={encideLogo} className="items-center" />
-
-
-
             </motion.div>
             {/* Motto */}
             <motion.div
@@ -280,20 +255,7 @@ const HeroSection = ({loading}) => {
               className="mb-6"
             >
               <p className="text-xl md:text-2xl lg:text-3xl font-display font-medium text-neutral-200">
-                Code what you{" "}
-                <span className="relative inline-block">
-                  <span className="line-through text-neutral-500 decoration-violet-500/50">
-                    can't
-                  </span>
-                  <motion.span
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1.5, duration: 0.5 }}
-                    className="absolute -right-12 top-0 text-violet-400 font-bold"
-                  >
-                    can
-                  </motion.span>
-                </span>
+                Code what you can't
               </p>
             </motion.div>
             {/* Description */}

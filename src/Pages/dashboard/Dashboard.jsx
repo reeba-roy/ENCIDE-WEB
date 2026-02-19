@@ -14,15 +14,10 @@ import SkeletonProfileCard from "../../components/skeleton/SkeletonProfileCard";
 import { getRegisteredEvents } from "../../lib/getRegisterdEvents";
 import SkeletonEventsList from "../../components/skeleton/SkeletonEventsList";
 import SkeletonDashboardStats from "../../components/skeleton/SkeletonDashboardStats";
-import ConfirmationModal from "../../components/pop-up/EventDeletionConfirmation";
 
 const Dashboard = ({ onLoad }) => {
-
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [eventToDelete, setEventToDelete] = useState();
 
   useEffect(() => {
     if (onLoad) onLoad();
@@ -46,19 +41,6 @@ const Dashboard = ({ onLoad }) => {
     enabled: !!userData?.events,
     refetchOnWindowFocus: false,
   });
-
-  const handleCancelRegistration = (eventId) => {
-    setEventToDelete(eventId);
-    setIsDeleteModalOpen(true);
-  };
-  const confirmCancelRegistration = () => {
-    if (eventToDelete) {
-      console.log("Cancelling registration for event ID:", eventToDelete);
-      // Add actual deletion logic here (e.g., mutation)
-    }
-    setIsDeleteModalOpen(false);
-    setEventToDelete(null);
-  };
 
   return (
     <div className="min-h-screen bg-neutral-950 relative overflow-hidden font-sans selection:bg-violet-500/30 font-display">
@@ -118,7 +100,6 @@ const Dashboard = ({ onLoad }) => {
                     events={allEvents?.filter((e) => e.is_over === false)}
                     title="Upcoming Events"
                     emptyMessage="No upcoming events."
-                    onCancel={handleCancelRegistration}
                     isUpcomming={true}
                   />
                 ) : (
@@ -139,14 +120,6 @@ const Dashboard = ({ onLoad }) => {
             </div>
           </div>
         </div>
-        {/* Confirmation Modal */}
-        <ConfirmationModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen(false)}
-          onConfirm={confirmCancelRegistration}
-          title="Cancel Registration?"
-          message="Are you sure you want to cancel your registration for this event? This action cannot be undone."
-        />
       </div>
     </div>
   );

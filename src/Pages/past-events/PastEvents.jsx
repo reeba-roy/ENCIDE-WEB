@@ -78,12 +78,6 @@ const PastEventsSection = () => {
               className="relative mb-12"
             >
               <div className="text-center max-w-2xl mx-auto">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 mb-4 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)]">
-                  <Trophy className="w-3.5 h-3.5 text-violet-400" />
-                  <span className="text-violet-400 font-medium text-sm">
-                    Event Archive
-                  </span>
-                </div>
                 <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3">
                   Our{" "}
                   <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
@@ -240,7 +234,7 @@ const PastEventsSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4"
+              className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 pb-20"
             >
               {[
                 { value: "50+", label: "Events Organized" },
@@ -260,18 +254,6 @@ const PastEventsSection = () => {
                   </p>
                 </div>
               ))}
-            </motion.div>
-            {/* CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="text-center mt-12"
-            >
-              <button className="group/btn inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-neutral-800 hover:border-violet-500 hover:bg-neutral-900 text-neutral-300 hover:text-white font-medium transition-all duration-300">
-                Browse Full Archive
-                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-              </button>
             </motion.div>
           </>
         )}

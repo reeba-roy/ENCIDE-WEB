@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Calendar, Clock, MapPin, ChevronRight, XCircle } from "lucide-react";
 
-const EventsList = ({ events, title, emptyMessage, onCancel, isUpcomming }) => {
+const EventsList = ({ events, title, emptyMessage, isUpcomming }) => {
   return (
     <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-xl h-full flex flex-col overflow-hidden">
       <div className="p-5 border-b border-neutral-800 flex items-center justify-between flex-none bg-neutral-900/50 backdrop-blur-md z-10">
@@ -62,22 +62,6 @@ const EventsList = ({ events, title, emptyMessage, onCancel, isUpcomming }) => {
                         {event.location}
                       </span>
                     </div>
-                  </div>
-                  {/* Action Buttons */}
-                  <div className="flex items-center gap-2">
-                    {isUpcomming && onCancel && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onCancel(event.id);
-                        }}
-                        className="p-1.5 rounded-lg hover:bg-red-500/10 text-neutral-600 hover:text-red-500 transition-colors group/cancel"
-                        title="Cancel Registration"
-                      >
-                        <XCircle className="w-4 h-4" />
-                      </button>
-                    )}
-                    <ChevronRight className="w-4 h-4 text-neutral-600 group-hover:text-violet-400 transition-colors" />
                   </div>
                 </div>
               </motion.div>
