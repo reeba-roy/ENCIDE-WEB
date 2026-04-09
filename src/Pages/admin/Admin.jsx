@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -16,6 +17,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import ContactResponsesTable from "../../components/admin/ContactResponsesTable";
 import EventsManager from "../../components/admin/EventsManager";
 import AddEventDialog from "../../components/admin/AddEventDialog";
+import { AuthContext } from "../../contexts/AuthContext";
+import { getUserDetails } from "../../lib/getUserDetails";
 // Dummy data for contact responses
 const dummyContactResponses = [
   {
@@ -122,11 +125,27 @@ const dummyEvents = [
     registrations: 75,
   },
 ];
-const Admin = ({onLoad}) => {
+const Admin = ({ onLoad }) => {
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(onLoad) onLoad()
-  },[])
+  const { data: userData } = useQuery({
+    queryKey: ["user-data"],
+    queryFn: () => getUserDetails(user.uid),
+    enabled: !!user?.uid,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+  });
+
+  useEffect(() => {
+    if (onLoad) onLoad();
+  }, [onLoad]);
+
+  useEffect(() => {
+    if (!user) return navigate("/login");
+    if (!userData) return;
+    if (!userData.isAdmin) return navigate("/");
+  }, [user, userData, navigate]);
 
   const [events, setEvents] = useState(dummyEvents);
   const [contactResponses] = useState(dummyContactResponses);
@@ -134,7 +153,7 @@ const Admin = ({onLoad}) => {
   const [editingEvent, setEditingEvent] = useState(null);
   const [activeTab, setActiveTab] = useState("contacts");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const navigate = useNavigate();
+
   const stats = [
     {
       label: "Total Contacts",
@@ -179,8 +198,7 @@ const Admin = ({onLoad}) => {
     setIsAddEventOpen(false);
   };
   const handleLogout = () => {
-    // Navigate to admin login (or home for now)
-    navigate("/");
+    logout().finally(() => navigate("/"));
   };
   const handleEditEvent = (updatedEvent) => {
     setEvents(events.map((e) => (e.id === updatedEvent.id ? updatedEvent : e)));
@@ -189,13 +207,13 @@ const Admin = ({onLoad}) => {
   const handleDeleteEvent = (id) => {
     setEvents(events.filter((e) => e.id !== id));
   };
-  return (
-    <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-violet-500/30">
+  return userData?.isAdmin ? (
+    <div className="min-h-screen font-sans text-white bg-neutral-950 selection:bg-violet-500/30">
       {/* Background Effects */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.05),transparent_50%)] pointer-events-none" />
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800">
-        <div className="container mx-auto px-4 py-3">
+      <header className="fixed top-0 left-0 right-0 z-40 border-b bg-neutral-950/80 backdrop-blur-md border-neutral-800">
+        <div className="container px-4 py-3 mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link to="/">
@@ -204,12 +222,12 @@ const Admin = ({onLoad}) => {
                   Back to Site
                 </button>
               </Link>
-              <div className="h-6 w-px bg-neutral-800 mx-2 hidden md:block" />
+              <div className="hidden w-px h-6 mx-2 bg-neutral-800 md:block" />
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-violet-600">
                   <LayoutDashboard className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="text-lg font-bold text-white hidden md:block">
+                <h1 className="hidden text-lg font-bold text-white md:block">
                   Admin Dashboard
                 </h1>
               </div>
@@ -217,7 +235,7 @@ const Admin = ({onLoad}) => {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsAddEventOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-medium text-sm transition-all shadow-lg shadow-violet-600/20"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all rounded-lg shadow-lg bg-violet-600 hover:bg-violet-700 shadow-violet-600/20"
               >
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">Add Event</span>
@@ -241,7 +259,7 @@ const Admin = ({onLoad}) => {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-56 rounded-xl bg-neutral-900 border border-neutral-800 shadow-2xl z-50 overflow-hidden"
+                        className="absolute right-0 z-50 w-56 mt-2 overflow-hidden border shadow-2xl rounded-xl bg-neutral-900 border-neutral-800"
                       >
                         <div className="p-4 border-b border-neutral-800">
                           <p className="text-sm font-medium text-white">
@@ -252,13 +270,13 @@ const Admin = ({onLoad}) => {
                           </p>
                         </div>
                         <div className="p-1">
-                          <button className="flex w-full items-center gap-2 px-3 py-2 text-sm text-neutral-300 hover:bg-neutral-800 rounded-lg transition-colors">
+                          <button className="flex items-center w-full gap-2 px-3 py-2 text-sm transition-colors rounded-lg text-neutral-300 hover:bg-neutral-800">
                             <Settings className="w-4 h-4" />
                             Settings
                           </button>
                           <button
                             onClick={handleLogout}
-                            className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                            className="flex items-center w-full gap-2 px-3 py-2 text-sm text-red-400 transition-colors rounded-lg hover:bg-red-500/10"
                           >
                             <LogOut className="w-4 h-4" />
                             Log out
@@ -273,9 +291,9 @@ const Admin = ({onLoad}) => {
           </div>
         </div>
       </header>
-      <main className="container mx-auto px-4 lg:px-20 py-8 mt-16 relative z-10">
+      <main className="container relative z-10 px-4 py-8 mx-auto mt-16 lg:px-20">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -286,10 +304,10 @@ const Admin = ({onLoad}) => {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-400 font-medium">
+                  <p className="text-sm font-medium text-neutral-400">
                     {stat.label}
                   </p>
-                  <p className="text-3xl font-bold text-white mt-2 group-hover:text-violet-200 transition-colors">
+                  <p className="mt-2 text-3xl font-bold text-white transition-colors group-hover:text-violet-200">
                     {stat.value}
                   </p>
                 </div>
@@ -302,7 +320,7 @@ const Admin = ({onLoad}) => {
         </div>
         {/* Main Content Tabs */}
         <div className="space-y-6">
-          <div className="inline-flex gap-2 p-1 rounded-xl bg-neutral-900 border border-neutral-800">
+          <div className="inline-flex gap-2 p-1 border rounded-xl bg-neutral-900 border-neutral-800">
             <button
               onClick={() => setActiveTab("contacts")}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
@@ -372,6 +390,8 @@ const Admin = ({onLoad}) => {
         />
       )}
     </div>
+  ) : (
+    <></>
   );
 };
 export default Admin;
