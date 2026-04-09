@@ -9,7 +9,7 @@ const teamMembers = [
     role: "Director",
     image: "/team/Amritha Suresh_Director.jpg",
     bio: "Computer Science major with a passion for building inclusive communities.",
-    socials: { linkedin: "#", twitter: "#", email: "alex@nexusclub.edu" },
+    socials: { linkedin: "#", twitter: "#", email: "#" },
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ const teamMembers = [
     role: "Secretary",
     image: "/team/Jassim-Secretary.jpg",
     bio: "Electronics and Communication major with a passion for building inclusive communities.",
-    socials: { linkedin: "#", twitter: "#", email: "sarah@nexusclub.edu" },
+    socials: { linkedin: "#", twitter: "#", email: "#" },
   },
   {
     id: 3,
@@ -25,7 +25,7 @@ const teamMembers = [
     role: "Co-Director",
     image: "/team/HaritheerthM_CoDirector.webp",
     bio: "Computer Science major with a passion for building inclusive communities.",
-    socials: { linkedin: "#", twitter: "#", email: "marcus@nexusclub.edu" },
+    socials: { linkedin: "#", twitter: "#", email: "#" },
   },
   {
     id: 4,
@@ -33,7 +33,7 @@ const teamMembers = [
     role: "Co-Director",
     image: "/team/Dhia Shams_ Codirector.jpg",
     bio: "Computer Science major with a passion for building inclusive communities.",
-    socials: { linkedin: "#", twitter: "#", email: "emily@nexusclub.edu" },
+    socials: { linkedin: "#", twitter: "#", email: "#" },
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ const teamMembers = [
     image:
       "/team/RyanNelson.png",
     bio: "Computer Science major with a passion for building inclusive communities.",
-    socials: { linkedin: "#", twitter: "#", email: "emily@nexusclub.edu" },
+    socials: { linkedin: "#", twitter: "#", email: "#" },
   }
 ];
 const TeamSection = () => {
@@ -102,8 +102,7 @@ const TeamSection = () => {
             </span>
           </h2>
           <p className="text-neutral-400 max-w-2xl mx-auto text-lg">
-            The passionate individuals who make Nexus Club the thriving
-            community it is today.
+            The passionate individuals who make our community vibrant and thriving today.
           </p>
         </motion.div>
         {/* Team Carousel */}
