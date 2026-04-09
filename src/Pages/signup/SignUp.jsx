@@ -4,6 +4,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { motion } from "framer-motion";
+import toast, { Toaster } from "react-hot-toast";
 import {
   User,
   Mail,
@@ -14,7 +15,6 @@ import {
   AlertCircle,
   ArrowRight,
 } from "lucide-react";
-import toast, { Toaster } from "react-hot-toast";
 
 function SignUpForm({ onLoad }) {
   useEffect(() => {
@@ -33,8 +33,7 @@ function SignUpForm({ onLoad }) {
     confirmPassword: "",
   });
 
-  const [isLoading, setLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
   const { user, signup, deleteCurrentUser } = useContext(AuthContext);
@@ -68,7 +67,6 @@ function SignUpForm({ onLoad }) {
       case "auth/email-already-in-use":
         handleError("Error: An account with that email already exists.");
         break;
-      case "auth/internal-error":
       default:
         handleError("Error: Something went wrong. Please retry.");
     }
@@ -85,7 +83,7 @@ function SignUpForm({ onLoad }) {
         isAdmin: false,
       });
 
-      toast.success("Successfully registerd new user ")
+      toast.success("Successfully registerd new user ");
       navigate("/");
     } catch {
       handleError("Error: Something went wrong. Please retry.");
@@ -95,11 +93,11 @@ function SignUpForm({ onLoad }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setIsLoading(true);
 
     if (formData.password !== formData.confirmPassword) {
-      setPasswordError(true)
-      setLoading(false);
+      setPasswordError(true);
+      setIsLoading(false);
       return;
     }
 
@@ -110,12 +108,12 @@ function SignUpForm({ onLoad }) {
     } catch (err) {
       handleAuthError(err.code);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="relative flex items-center justify-center min-h-screen p-4 overflow-hidden bg-neutral-950">
       {/* Background effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.1),transparent_60%)] pointer-events-none" />
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-[100px] pointer-events-none" />
@@ -124,27 +122,27 @@ function SignUpForm({ onLoad }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-lg relative z-10 py-8"
+        className="relative z-10 w-full max-w-lg py-8"
       >
         {/* Logo/Brand */}
-        <div className="text-center mb-4">
-          <h1 className="text-5xl font-bold text-white mb-4 mt-6">
+        <div className="mb-4 text-center">
+          <h1 className="mt-6 mb-4 text-5xl font-bold text-white">
             Register Here
           </h1>
-          <p className="text-neutral-400 text-sm">
+          <p className="text-sm text-neutral-400">
             Create your account and start your journey
           </p>
         </div>
         {/* Register Form */}
-        <div className="bg-neutral-900/50 backdrop-blur-xl border border-neutral-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+        <div className="relative p-8 overflow-hidden border shadow-2xl bg-neutral-900/50 backdrop-blur-xl border-neutral-800 rounded-2xl">
           {/* Top highlight line */}
-          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent opacity-50" />
+          <div className="absolute top-0 left-0 w-full h-px opacity-50 bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Full Name */}
             <div className="space-y-2">
               <label
                 htmlFor="fullName"
-                className="text-sm font-medium text-neutral-300 ml-1"
+                className="ml-1 text-sm font-medium text-neutral-300"
               >
                 Full Name
               </label>
@@ -157,7 +155,7 @@ function SignUpForm({ onLoad }) {
                   placeholder="John Doe"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 h-11 rounded-lg bg-neutral-950/50 border border-neutral-800 text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:border-neutral-700"
+                  className="w-full pr-4 text-white transition-all duration-300 border rounded-lg pl-11 h-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
                   required
                 />
               </div>
@@ -166,7 +164,7 @@ function SignUpForm({ onLoad }) {
             <div className="space-y-2">
               <label
                 htmlFor="email"
-                className="text-sm font-medium text-neutral-300 ml-1"
+                className="ml-1 text-sm font-medium text-neutral-300"
               >
                 Email Address
               </label>
@@ -179,7 +177,7 @@ function SignUpForm({ onLoad }) {
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 h-11 rounded-lg bg-neutral-950/50 border border-neutral-800 text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:border-neutral-700"
+                  className="w-full pr-4 text-white transition-all duration-300 border rounded-lg pl-11 h-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
                   required
                 />
               </div>
@@ -189,7 +187,7 @@ function SignUpForm({ onLoad }) {
               <div className="space-y-2">
                 <label
                   htmlFor="semester"
-                  className="text-sm font-medium text-neutral-300 ml-1"
+                  className="ml-1 text-sm font-medium text-neutral-300"
                 >
                   Semester
                 </label>
@@ -204,7 +202,7 @@ function SignUpForm({ onLoad }) {
                     placeholder="e.g. 4"
                     value={formData.semester}
                     onChange={handleChange}
-                    className="w-full pl-11 pr-4 h-11 rounded-lg bg-neutral-950/50 border border-neutral-800 text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:border-neutral-700"
+                    className="w-full pr-4 text-white transition-all duration-300 border rounded-lg pl-11 h-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
                     required
                   />
                 </div>
@@ -212,7 +210,7 @@ function SignUpForm({ onLoad }) {
               <div className="space-y-2">
                 <label
                   htmlFor="department"
-                  className="text-sm font-medium text-neutral-300 ml-1"
+                  className="ml-1 text-sm font-medium text-neutral-300"
                 >
                   Department
                 </label>
@@ -225,7 +223,7 @@ function SignUpForm({ onLoad }) {
                     placeholder="e.g. CSE"
                     value={formData.department}
                     onChange={handleChange}
-                    className="w-full pl-11 pr-4 h-11 rounded-lg bg-neutral-950/50 border border-neutral-800 text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:border-neutral-700"
+                    className="w-full pr-4 text-white transition-all duration-300 border rounded-lg pl-11 h-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
                     required
                   />
                 </div>
@@ -235,7 +233,7 @@ function SignUpForm({ onLoad }) {
             <div className="space-y-2">
               <label
                 htmlFor="college"
-                className="text-sm font-medium text-neutral-300 ml-1"
+                className="ml-1 text-sm font-medium text-neutral-300"
               >
                 College
               </label>
@@ -248,7 +246,7 @@ function SignUpForm({ onLoad }) {
                   placeholder="e.g. Institute of Technology"
                   value={formData.college}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 h-11 rounded-lg bg-neutral-950/50 border border-neutral-800 text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:border-neutral-700"
+                  className="w-full pr-4 text-white transition-all duration-300 border rounded-lg pl-11 h-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
                   required
                 />
               </div>
@@ -258,7 +256,7 @@ function SignUpForm({ onLoad }) {
               <div className="space-y-2">
                 <label
                   htmlFor="password"
-                  className="text-sm font-medium text-neutral-300 ml-1"
+                  className="ml-1 text-sm font-medium text-neutral-300"
                 >
                   Password
                 </label>
@@ -271,7 +269,7 @@ function SignUpForm({ onLoad }) {
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full pl-11 pr-4 h-11 rounded-lg bg-neutral-950/50 border border-neutral-800 text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:border-neutral-700"
+                    className="w-full pr-4 text-white transition-all duration-300 border rounded-lg pl-11 h-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
                     required
                     minLength={6}
                   />
@@ -280,7 +278,7 @@ function SignUpForm({ onLoad }) {
               <div className="space-y-2">
                 <label
                   htmlFor="confirmPassword"
-                  className="text-sm font-medium text-neutral-300 ml-1"
+                  className="ml-1 text-sm font-medium text-neutral-300"
                 >
                   Confirm Password
                 </label>
@@ -293,7 +291,7 @@ function SignUpForm({ onLoad }) {
                     placeholder="••••••••"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full pl-11 pr-4 h-11 rounded-lg bg-neutral-950/50 border border-neutral-800 text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:border-neutral-700"
+                    className="w-full pr-4 text-white transition-all duration-300 border rounded-lg pl-11 h-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
                     required
                     minLength={6}
                   />
@@ -301,7 +299,7 @@ function SignUpForm({ onLoad }) {
               </div>
             </div>
             {passwordError && (
-              <div className="flex items-center gap-2 text-rose-500 text-sm bg-rose-500/10 p-3 rounded-lg border border-rose-500/20">
+              <div className="flex items-center gap-2 p-3 text-sm border rounded-lg text-rose-500 bg-rose-500/10 border-rose-500/20">
                 <AlertCircle className="w-4 h-4" />
                 <span>password mismatch</span>
               </div>
@@ -314,13 +312,13 @@ function SignUpForm({ onLoad }) {
               <div className="relative z-10 flex items-center justify-center gap-2">
                 {isLoading ? (
                   <span className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 rounded-full border-white/30 border-t-white animate-spin" />
                     Creating Account...
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
                     Create Account
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </span>
                 )}
               </div>
@@ -329,11 +327,11 @@ function SignUpForm({ onLoad }) {
             </button>
           </form>
           <div className="mt-8 text-center">
-            <p className="text-neutral-500 text-sm">
+            <p className="text-sm text-neutral-500">
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-violet-400 hover:text-violet-300 font-medium transition-colors hover:underline underline-offset-4"
+                className="font-medium transition-colors text-violet-400 hover:text-violet-300 hover:underline underline-offset-4"
               >
                 Sign in
               </Link>
@@ -344,9 +342,9 @@ function SignUpForm({ onLoad }) {
         <div className="mt-8 text-center">
           <Link
             to="/"
-            className="text-neutral-500 hover:text-white text-sm transition-colors inline-flex items-center gap-1 group"
+            className="inline-flex items-center gap-1 text-sm transition-colors text-neutral-500 hover:text-white group"
           >
-            <span className="group-hover:-translate-x-1 transition-transform">
+            <span className="transition-transform group-hover:-translate-x-1">
               ←
             </span>{" "}
             Back to Home
