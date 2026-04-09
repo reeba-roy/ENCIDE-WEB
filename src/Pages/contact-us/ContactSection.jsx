@@ -60,7 +60,11 @@ const ContactSection = () => {
   ];
 
   return (
-    <section id="contact" className="py-24 bg-neutral-950" ref={ref}>
+    <section
+      id="contact"
+      className="py-24 bg-[radial-gradient(circle_at_0%_0%,rgba(124,58,237,0.05),transparent_30%)]"
+      ref={ref}
+    >
       <div className="container mx-auto px-4 lg:px-16">
         {/* Section Header */}
         <motion.div

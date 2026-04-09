@@ -14,6 +14,7 @@ import {
   School,
   AlertCircle,
   ArrowRight,
+  Phone,
 } from "lucide-react";
 
 function SignUpForm({ onLoad }) {
@@ -26,6 +27,7 @@ function SignUpForm({ onLoad }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     semester: 1,
     department: "",
     college: "",
@@ -76,6 +78,8 @@ function SignUpForm({ onLoad }) {
     try {
       await setDoc(doc(db, "users", userId), {
         name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
         semester: formData.semester,
         department: formData.department,
         college: formData.college,
@@ -176,6 +180,28 @@ function SignUpForm({ onLoad }) {
                   type="email"
                   placeholder="you@example.com"
                   value={formData.email}
+                  onChange={handleChange}
+                  className="w-full pr-4 text-white transition-all duration-300 border rounded-lg pl-11 h-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
+                  required
+                />
+              </div>
+            </div>
+            {/* phone no */}
+            <div className="space-y-2">
+              <label
+                htmlFor="phone"
+                className="ml-1 text-sm font-medium text-neutral-300"
+              >
+                Phone number
+              </label>
+              <div className="relative group">
+                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 group-focus-within:text-violet-400 transition-colors duration-300" />
+                <input
+                  id="phone"
+                  name="phone"
+                  type="number"
+                  placeholder="91XXXXXXXX"
+                  value={formData.phone}
                   onChange={handleChange}
                   className="w-full pr-4 text-white transition-all duration-300 border rounded-lg pl-11 h-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
                   required
