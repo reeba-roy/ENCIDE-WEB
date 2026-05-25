@@ -16,59 +16,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import ContactResponsesTable from "../../components/admin/ContactResponsesTable";
 import EventsManager from "../../components/admin/EventsManager";
 import AddEventDialog from "../../components/admin/AddEventDialog";
-// Dummy data for contact responses
-const dummyContactResponses = [
-  {
-    id: 1,
-    name: "John Smith",
-    email: "john.smith@university.edu",
-    subject: "Membership Inquiry",
-    message:
-      "I'm interested in joining the club. Can you tell me more about the membership process?",
-    submittedAt: "2024-01-15 10:30 AM",
-    status: "unread",
-  },
-  {
-    id: 2,
-    name: "Sarah Johnson",
-    email: "sarah.j@university.edu",
-    subject: "Event Collaboration",
-    message:
-      "Our department would like to collaborate on an upcoming hackathon. Let's discuss!",
-    submittedAt: "2024-01-14 3:45 PM",
-    status: "read",
-  },
-  {
-    id: 3,
-    name: "Mike Chen",
-    email: "mike.chen@university.edu",
-    subject: "Workshop Request",
-    message:
-      "Can you organize a workshop on React and TypeScript for beginners?",
-    submittedAt: "2024-01-13 11:20 AM",
-    status: "replied",
-  },
-  {
-    id: 4,
-    name: "Emily Davis",
-    email: "emily.d@university.edu",
-    subject: "Sponsorship Opportunity",
-    message:
-      "I represent a tech company interested in sponsoring your events. Please contact me.",
-    submittedAt: "2024-01-12 2:15 PM",
-    status: "unread",
-  },
-  {
-    id: 5,
-    name: "Alex Wilson",
-    email: "alex.w@university.edu",
-    subject: "Technical Question",
-    message:
-      "I have some questions about the tech stack you use for your projects.",
-    submittedAt: "2024-01-11 9:00 AM",
-    status: "read",
-  },
-];
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+
 // Dummy data for events
 const dummyEvents = [
   {
@@ -122,19 +72,63 @@ const dummyEvents = [
     registrations: 75,
   },
 ];
+
 const Admin = ({onLoad}) => {
-
-  useEffect(()=>{
-    if(onLoad) onLoad()
-  },[])
-
   const [events, setEvents] = useState(dummyEvents);
-  const [contactResponses] = useState(dummyContactResponses);
+  const [contactResponses, setContactResponses] = useState([]);
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [activeTab, setActiveTab] = useState("contacts");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(onLoad) onLoad()
+  },[])
+
+  useEffect(() => {
+    const q = query(collection(db, "contact-us"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const responses = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        let submittedAt = "Just now";
+        let rawCreatedAt = new Date(0); // Default to epoch for sorting if missing
+        if (data.createdAt) {
+          const dateObj = typeof data.createdAt.toDate === "function" 
+            ? data.createdAt.toDate() 
+            : new Date(data.createdAt);
+          
+          rawCreatedAt = dateObj;
+          submittedAt = dateObj.toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
+        }
+        return {
+          id: doc.id,
+          name: data.name || "Anonymous",
+          email: data.email || "",
+          subject: data.subject || "No Subject",
+          message: data.message || "",
+          status: data.read ? "read" : "unread",
+          submittedAt,
+          rawCreatedAt,
+        };
+      });
+      // Sort responses in-memory by creation date desc
+      responses.sort((a, b) => b.rawCreatedAt - a.rawCreatedAt);
+      setContactResponses(responses);
+    }, (error) => {
+      console.error("Error fetching contact responses:", error);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const stats = [
     {
       label: "Total Contacts",
@@ -188,6 +182,22 @@ const Admin = ({onLoad}) => {
   };
   const handleDeleteEvent = (id) => {
     setEvents(events.filter((e) => e.id !== id));
+  };
+  const handleToggleReadStatus = async (id, currentReadState) => {
+    try {
+      await updateDoc(doc(db, "contact-us", id), {
+        read: !currentReadState,
+      });
+    } catch (error) {
+      console.error("Error toggling contact response read status:", error);
+    }
+  };
+  const handleDeleteContact = async (id) => {
+    try {
+      await deleteDoc(doc(db, "contact-us", id));
+    } catch (error) {
+      console.error("Error deleting contact response:", error);
+    }
   };
   return (
     <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-violet-500/30">
@@ -335,7 +345,7 @@ const Admin = ({onLoad}) => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                <ContactResponsesTable responses={contactResponses} />
+                <ContactResponsesTable responses={contactResponses} onDelete={handleDeleteContact} onToggleRead={handleToggleReadStatus} />
               </motion.div>
             ) : (
               <motion.div
