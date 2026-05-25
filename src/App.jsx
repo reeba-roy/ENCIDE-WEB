@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Hero from "./Pages/hero/page";
 import Loader from "./Pages/loader/page";
@@ -22,7 +22,7 @@ import Admin from "./Pages/admin/Admin.jsx";
 function App() {
   const [load, setLoad] = useState(true);
 
-  const { user } = useContext(AuthContext);
+  const { user, isAdmin } = useContext(AuthContext);
 
   return (
     <Router>
@@ -63,8 +63,8 @@ function App() {
           />
 
           <Route
-          path="/admin-dashboard"
-          element={<Admin onLoad={() => setLoad(false)} />}
+            path="/admin-dashboard"
+            element={isAdmin ? <Admin onLoad={() => setLoad(false)} /> : <Navigate to="/" />}
           />
 
       </Routes>
