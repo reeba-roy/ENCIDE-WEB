@@ -2,7 +2,6 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useContext, useEffect } from "react";
 import { Calendar, MapPin, ArrowRight, Clock, Users, Zap } from "lucide-react";
 import Countdown from "../../components/Countdown";
-import { useNavigate } from "react-router-dom";
 
 import {
   doc,
@@ -33,7 +32,7 @@ const EventsSection = () => {
     const [memberCount, setMemberCount] = useState(1);
     const [teamName, setTeamName] = useState("");
 
-    const { data: userData, isLoading } = useQuery({
+    const { data: userData } = useQuery({
       queryKey: ["user-data"],
       queryFn: () => getUserDetails(user.uid),
       enabled: !!user?.uid,
@@ -160,7 +159,7 @@ const EventsSection = () => {
     );
   };
 
-  const { data: events, } = useQuery({
+  const { data: events } = useQuery({
     queryKey: ["events"],
     queryFn: fetchEvents,
     refetchOnWindowFocus: false,
@@ -175,7 +174,7 @@ const EventsSection = () => {
   return (
     <section
       id="events"
-      className="pt-12 pb-24 md:pt-16 md:pb-32 bg-neutral-950 relative overflow-hidden"
+      className="relative pt-12 pb-24 overflow-hidden md:pt-16 md:pb-32 bg-neutral-950"
       ref={ref}
     >
       {/* Background Effects */}
@@ -188,20 +187,20 @@ const EventsSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 md:mb-16"
+          className="mb-12 text-center md:mb-16"
         >
           <div>
             <span className="inline-block px-4 py-1.5 rounded-full bg-red-500/10 text-red-400 font-medium text-sm mb-4 border border-red-500/20 shadow-[0_0_15px_-3px_rgba(220,38,38,0.3)]">
               Upcoming Events
             </span>
           </div>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="mb-4 text-3xl font-bold text-white font-display md:text-4xl lg:text-5xl">
             Don't Miss{" "}
             <span className="text-[#cd3737]">
               What's Next
             </span>
           </h2>
-          <p className="text-neutral-400 max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto text-neutral-400">
             From hackathons to workshops, our events challenge and connect you
             with like-minded individuals.
           </p>
@@ -220,20 +219,20 @@ const EventsSection = () => {
                   <img
                     src={featuredEvent.image}
                     alt={featuredEvent.title}
-                    className="w-full h-full object-cover transition-transform duration-700"
+                    className="object-cover w-full h-full transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-neutral-900/80 lg:block hidden" />
+                  <div className="absolute inset-0 hidden bg-gradient-to-r from-transparent via-transparent to-neutral-900/80 lg:block" />
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/50 to-transparent lg:hidden" />
                   <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-red-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-red-600/20">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                     {featuredEvent.tag}
                   </div>
                 </div>
-                <div className="p-6 md:p-8 flex flex-col justify-center relative">
-                  <h3 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3  transition-colors">
+                <div className="relative flex flex-col justify-center p-6 md:p-8">
+                  <h3 className="mb-3 text-2xl font-bold text-white transition-colors font-display md:text-3xl lg:text-4xl">
                     {featuredEvent.title}
                   </h3>
-                  <p className="text-neutral-400 mb-6 text-sm md:text-base leading-relaxed">
+                  <p className="mb-6 text-sm leading-relaxed text-neutral-400 md:text-base">
                     {featuredEvent.description}
                   </p>
                   <div className="flex flex-wrap gap-4 mb-6 text-sm">
@@ -266,14 +265,14 @@ const EventsSection = () => {
                     className="w-fit group/btn inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-br from-red-600 to-red-700 hover:bg-red-700 text-white font-medium transition-all shadow-[0_0_20px_-5px_theme(colors.red.500/0.5)] hover:shadow-[0_0_25px_-5px_theme(colors.red.500/0.7)] hover:scale-[1.02]"
                   >
                     Register Now
-                    <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
                   </button>
                 </div>
               </div>
             </div>
           </motion.div>
         )}
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid gap-6 lg:grid-cols-2">
           {events?.map((event, index) => (
             <motion.article
               key={event.id}
@@ -282,15 +281,15 @@ const EventsSection = () => {
               transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
               className="relative overflow-hidden transition-all duration-300 border group backdrop-blur-sm rounded-xl border-neutral-800 hover:border-red-500/30 hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="flex flex-col sm:flex-row h-full">
+              <div className="flex flex-col h-full sm:flex-row">
                 {/* Image */}
-                <div className="relative w-full h-48 sm:w-72 sm:h-auto shrink-0 overflow-hidden">
+                <div className="relative w-full h-48 overflow-hidden sm:w-72 sm:h-auto shrink-0">
                   <img
                     src={event.image}
                     alt={event.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500"
+                    className="absolute inset-0 object-cover w-full h-full transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-neutral-900/80 hidden sm:block" />
+                  <div className="absolute inset-0 hidden bg-gradient-to-r from-transparent to-neutral-900/80 sm:block" />
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 to-transparent sm:hidden" />
                   <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-neutral-950/80 border border-neutral-800 text-white text-xs font-medium backdrop-blur-md">
                     {event.tag}
@@ -301,10 +300,10 @@ const EventsSection = () => {
                   <h3 className="mb-2 text-lg font-bold text-white truncate transition-colors font-display group-hover:text-red-300">
                     {event.title}
                   </h3>
-                  <p className="text-neutral-400 text-sm mb-4 line-clamp-2">
+                  <p className="mb-4 text-sm text-neutral-400 line-clamp-2">
                     {event.description}
                   </p>
-                  <div className="flex flex-wrap gap-3 text-xs text-neutral-500 mb-4">
+                  <div className="flex flex-wrap gap-3 mb-4 text-xs text-neutral-500">
                     <span className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-red-500" />
                       {event.date.toDateString()}
