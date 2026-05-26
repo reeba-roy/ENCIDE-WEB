@@ -2,32 +2,13 @@ import { useState } from "react";
 import { Eye, Mail, MailOpen, Reply, Trash2, Send, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ContactResponsesTable = ({ responses }) => {
+const ContactResponsesTable = ({ responses, onDelete, onToggleRead }) => {
   const [selectedResponse, setSelectedResponse] = useState(null);
-  const [isReplying, setIsReplying] = useState(false);
-  const [replyMessage, setReplyMessage] = useState("");
   const handleOpenResponse = (response) => {
     setSelectedResponse(response);
-    setIsReplying(false);
-    setReplyMessage("");
   };
   const handleCloseDialog = () => {
     setSelectedResponse(null);
-    setIsReplying(false);
-    setReplyMessage("");
-  };
-  const handleReplyClick = () => {
-    setIsReplying(true);
-  };
-  const handleSendReply = () => {
-    console.log(
-      "Sending reply to:",
-      selectedResponse?.email,
-      "Message:",
-      replyMessage,
-    );
-    setIsReplying(false);
-    setReplyMessage("");
   };
   const getStatusBadge = (status) => {
     switch (status) {
@@ -114,6 +95,14 @@ const ContactResponsesTable = ({ responses }) => {
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
+                        onClick={() => onToggleRead && onToggleRead(response.id, response.status === "read")}
+                        className="p-2 rounded-lg hover:bg-amber-500/10 text-neutral-400 hover:text-amber-400 transition-colors"
+                        title={response.status === "read" ? "Mark as Unread" : "Mark as Read"}
+                      >
+                        {response.status === "read" ? <Mail className="w-4 h-4" /> : <MailOpen className="w-4 h-4" />}
+                      </button>
+                      <button
+                        onClick={() => onDelete && onDelete(response.id)}
                         className="p-2 rounded-lg hover:bg-red-500/10 text-neutral-400 hover:text-red-400 transition-colors"
                         title="Delete"
                       >
@@ -164,57 +153,51 @@ const ContactResponsesTable = ({ responses }) => {
                   <div className="p-4 rounded-xl bg-neutral-800/30 border border-neutral-800 text-neutral-300 leading-relaxed whitespace-pre-wrap">
                     {selectedResponse.message}
                   </div>
-                  {/* Reply Section */}
-                  {isReplying ? (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      className="space-y-4 pt-4 border-t border-neutral-800"
-                    >
-                      <div className="flex items-center gap-2 text-sm text-white font-medium">
-                        <Reply className="w-4 h-4 text-violet-400" />
-                        Reply to {selectedResponse.name}
-                      </div>
-                      <textarea
-                        value={replyMessage}
-                        onChange={(e) => setReplyMessage(e.target.value)}
-                        placeholder="Type your reply message here..."
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-4 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 min-h-[120px] resize-none transition-all"
-                      />
-                      <div className="flex justify-end gap-3">
-                        <button
-                          onClick={() => setIsReplying(false)}
-                          className="px-4 py-2 rounded-lg border border-neutral-700 hover:bg-neutral-800 text-neutral-300 text-sm font-medium transition-colors"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleSendReply}
-                          disabled={!replyMessage.trim()}
-                          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium transition-all shadow-lg shadow-violet-600/20"
-                        >
-                          <Send className="w-4 h-4" />
-                          Send Email
-                        </button>
-                      </div>
-                    </motion.div>
-                  ) : (
                     <div className="flex justify-end gap-3 pt-4 border-t border-neutral-800">
+                      <button
+                        onClick={() => {
+                          const isCurrentlyRead = selectedResponse.status === "read";
+                          if (onToggleRead) onToggleRead(selectedResponse.id, isCurrentlyRead);
+                          setSelectedResponse({
+                            ...selectedResponse,
+                            status: isCurrentlyRead ? "unread" : "read",
+                          });
+                        }}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                          selectedResponse.status === "read"
+                            ? "bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/20"
+                            : "bg-violet-600 hover:bg-violet-700 text-white"
+                        }`}
+                      >
+                        {selectedResponse.status === "read" ? (
+                          <>
+                            <MailOpen className="w-4 h-4" />
+                            Mark as Unread
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="w-4 h-4" />
+                            Mark as Read
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (onDelete) onDelete(selectedResponse.id);
+                          handleCloseDialog();
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-neutral-400 hover:text-red-400 font-medium text-sm hover:bg-red-500/20 transition-colors border border-red-500/20"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </button>
                       <button
                         onClick={handleCloseDialog}
                         className="px-4 py-2 rounded-lg border border-neutral-700 hover:bg-neutral-800 text-neutral-300 text-sm font-medium transition-colors"
                       >
                         Close
                       </button>
-                      <button
-                        onClick={handleReplyClick}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-neutral-900 hover:bg-neutral-200 font-medium text-sm transition-colors"
-                      >
-                        <Reply className="w-4 h-4" />
-                        Reply via Email
-                      </button>
                     </div>
-                  )}
                 </div>
               </div>
             </motion.div>

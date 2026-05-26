@@ -2,7 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Lightbulb, Target, Heart } from "lucide-react";
 import VisionMission from "../VisionMission/VisionMission";
-import d1Image from "./d1.jpg";
+import heroImage from "../../assets/hero-students.jpg";
 
 const AboutSection = () => {
   const ref = useRef(null);
@@ -49,8 +49,8 @@ const AboutSection = () => {
             >
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-neutral-800 group hover:border-violet-500/30 transition-colors duration-500">
                 <img
-                  src={d1Image}
-                  alt="About Encide"
+                  src={heroImage}
+                  alt="About Nexus Club"
                   className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/20 to-transparent" />
@@ -88,18 +88,20 @@ const AboutSection = () => {
               className="space-y-6"
             >
               <p className="text-neutral-400 text-md leading-relaxed">
-                Our community brings together passionate programmers
-                creating a vibrant ecosystem of knowledge sharing and 
-                skill development. Engage in challenging coding competitions,
-                hackathons, and coding challenges that push your limits and
-                help you become a better programmer.
+                Our community brings together passionate programmers, fostering
+                a vibrant ecosystem of knowledge sharing, collaboration, and
+                skill development. Members engage in challenging coding
+                competitions, hackathons, and coding challenges that push their
+                limits, helping them grow into more capable and confident
+                programmers.
               </p>
               <p className="text-neutral-400 text-md leading-relaxed">
                 Beyond competitions, we host workshops, study jams, and
                 mentorship programs to ensure continuous learning for every
                 skill level. By connecting students with industry experts and
                 peers, we create opportunities to innovate, build real-world
-                projects, empowering our members to make a meaningful impact in the tech world.
+                projects, and contribute to open-source initiatives, empowering
+                our members to make a meaningful impact in the tech world.
               </p>
               {/* Features */}
               <div className="grid sm:grid-cols-2 gap-4 pt-4">
