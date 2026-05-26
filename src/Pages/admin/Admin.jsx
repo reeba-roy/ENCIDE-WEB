@@ -16,65 +16,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import ContactResponsesTable from "../../components/admin/ContactResponsesTable";
 import EventsManager from "../../components/admin/EventsManager";
 import AddEventDialog from "../../components/admin/AddEventDialog";
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  onSnapshot,
+  doc,
+  updateDoc,
+  deleteDoc,
+  addDoc,
+  Timestamp,
+} from "firebase/firestore";
 import { db } from "../../firebase";
 
-// Dummy data for events
-const dummyEvents = [
-  {
-    id: 1,
-    title: "Spring Hackathon 2024",
-    date: "2024-03-15",
-    time: "9:00 AM",
-    location: "Main Auditorium",
-    description: "24-hour coding competition with amazing prizes",
-    status: "upcoming",
-    registrations: 45,
-  },
-  {
-    id: 2,
-    title: "AI/ML Workshop",
-    date: "2024-02-20",
-    time: "2:00 PM",
-    location: "Tech Lab 101",
-    description: "Introduction to machine learning with Python",
-    status: "upcoming",
-    registrations: 32,
-  },
-  {
-    id: 3,
-    title: "Tech Talk: Cloud Computing",
-    date: "2024-02-10",
-    time: "4:00 PM",
-    location: "Conference Room A",
-    description: "Industry expert sharing insights on cloud technologies",
-    status: "upcoming",
-    registrations: 28,
-  },
-  {
-    id: 4,
-    title: "Winter Coding Bootcamp",
-    date: "2024-01-05",
-    time: "10:00 AM",
-    location: "Computer Lab 2",
-    description: "Intensive 3-day bootcamp on web development",
-    status: "completed",
-    registrations: 50,
-  },
-  {
-    id: 5,
-    title: "Networking Night",
-    date: "2023-12-15",
-    time: "6:00 PM",
-    location: "Student Center",
-    description: "Connect with industry professionals and alumni",
-    status: "completed",
-    registrations: 75,
-  },
-];
-
-const Admin = ({onLoad}) => {
-  const [events, setEvents] = useState(dummyEvents);
+const Admin = ({ onLoad }) => {
+  const [events, setEvents] = useState([]);
   const [contactResponses, setContactResponses] = useState([]);
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
@@ -82,10 +37,11 @@ const Admin = ({onLoad}) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(onLoad) onLoad()
-  },[])
+  useEffect(() => {
+    if (onLoad) onLoad();
+  }, []);
 
+  // Real-time listener for contact-us collection
   useEffect(() => {
     const q = query(collection(db, "contact-us"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -94,10 +50,10 @@ const Admin = ({onLoad}) => {
         let submittedAt = "Just now";
         let rawCreatedAt = new Date(0); // Default to epoch for sorting if missing
         if (data.createdAt) {
-          const dateObj = typeof data.createdAt.toDate === "function" 
-            ? data.createdAt.toDate() 
+          const dateObj = typeof data.createdAt.toDate === "function"
+            ? data.createdAt.toDate()
             : new Date(data.createdAt);
-          
+
           rawCreatedAt = dateObj;
           submittedAt = dateObj.toLocaleString("en-US", {
             year: "numeric",
@@ -124,6 +80,36 @@ const Admin = ({onLoad}) => {
       setContactResponses(responses);
     }, (error) => {
       console.error("Error fetching contact responses:", error);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Real-time listener for events collection
+  useEffect(() => {
+    const q = query(collection(db, "events"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const eventsData = snapshot.docs.map((docSnap) => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          title: data.title || "",
+          description: data.description || "",
+          location: data.location || "",
+          image: data.image || "",
+          tag: data.tag || "",
+          highlighted: data.highlighted || false,
+          is_over: data.is_over || false,
+          participants: data.participants || [],
+          participants_count: data.participants_count || 0,
+          // Keep raw Timestamps for Firestore operations, convert for display
+          date: data.date,
+          deadline: data.deadline,
+        };
+      });
+      setEvents(eventsData);
+    }, (error) => {
+      console.error("Error fetching events:", error);
     });
 
     return () => unsubscribe();
@@ -156,33 +142,85 @@ const Admin = ({onLoad}) => {
     },
     {
       label: "Upcoming Events",
-      value: events.filter((e) => e.status === "upcoming").length,
+      value: events.filter((e) => !e.is_over).length,
       icon: Clock,
       color: "text-purple-400",
       bgColor: "bg-purple-500/10",
       borderColor: "border-purple-500/20",
     },
   ];
-  const handleAddEvent = (newEvent) => {
-    const event = {
-      ...newEvent,
-      id: events.length + 1,
-      registrations: 0,
-    };
-    setEvents([event, ...events]);
-    setIsAddEventOpen(false);
+
+  const handleAddEvent = async (formData) => {
+    try {
+      // Convert date strings to Firestore Timestamps
+      const eventDate = formData.date
+        ? Timestamp.fromDate(new Date(formData.date + "T00:00:00"))
+        : null;
+      const eventDeadline = formData.deadline
+        ? Timestamp.fromDate(new Date(formData.deadline + "T00:00:00"))
+        : null;
+
+      await addDoc(collection(db, "events"), {
+        title: formData.title,
+        description: formData.description,
+        location: formData.location,
+        image: formData.image,
+        tag: formData.tag,
+        highlighted: formData.highlighted,
+        is_over: formData.is_over,
+        date: eventDate,
+        deadline: eventDeadline,
+        participants: [],
+        participants_count: 0,
+      });
+      setIsAddEventOpen(false);
+    } catch (error) {
+      console.error("Error adding event:", error);
+    }
   };
+
   const handleLogout = () => {
     // Navigate to admin login (or home for now)
     navigate("/");
   };
-  const handleEditEvent = (updatedEvent) => {
-    setEvents(events.map((e) => (e.id === updatedEvent.id ? updatedEvent : e)));
-    setEditingEvent(null);
+
+  const handleEditEvent = async (formData) => {
+    try {
+      const eventRef = doc(db, "events", formData.id);
+
+      // Convert date strings to Firestore Timestamps
+      const eventDate = formData.date
+        ? Timestamp.fromDate(new Date(formData.date + "T00:00:00"))
+        : null;
+      const eventDeadline = formData.deadline
+        ? Timestamp.fromDate(new Date(formData.deadline + "T00:00:00"))
+        : null;
+
+      await updateDoc(eventRef, {
+        title: formData.title,
+        description: formData.description,
+        location: formData.location,
+        image: formData.image,
+        tag: formData.tag,
+        highlighted: formData.highlighted,
+        is_over: formData.is_over,
+        date: eventDate,
+        deadline: eventDeadline,
+      });
+      setEditingEvent(null);
+    } catch (error) {
+      console.error("Error updating event:", error);
+    }
   };
-  const handleDeleteEvent = (id) => {
-    setEvents(events.filter((e) => e.id !== id));
+
+  const handleDeleteEvent = async (id) => {
+    try {
+      await deleteDoc(doc(db, "events", id));
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
   };
+
   const handleToggleReadStatus = async (id, currentReadState) => {
     try {
       await updateDoc(doc(db, "contact-us", id), {
@@ -192,6 +230,7 @@ const Admin = ({onLoad}) => {
       console.error("Error toggling contact response read status:", error);
     }
   };
+
   const handleDeleteContact = async (id) => {
     try {
       await deleteDoc(doc(db, "contact-us", id));
@@ -199,6 +238,7 @@ const Admin = ({onLoad}) => {
       console.error("Error deleting contact response:", error);
     }
   };
+
   return (
     <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-violet-500/30">
       {/* Background Effects */}
@@ -376,7 +416,7 @@ const Admin = ({onLoad}) => {
         <AddEventDialog
           open={!!editingEvent}
           onOpenChange={(open) => !open && setEditingEvent(null)}
-          onSubmit={(data) => handleEditEvent({ ...editingEvent, ...data })}
+          onSubmit={(data) => handleEditEvent({ ...data, id: editingEvent.id })}
           initialData={editingEvent}
           isEditing
         />
