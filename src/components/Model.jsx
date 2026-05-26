@@ -1,5 +1,17 @@
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, X, CheckCircle2, Loader2 } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  X,
+  CheckCircle2,
+  Loader2,
+  Upload,
+  QrCode,
+  Clock,
+  ImageIcon,
+  Trash2,
+} from "lucide-react";
 
 function Model({
   event,
@@ -7,18 +19,24 @@ function Model({
   onConfirm,
   status,
   isRegistered,
+  registrationStatus,
   memberCount,
   setMemberCount,
   teamName,
   setTeamName,
   members,
   setMembers,
+  paymentFile,
+  setPaymentFile,
 }) {
   const isChecking = status === "checking";
   const isSubmitting = status === "submitting";
   const isSuccess = status === "success";
   const isReady = status === "ready";
 
+  const isPaidEvent = !!event.paymentQr;
+  const paymentInputRef = useRef(null);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const isTeamNameValid = memberCount === 1 || teamName.trim().length > 0;
 
@@ -34,7 +52,37 @@ function Model({
     );
   });
 
-  const isFormValid = isTeamNameValid && areMembersValid;
+  // For paid events, payment screenshot is required
+  const isPaymentValid = !isPaidEvent || !!paymentFile;
+
+  const isFormValid = isTeamNameValid && areMembersValid && isPaymentValid;
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const dropped = e.dataTransfer.files[0];
+    if (dropped && dropped.type.startsWith("image/")) {
+      setPaymentFile(dropped);
+    }
+  };
+
+  // Determine what to show for already-registered users
+  const getRegisteredMessage = () => {
+    if (!isRegistered) return null;
+    const s = registrationStatus || "approved";
+    if (s === "pending") return "Payment Pending Approval";
+    if (s === "rejected") return "Registration Rejected";
+    return "Already Registered";
+  };
+
+  const getRegisteredDescription = () => {
+    const s = registrationStatus || "approved";
+    if (s === "pending")
+      return "Your payment is being reviewed by the admin. You'll be approved once verified.";
+    if (s === "rejected")
+      return "Your registration was rejected. Please contact the organizer for details.";
+    return "You're already registered for this event.";
+  };
 
   return (
     <motion.div
@@ -94,15 +142,23 @@ function Model({
                 </div>
 
                 <h3 className="text-2xl font-bold text-white">
-                  {isRegistered ? "Already registered" : "Confirm Registration"}
+                  {isRegistered
+                    ? getRegisteredMessage()
+                    : "Confirm Registration"}
                 </h3>
 
-                <p className="text-neutral-400">
-                  Register for{" "}
-                  <span className="text-violet-300 font-medium">
-                    {event.title}
-                  </span>
-                </p>
+                {isRegistered ? (
+                  <p className="text-neutral-400">
+                    {getRegisteredDescription()}
+                  </p>
+                ) : (
+                  <p className="text-neutral-400">
+                    Register for{" "}
+                    <span className="text-violet-300 font-medium">
+                      {event.title}
+                    </span>
+                  </p>
+                )}
 
                 <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-800 space-y-3 text-sm text-neutral-300">
                   <div className="flex items-center gap-3">
@@ -114,6 +170,32 @@ function Model({
                     {event.location}
                   </div>
                 </div>
+
+                {/* Registration status badge for already-registered users */}
+                {isRegistered && registrationStatus && (
+                  <div
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium ${
+                      registrationStatus === "pending"
+                        ? "bg-amber-500/5 border-amber-500/20 text-amber-400"
+                        : registrationStatus === "rejected"
+                        ? "bg-red-500/5 border-red-500/20 text-red-400"
+                        : "bg-emerald-500/5 border-emerald-500/20 text-emerald-400"
+                    }`}
+                  >
+                    {registrationStatus === "pending" && (
+                      <Clock className="w-4 h-4" />
+                    )}
+                    {registrationStatus === "approved" && (
+                      <CheckCircle2 className="w-4 h-4" />
+                    )}
+                    {registrationStatus === "rejected" && (
+                      <X className="w-4 h-4" />
+                    )}
+                    Status:{" "}
+                    {registrationStatus.charAt(0).toUpperCase() +
+                      registrationStatus.slice(1)}
+                  </div>
+                )}
 
                 {!isRegistered && (
                   <div className="space-y-5">
@@ -208,6 +290,129 @@ function Model({
                         />
                       </div>
                     ))}
+
+                    {/* Payment Section — only for paid events */}
+                    {isPaidEvent && (
+                      <div className="space-y-4 border border-amber-500/20 bg-amber-500/5 rounded-xl p-5">
+                        <div className="flex items-center gap-2 text-amber-400 font-medium text-sm">
+                          <QrCode className="w-4 h-4" />
+                          Payment Required
+                        </div>
+
+                        {/* QR Code Display */}
+                        <div className="flex flex-col items-center gap-3">
+                          <p className="text-xs text-neutral-400 text-center">
+                            Scan the QR code below to make your payment, then
+                            upload a screenshot of the confirmation.
+                          </p>
+                          <div className="bg-white rounded-xl p-3 shadow-lg">
+                            <img
+                              src={event.paymentQr}
+                              alt="Payment QR Code"
+                              className="w-48 h-48 object-contain"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Payment Screenshot Upload */}
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
+                            <ImageIcon className="w-4 h-4 text-amber-400" />
+                            Payment Screenshot *
+                          </label>
+
+                          {paymentFile ? (
+                            <div className="relative group rounded-xl overflow-hidden border border-neutral-700 bg-neutral-950/30 h-[140px]">
+                              <img
+                                src={URL.createObjectURL(paymentFile)}
+                                alt="Payment proof"
+                                className="w-full h-full object-cover opacity-90"
+                              />
+                              <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    paymentInputRef.current?.click()
+                                  }
+                                  className="p-1.5 rounded-lg bg-neutral-900/90 border border-neutral-700 text-neutral-300 hover:text-white hover:border-violet-500/50 transition-all"
+                                  title="Replace"
+                                >
+                                  <Upload className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setPaymentFile(null)}
+                                  className="p-1.5 rounded-lg bg-neutral-900/90 border border-neutral-700 text-neutral-300 hover:text-red-400 hover:border-red-500/50 transition-all"
+                                  title="Remove"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                              <div className="absolute bottom-2 left-2 px-2 py-1 rounded-md bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-medium flex items-center gap-1">
+                                <CheckCircle2 className="w-3 h-3" />
+                                Screenshot attached
+                              </div>
+                            </div>
+                          ) : (
+                            <div
+                              onDrop={handleDrop}
+                              onDragOver={(e) => {
+                                e.preventDefault();
+                                setIsDragOver(true);
+                              }}
+                              onDragLeave={() => setIsDragOver(false)}
+                              onClick={() =>
+                                paymentInputRef.current?.click()
+                              }
+                              className={`rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200 flex flex-col items-center justify-center gap-2 py-6 ${
+                                isDragOver
+                                  ? "border-amber-500 bg-amber-500/5"
+                                  : "border-neutral-700 bg-neutral-950/30 hover:border-neutral-600 hover:bg-neutral-950/50"
+                              }`}
+                            >
+                              <div
+                                className={`p-2 rounded-xl ${
+                                  isDragOver
+                                    ? "bg-amber-500/10"
+                                    : "bg-neutral-800"
+                                } transition-colors`}
+                              >
+                                <Upload
+                                  className={`w-5 h-5 ${
+                                    isDragOver
+                                      ? "text-amber-400"
+                                      : "text-neutral-500"
+                                  } transition-colors`}
+                                />
+                              </div>
+                              <div className="text-center">
+                                <p className="text-sm text-neutral-400">
+                                  <span className="text-amber-400 font-medium">
+                                    Upload screenshot
+                                  </span>{" "}
+                                  or drag and drop
+                                </p>
+                                <p className="text-xs text-neutral-600 mt-1">
+                                  PNG, JPG, WebP
+                                </p>
+                              </div>
+                            </div>
+                          )}
+
+                          <input
+                            ref={paymentInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const f = e.target.files?.[0];
+                              if (f) setPaymentFile(f);
+                              e.target.value = "";
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -243,13 +448,32 @@ function Model({
 
             {isSuccess && (
               <div className="text-center space-y-6 py-6">
-                <div className="w-16 h-16 mx-auto rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-                  <CheckCircle2 className="w-8 h-8 text-green-400" />
+                <div
+                  className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${
+                    isPaidEvent
+                      ? "bg-amber-500/10 border border-amber-500/20"
+                      : "bg-green-500/10 border border-green-500/20"
+                  }`}
+                >
+                  {isPaidEvent ? (
+                    <Clock className="w-8 h-8 text-amber-400" />
+                  ) : (
+                    <CheckCircle2 className="w-8 h-8 text-green-400" />
+                  )}
                 </div>
 
                 <h3 className="text-2xl font-bold text-white">
-                  Registration Successful!
+                  {isPaidEvent
+                    ? "Registration Submitted!"
+                    : "Registration Successful!"}
                 </h3>
+
+                {isPaidEvent && (
+                  <p className="text-neutral-400 text-sm">
+                    Your payment proof has been submitted. An admin will review
+                    and approve your registration shortly.
+                  </p>
+                )}
 
                 <button
                   onClick={onClose}

@@ -4,13 +4,177 @@ import {
   Clock,
   MapPin,
   FileText,
-  Upload,
   X,
   ImageIcon,
+  Tag,
+  Star,
+  CheckCircle,
+  Upload,
+  Loader2,
   QrCode,
   Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { uploadToCloudinary, getEventFolder } from "../../lib/cloudinary";
+
+// Helper: convert a Firestore Timestamp (or Date) to "YYYY-MM-DD" for <input type="date">
+const timestampToDateString = (ts) => {
+  if (!ts) return "";
+  const d = typeof ts.toDate === "function" ? ts.toDate() : new Date(ts);
+  if (isNaN(d.getTime())) return "";
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+// Reusable file-drop zone
+const ImageUploadZone = ({
+  label,
+  icon: Icon,
+  file,
+  existingUrl,
+  onFileSelect,
+  onRemove,
+  progress,
+  accept = "image/*",
+  compact = false,
+}) => {
+  const inputRef = useRef(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const previewSrc = file ? URL.createObjectURL(file) : existingUrl || null;
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const dropped = e.dataTransfer.files[0];
+    if (dropped && dropped.type.startsWith("image/")) {
+      onFileSelect(dropped);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => setIsDragOver(false);
+
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
+        <Icon className="w-4 h-4 text-violet-400" />
+        {label}
+      </label>
+
+      {previewSrc ? (
+        // Preview state
+        <div className="relative group">
+          <div
+            className={`relative rounded-xl overflow-hidden border border-neutral-700 bg-neutral-950/30 ${
+              compact ? "h-[120px]" : "h-[160px]"
+            }`}
+          >
+            <img
+              src={previewSrc}
+              alt="Preview"
+              className="w-full h-full object-cover opacity-90"
+              onError={(e) => {
+                e.target.style.display = "none";
+              }}
+            />
+            {/* Upload progress overlay */}
+            {progress !== null && progress !== undefined && progress < 100 && (
+              <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-2">
+                <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+                <div className="w-32 h-1.5 rounded-full bg-neutral-700 overflow-hidden">
+                  <div
+                    className="h-full bg-violet-500 rounded-full transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <span className="text-xs text-neutral-300">{progress}%</span>
+              </div>
+            )}
+            {/* Uploaded badge */}
+            {existingUrl && !file && (
+              <div className="absolute top-2 left-2 px-2 py-1 rounded-md bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-medium flex items-center gap-1">
+                <CheckCircle className="w-3 h-3" />
+                Uploaded
+              </div>
+            )}
+          </div>
+          {/* Action buttons */}
+          <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="p-1.5 rounded-lg bg-neutral-900/90 border border-neutral-700 text-neutral-300 hover:text-white hover:border-violet-500/50 transition-all"
+              title="Replace image"
+            >
+              <Upload className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={onRemove}
+              className="p-1.5 rounded-lg bg-neutral-900/90 border border-neutral-700 text-neutral-300 hover:text-red-400 hover:border-red-500/50 transition-all"
+              title="Remove image"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        // Empty drop zone
+        <div
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onClick={() => inputRef.current?.click()}
+          className={`relative rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200 flex flex-col items-center justify-center gap-2 ${
+            compact ? "py-6" : "py-8"
+          } ${
+            isDragOver
+              ? "border-violet-500 bg-violet-500/5"
+              : "border-neutral-700 bg-neutral-950/30 hover:border-neutral-600 hover:bg-neutral-950/50"
+          }`}
+        >
+          <div
+            className={`p-2.5 rounded-xl ${
+              isDragOver ? "bg-violet-500/10" : "bg-neutral-800"
+            } transition-colors`}
+          >
+            <Upload
+              className={`w-5 h-5 ${
+                isDragOver ? "text-violet-400" : "text-neutral-500"
+              } transition-colors`}
+            />
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-neutral-400">
+              <span className="text-violet-400 font-medium">Click to upload</span>{" "}
+              or drag and drop
+            </p>
+            <p className="text-xs text-neutral-600 mt-1">PNG, JPG, WebP</p>
+          </div>
+        </div>
+      )}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) onFileSelect(f);
+          e.target.value = "";
+        }}
+      />
+    </div>
+  );
+};
 
 const AddEventDialog = ({
   open,
@@ -19,92 +183,134 @@ const AddEventDialog = ({
   initialData,
   isEditing = false,
 }) => {
-  const fileInputRef = useRef();
-  const paymentQrInputRef = useRef();
   const [formData, setFormData] = useState({
     title: "",
     date: "",
-    time: "",
+    deadline: "",
     location: "",
     description: "",
-    status: "upcoming",
     image: "",
     paymentQr: "",
+    tag: "",
+    highlighted: false,
+    is_over: false,
   });
+
+  const [posterFile, setPosterFile] = useState(null);
+  const [qrFile, setQrFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState({
+    poster: null,
+    qr: null,
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
+      setFormData({
+        title: initialData.title || "",
+        date: timestampToDateString(initialData.date),
+        deadline: timestampToDateString(initialData.deadline),
+        location: initialData.location || "",
+        description: initialData.description || "",
+        image: initialData.image || "",
+        paymentQr: initialData.paymentQr || "",
+        tag: initialData.tag || "",
+        highlighted: initialData.highlighted || false,
+        is_over: initialData.is_over || false,
+      });
     } else {
       setFormData({
         title: "",
         date: "",
-        time: "",
+        deadline: "",
         location: "",
         description: "",
-        status: "upcoming",
         image: "",
         paymentQr: "",
+        tag: "",
+        highlighted: false,
+        is_over: false,
       });
     }
+    // Reset file selections when dialog opens/closes
+    setPosterFile(null);
+    setQrFile(null);
+    setUploadProgress({ poster: null, qr: null });
   }, [initialData, open]);
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    setFormData({
-      title: "",
-      date: "",
-      time: "",
-      location: "",
-      description: "",
-      status: "upcoming",
-      image: "",
-      paymentQr: "",
-    });
+    setIsSubmitting(true);
+
+    try {
+      const folder = getEventFolder(formData.title);
+      const finalData = { ...formData };
+
+      // Upload poster if a new file was selected
+      if (posterFile) {
+        setUploadProgress((p) => ({ ...p, poster: 0 }));
+        const posterUrl = await uploadToCloudinary(
+          posterFile,
+          folder,
+          "poster",
+          (pct) => setUploadProgress((p) => ({ ...p, poster: pct }))
+        );
+        finalData.image = posterUrl;
+      }
+
+      // Upload QR code if a new file was selected
+      if (qrFile) {
+        setUploadProgress((p) => ({ ...p, qr: 0 }));
+        const qrUrl = await uploadToCloudinary(
+          qrFile,
+          folder,
+          "payment-qr",
+          (pct) => setUploadProgress((p) => ({ ...p, qr: pct }))
+        );
+        finalData.paymentQr = qrUrl;
+      }
+
+      await onSubmit(finalData);
+
+      // Reset form
+      setFormData({
+        title: "",
+        date: "",
+        deadline: "",
+        location: "",
+        description: "",
+        image: "",
+        paymentQr: "",
+        tag: "",
+        highlighted: false,
+        is_over: false,
+      });
+      setPosterFile(null);
+      setQrFile(null);
+    } catch (err) {
+      console.error("Error submitting event:", err);
+    } finally {
+      setIsSubmitting(false);
+      setUploadProgress({ poster: null, qr: null });
+    }
   };
+
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
-  const handleImageUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, image: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  const handlePaymentQrUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          paymentQr: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  const handleRemoveImage = () => {
-    setFormData((prev) => ({ ...prev, image: "" }));
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-  const handleRemovePaymentQr = () => {
-    setFormData((prev) => ({ ...prev, paymentQr: "" }));
-    if (paymentQrInputRef.current) {
-      paymentQrInputRef.current.value = "";
-    }
-  };
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
-  const triggerPaymentQrInput = () => {
-    paymentQrInputRef.current?.click();
-  };
+
+  const tagOptions = [
+    "hackathon",
+    "workshop",
+    "seminar",
+    "competition",
+    "webinar",
+    "meetup",
+    "bootcamp",
+    "conference",
+    "other",
+  ];
+
   return (
     <AnimatePresence>
       {open && (
@@ -142,6 +348,7 @@ const AddEventDialog = ({
                 onSubmit={handleSubmit}
                 className="space-y-5"
               >
+                {/* Title */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-neutral-300">
                     Event Title
@@ -154,11 +361,13 @@ const AddEventDialog = ({
                     required
                   />
                 </div>
+
+                {/* Date & Deadline */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-violet-400" />
-                      Date
+                      Event Date
                     </label>
                     <input
                       type="date"
@@ -171,17 +380,19 @@ const AddEventDialog = ({
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
                       <Clock className="w-4 h-4 text-violet-400" />
-                      Time
+                      Registration Deadline
                     </label>
                     <input
-                      type="time"
-                      value={formData.time}
-                      onChange={(e) => handleChange("time", e.target.value)}
+                      type="date"
+                      value={formData.deadline}
+                      onChange={(e) => handleChange("deadline", e.target.value)}
                       className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 transition-all text-sm [color-scheme:dark]"
                       required
                     />
                   </div>
                 </div>
+
+                {/* Location & Tag */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
@@ -197,17 +408,25 @@ const AddEventDialog = ({
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-neutral-300">
-                      Status
+                    <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
+                      <Tag className="w-4 h-4 text-violet-400" />
+                      Event Tag
                     </label>
                     <div className="relative">
                       <select
-                        value={formData.status}
-                        onChange={(e) => handleChange("status", e.target.value)}
+                        value={formData.tag}
+                        onChange={(e) => handleChange("tag", e.target.value)}
                         className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 transition-all appearance-none text-sm cursor-pointer"
+                        required
                       >
-                        <option value="upcoming">Upcoming</option>
-                        <option value="completed">Completed</option>
+                        <option value="" disabled>
+                          Select a tag
+                        </option>
+                        {tagOptions.map((t) => (
+                          <option key={t} value={t}>
+                            {t.charAt(0).toUpperCase() + t.slice(1)}
+                          </option>
+                        ))}
                       </select>
                       <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-neutral-500">
                         <svg
@@ -224,6 +443,8 @@ const AddEventDialog = ({
                     </div>
                   </div>
                 </div>
+
+                {/* Description */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
                     <FileText className="w-4 h-4 text-violet-400" />
@@ -239,105 +460,84 @@ const AddEventDialog = ({
                     required
                   />
                 </div>
+
+                {/* Image Uploads — side by side */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {/* Event Image Upload */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                      <ImageIcon className="w-4 h-4 text-violet-400" />
-                      Event Image
-                    </label>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
-                    {formData.image ? (
-                      <div className="relative rounded-lg overflow-hidden border border-neutral-700 h-[160px] group bg-neutral-950/30">
-                        <img
-                          src={formData.image}
-                          alt="Event preview"
-                          className="w-full h-full object-cover opacity-80 group-hover:opacity-40 transition-opacity"
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            onClick={handleRemoveImage}
-                            className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-lg transition-all transform hover:scale-105"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </button>
-                        </div>
+                  {/* Event Poster Upload */}
+                  <ImageUploadZone
+                    label="Event Poster"
+                    icon={ImageIcon}
+                    file={posterFile}
+                    existingUrl={formData.image}
+                    onFileSelect={(f) => setPosterFile(f)}
+                    onRemove={() => {
+                      setPosterFile(null);
+                      handleChange("image", "");
+                    }}
+                    progress={uploadProgress.poster}
+                  />
+
+                  {/* Payment QR Code Upload */}
+                  <ImageUploadZone
+                    label="Payment QR Code"
+                    icon={QrCode}
+                    file={qrFile}
+                    existingUrl={formData.paymentQr}
+                    onFileSelect={(f) => setQrFile(f)}
+                    onRemove={() => {
+                      setQrFile(null);
+                      handleChange("paymentQr", "");
+                    }}
+                    progress={uploadProgress.qr}
+                    compact
+                  />
+                </div>
+
+                {/* Toggle switches */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Highlighted toggle */}
+                  <label className="flex items-center justify-between p-4 rounded-xl border border-neutral-700 bg-neutral-950/30 cursor-pointer hover:border-violet-500/30 transition-colors group">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-lg ${formData.highlighted ? 'bg-amber-500/10' : 'bg-neutral-800'} transition-colors`}>
+                        <Star className={`w-4 h-4 ${formData.highlighted ? 'text-amber-400' : 'text-neutral-500'} transition-colors`} />
                       </div>
-                    ) : (
-                      <div
-                        onClick={triggerFileInput}
-                        className="flex flex-col items-center justify-center gap-3 h-[160px] border border-dashed border-neutral-700 bg-neutral-950/30 rounded-lg cursor-pointer hover:border-violet-500/50 hover:bg-violet-500/5 transition-all group"
-                      >
-                        <div className="p-3 rounded-full bg-neutral-900 group-hover:scale-110 transition-transform duration-300">
-                          <Upload className="w-5 h-5 text-neutral-500 group-hover:text-violet-400" />
-                        </div>
-                        <div className="text-center px-4">
-                          <p className="text-sm font-medium text-neutral-400 group-hover:text-violet-300 transition-colors">
-                            Upload Cover Image
-                          </p>
-                          <p className="text-xs text-neutral-600 mt-1Group">
-                            PNG, JPG (Max 5MB)
-                          </p>
-                        </div>
+                      <div>
+                        <p className="text-sm font-medium text-white">Highlighted</p>
+                        <p className="text-xs text-neutral-500">Feature this event</p>
                       </div>
-                    )}
-                  </div>
-                  {/* Payment QR Upload */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                      <QrCode className="w-4 h-4 text-violet-400" />
-                      Payment QR Code
-                    </label>
-                    <input
-                      ref={paymentQrInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handlePaymentQrUpload}
-                      className="hidden"
-                    />
-                    {formData.paymentQr ? (
-                      <div className="relative rounded-lg overflow-hidden border border-neutral-700 h-[160px] group bg-neutral-950/30">
-                        <img
-                          src={formData.paymentQr}
-                          alt="Payment QR"
-                          className="w-full h-full object-contain p-2 opacity-90 group-hover:opacity-50 transition-opacity"
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            onClick={handleRemovePaymentQr}
-                            className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-lg transition-all transform hover:scale-105"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </button>
-                        </div>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="checkbox"
+                        checked={formData.highlighted}
+                        onChange={(e) => handleChange("highlighted", e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500 transition-colors"></div>
+                    </div>
+                  </label>
+
+                  {/* Is Over toggle */}
+                  <label className="flex items-center justify-between p-4 rounded-xl border border-neutral-700 bg-neutral-950/30 cursor-pointer hover:border-violet-500/30 transition-colors group">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-lg ${formData.is_over ? 'bg-emerald-500/10' : 'bg-neutral-800'} transition-colors`}>
+                        <CheckCircle className={`w-4 h-4 ${formData.is_over ? 'text-emerald-400' : 'text-neutral-500'} transition-colors`} />
                       </div>
-                    ) : (
-                      <div
-                        onClick={triggerPaymentQrInput}
-                        className="flex flex-col items-center justify-center gap-3 h-[160px] border border-dashed border-neutral-700 bg-neutral-950/30 rounded-lg cursor-pointer hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all group"
-                      >
-                        <div className="p-3 rounded-full bg-neutral-900 group-hover:scale-110 transition-transform duration-300">
-                          <QrCode className="w-5 h-5 text-neutral-500 group-hover:text-indigo-400" />
-                        </div>
-                        <div className="text-center px-4">
-                          <p className="text-sm font-medium text-neutral-400 group-hover:text-indigo-300 transition-colors">
-                            Upload Payment QR
-                          </p>
-                          <p className="text-xs text-neutral-600 mt-1">
-                            PNG, JPG (Max 2MB)
-                          </p>
-                        </div>
+                      <div>
+                        <p className="text-sm font-medium text-white">Event Over</p>
+                        <p className="text-xs text-neutral-500">Mark as completed</p>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="checkbox"
+                        checked={formData.is_over}
+                        onChange={(e) => handleChange("is_over", e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 transition-colors"></div>
+                    </div>
+                  </label>
                 </div>
               </form>
             </div>
@@ -353,9 +553,21 @@ const AddEventDialog = ({
               <button
                 form="event-form"
                 type="submit"
-                className="px-6 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium transition-all shadow-lg shadow-violet-600/20 hover:shadow-violet-600/40 transform hover:-translate-y-0.5"
+                disabled={isSubmitting}
+                className="px-6 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium transition-all shadow-lg shadow-violet-600/20 hover:shadow-violet-600/40 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
               >
-                {isEditing ? "Save Changes" : "Create Event"}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    {uploadProgress.poster !== null || uploadProgress.qr !== null
+                      ? "Uploading..."
+                      : "Saving..."}
+                  </>
+                ) : isEditing ? (
+                  "Save Changes"
+                ) : (
+                  "Create Event"
+                )}
               </button>
             </div>
             {/* Custom Styles for Scrollbar */}
@@ -373,7 +585,8 @@ const AddEventDialog = ({
               .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                 background: #525252; /* neutral-600 */
               }
-            `}</style>
+            `}
+            </style>
           </motion.div>
         </div>
       )}

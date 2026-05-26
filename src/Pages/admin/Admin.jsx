@@ -1,5 +1,4 @@
-import { useState, useEffect, useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -11,148 +10,123 @@ import {
   User,
   LogOut,
   Settings,
+  AlertCircle,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import ContactResponsesTable from "../../components/admin/ContactResponsesTable";
 import EventsManager from "../../components/admin/EventsManager";
 import AddEventDialog from "../../components/admin/AddEventDialog";
-import { AuthContext } from "../../contexts/AuthContext";
-import { getUserDetails } from "../../lib/getUserDetails";
-// Dummy data for contact responses
-const dummyContactResponses = [
-  {
-    id: 1,
-    name: "John Smith",
-    email: "john.smith@university.edu",
-    subject: "Membership Inquiry",
-    message:
-      "I'm interested in joining the club. Can you tell me more about the membership process?",
-    submittedAt: "2024-01-15 10:30 AM",
-    status: "unread",
-  },
-  {
-    id: 2,
-    name: "Sarah Johnson",
-    email: "sarah.j@university.edu",
-    subject: "Event Collaboration",
-    message:
-      "Our department would like to collaborate on an upcoming hackathon. Let's discuss!",
-    submittedAt: "2024-01-14 3:45 PM",
-    status: "read",
-  },
-  {
-    id: 3,
-    name: "Mike Chen",
-    email: "mike.chen@university.edu",
-    subject: "Workshop Request",
-    message:
-      "Can you organize a workshop on React and TypeScript for beginners?",
-    submittedAt: "2024-01-13 11:20 AM",
-    status: "replied",
-  },
-  {
-    id: 4,
-    name: "Emily Davis",
-    email: "emily.d@university.edu",
-    subject: "Sponsorship Opportunity",
-    message:
-      "I represent a tech company interested in sponsoring your events. Please contact me.",
-    submittedAt: "2024-01-12 2:15 PM",
-    status: "unread",
-  },
-  {
-    id: 5,
-    name: "Alex Wilson",
-    email: "alex.w@university.edu",
-    subject: "Technical Question",
-    message:
-      "I have some questions about the tech stack you use for your projects.",
-    submittedAt: "2024-01-11 9:00 AM",
-    status: "read",
-  },
-];
-// Dummy data for events
-const dummyEvents = [
-  {
-    id: 1,
-    title: "Spring Hackathon 2024",
-    date: "2024-03-15",
-    time: "9:00 AM",
-    location: "Main Auditorium",
-    description: "24-hour coding competition with amazing prizes",
-    status: "upcoming",
-    registrations: 45,
-  },
-  {
-    id: 2,
-    title: "AI/ML Workshop",
-    date: "2024-02-20",
-    time: "2:00 PM",
-    location: "Tech Lab 101",
-    description: "Introduction to machine learning with Python",
-    status: "upcoming",
-    registrations: 32,
-  },
-  {
-    id: 3,
-    title: "Tech Talk: Cloud Computing",
-    date: "2024-02-10",
-    time: "4:00 PM",
-    location: "Conference Room A",
-    description: "Industry expert sharing insights on cloud technologies",
-    status: "upcoming",
-    registrations: 28,
-  },
-  {
-    id: 4,
-    title: "Winter Coding Bootcamp",
-    date: "2024-01-05",
-    time: "10:00 AM",
-    location: "Computer Lab 2",
-    description: "Intensive 3-day bootcamp on web development",
-    status: "completed",
-    registrations: 50,
-  },
-  {
-    id: 5,
-    title: "Networking Night",
-    date: "2023-12-15",
-    time: "6:00 PM",
-    location: "Student Center",
-    description: "Connect with industry professionals and alumni",
-    status: "completed",
-    registrations: 75,
-  },
-];
+import {
+  collection,
+  query,
+  onSnapshot,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  addDoc,
+  Timestamp,
+} from "firebase/firestore";
+import { db } from "../../firebase";
+
 const Admin = ({ onLoad }) => {
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const { data: userData } = useQuery({
-    queryKey: ["user-data"],
-    queryFn: () => getUserDetails(user.uid),
-    enabled: !!user?.uid,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-  });
-
-  useEffect(() => {
-    if (onLoad) onLoad();
-  }, [onLoad]);
-
-  useEffect(() => {
-    if (!user) return navigate("/login");
-    if (!userData) return;
-    if (!userData.isAdmin) return navigate("/");
-  }, [user, userData, navigate]);
-
-  const [events, setEvents] = useState(dummyEvents);
-  const [contactResponses] = useState(dummyContactResponses);
+  const [events, setEvents] = useState([]);
+  const [contactResponses, setContactResponses] = useState([]);
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [activeTab, setActiveTab] = useState("contacts");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (onLoad) onLoad();
+  }, []);
+
+  // Real-time listener for contact-us collection
+  useEffect(() => {
+    const q = query(collection(db, "contact-us"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const responses = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        let submittedAt = "Just now";
+        let rawCreatedAt = new Date(0); // Default to epoch for sorting if missing
+        if (data.createdAt) {
+          const dateObj = typeof data.createdAt.toDate === "function"
+            ? data.createdAt.toDate()
+            : new Date(data.createdAt);
+
+          rawCreatedAt = dateObj;
+          submittedAt = dateObj.toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
+        }
+        return {
+          id: doc.id,
+          name: data.name || "Anonymous",
+          email: data.email || "",
+          subject: data.subject || "No Subject",
+          message: data.message || "",
+          status: data.read ? "read" : "unread",
+          submittedAt,
+          rawCreatedAt,
+        };
+      });
+      // Sort responses in-memory by creation date desc
+      responses.sort((a, b) => b.rawCreatedAt - a.rawCreatedAt);
+      setContactResponses(responses);
+    }, (error) => {
+      console.error("Error fetching contact responses:", error);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Real-time listener for events collection
+  useEffect(() => {
+    const q = query(collection(db, "events"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const eventsData = snapshot.docs.map((docSnap) => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          title: data.title || "",
+          description: data.description || "",
+          location: data.location || "",
+          image: data.image || "",
+          paymentQr: data.paymentQr || "",
+          tag: data.tag || "",
+          highlighted: data.highlighted || false,
+          is_over: data.is_over || false,
+          participants: data.participants || [],
+          participants_count: data.participants_count || 0,
+          // Keep raw Timestamps for Firestore operations, convert for display
+          date: data.date,
+          deadline: data.deadline,
+        };
+      });
+      setEvents(eventsData);
+    }, (error) => {
+      console.error("Error fetching events:", error);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Count pending approvals across all events
+  const pendingApprovals = events.reduce((count, event) => {
+    return (
+      count +
+      (event.participants || []).filter(
+        (p) => typeof p === "object" && p.status === "pending"
+      ).length
+    );
+  }, 0);
 
   const stats = [
     {
@@ -180,40 +154,153 @@ const Admin = ({ onLoad }) => {
       borderColor: "border-emerald-500/20",
     },
     {
-      label: "Upcoming Events",
-      value: events.filter((e) => e.status === "upcoming").length,
-      icon: Clock,
-      color: "text-purple-400",
-      bgColor: "bg-purple-500/10",
-      borderColor: "border-purple-500/20",
+      label: "Pending Approvals",
+      value: pendingApprovals,
+      icon: AlertCircle,
+      color: "text-orange-400",
+      bgColor: "bg-orange-500/10",
+      borderColor: "border-orange-500/20",
     },
   ];
-  const handleAddEvent = (newEvent) => {
-    const event = {
-      ...newEvent,
-      id: events.length + 1,
-      registrations: 0,
-    };
-    setEvents([event, ...events]);
-    setIsAddEventOpen(false);
+
+  const handleAddEvent = async (formData) => {
+    try {
+      // Convert date strings to Firestore Timestamps
+      const eventDate = formData.date
+        ? Timestamp.fromDate(new Date(formData.date + "T00:00:00"))
+        : null;
+      const eventDeadline = formData.deadline
+        ? Timestamp.fromDate(new Date(formData.deadline + "T00:00:00"))
+        : null;
+
+      await addDoc(collection(db, "events"), {
+        title: formData.title,
+        description: formData.description,
+        location: formData.location,
+        image: formData.image,
+        paymentQr: formData.paymentQr || "",
+        tag: formData.tag,
+        highlighted: formData.highlighted,
+        is_over: formData.is_over,
+        date: eventDate,
+        deadline: eventDeadline,
+        participants: [],
+        participants_count: 0,
+      });
+      setIsAddEventOpen(false);
+    } catch (error) {
+      console.error("Error adding event:", error);
+    }
   };
+
   const handleLogout = () => {
-    logout().finally(() => navigate("/"));
+    // Navigate to admin login (or home for now)
+    navigate("/");
   };
-  const handleEditEvent = (updatedEvent) => {
-    setEvents(events.map((e) => (e.id === updatedEvent.id ? updatedEvent : e)));
-    setEditingEvent(null);
+
+  const handleEditEvent = async (formData) => {
+    try {
+      const eventRef = doc(db, "events", formData.id);
+
+      // Convert date strings to Firestore Timestamps
+      const eventDate = formData.date
+        ? Timestamp.fromDate(new Date(formData.date + "T00:00:00"))
+        : null;
+      const eventDeadline = formData.deadline
+        ? Timestamp.fromDate(new Date(formData.deadline + "T00:00:00"))
+        : null;
+
+      await updateDoc(eventRef, {
+        title: formData.title,
+        description: formData.description,
+        location: formData.location,
+        image: formData.image,
+        paymentQr: formData.paymentQr || "",
+        tag: formData.tag,
+        highlighted: formData.highlighted,
+        is_over: formData.is_over,
+        date: eventDate,
+        deadline: eventDeadline,
+      });
+      setEditingEvent(null);
+    } catch (error) {
+      console.error("Error updating event:", error);
+    }
   };
-  const handleDeleteEvent = (id) => {
-    setEvents(events.filter((e) => e.id !== id));
+
+  const handleDeleteEvent = async (id) => {
+    try {
+      await deleteDoc(doc(db, "events", id));
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
   };
-  return userData?.isAdmin ? (
-    <div className="min-h-screen font-sans text-white bg-neutral-950 selection:bg-violet-500/30">
+
+  const handleToggleReadStatus = async (id, currentReadState) => {
+    try {
+      await updateDoc(doc(db, "contact-us", id), {
+        read: !currentReadState,
+      });
+    } catch (error) {
+      console.error("Error toggling contact response read status:", error);
+    }
+  };
+
+  const handleDeleteContact = async (id) => {
+    try {
+      await deleteDoc(doc(db, "contact-us", id));
+    } catch (error) {
+      console.error("Error deleting contact response:", error);
+    }
+  };
+
+  const handleApproveRegistration = async (eventId, teamLeadId) => {
+    try {
+      const eventRef = doc(db, "events", eventId);
+      const snap = await getDoc(eventRef);
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+      const updatedParticipants = (data.participants || []).map((team) => {
+        if (team.team_lead_id === teamLeadId) {
+          return { ...team, status: "approved" };
+        }
+        return team;
+      });
+
+      await updateDoc(eventRef, { participants: updatedParticipants });
+    } catch (error) {
+      console.error("Error approving registration:", error);
+    }
+  };
+
+  const handleRejectRegistration = async (eventId, teamLeadId) => {
+    try {
+      const eventRef = doc(db, "events", eventId);
+      const snap = await getDoc(eventRef);
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+      const updatedParticipants = (data.participants || []).map((team) => {
+        if (team.team_lead_id === teamLeadId) {
+          return { ...team, status: "rejected" };
+        }
+        return team;
+      });
+
+      await updateDoc(eventRef, { participants: updatedParticipants });
+    } catch (error) {
+      console.error("Error rejecting registration:", error);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-violet-500/30">
       {/* Background Effects */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.05),transparent_50%)] pointer-events-none" />
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-40 border-b bg-neutral-950/80 backdrop-blur-md border-neutral-800">
-        <div className="container px-4 py-3 mx-auto">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link to="/">
@@ -222,12 +309,12 @@ const Admin = ({ onLoad }) => {
                   Back to Site
                 </button>
               </Link>
-              <div className="hidden w-px h-6 mx-2 bg-neutral-800 md:block" />
+              <div className="h-6 w-px bg-neutral-800 mx-2 hidden md:block" />
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-violet-600">
                   <LayoutDashboard className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="hidden text-lg font-bold text-white md:block">
+                <h1 className="text-lg font-bold text-white hidden md:block">
                   Admin Dashboard
                 </h1>
               </div>
@@ -235,7 +322,7 @@ const Admin = ({ onLoad }) => {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsAddEventOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all rounded-lg shadow-lg bg-violet-600 hover:bg-violet-700 shadow-violet-600/20"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-medium text-sm transition-all shadow-lg shadow-violet-600/20"
               >
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">Add Event</span>
@@ -259,7 +346,7 @@ const Admin = ({ onLoad }) => {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 z-50 w-56 mt-2 overflow-hidden border shadow-2xl rounded-xl bg-neutral-900 border-neutral-800"
+                        className="absolute right-0 mt-2 w-56 rounded-xl bg-neutral-900 border border-neutral-800 shadow-2xl z-50 overflow-hidden"
                       >
                         <div className="p-4 border-b border-neutral-800">
                           <p className="text-sm font-medium text-white">
@@ -270,13 +357,13 @@ const Admin = ({ onLoad }) => {
                           </p>
                         </div>
                         <div className="p-1">
-                          <button className="flex items-center w-full gap-2 px-3 py-2 text-sm transition-colors rounded-lg text-neutral-300 hover:bg-neutral-800">
+                          <button className="flex w-full items-center gap-2 px-3 py-2 text-sm text-neutral-300 hover:bg-neutral-800 rounded-lg transition-colors">
                             <Settings className="w-4 h-4" />
                             Settings
                           </button>
                           <button
                             onClick={handleLogout}
-                            className="flex items-center w-full gap-2 px-3 py-2 text-sm text-red-400 transition-colors rounded-lg hover:bg-red-500/10"
+                            className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                           >
                             <LogOut className="w-4 h-4" />
                             Log out
@@ -291,9 +378,9 @@ const Admin = ({ onLoad }) => {
           </div>
         </div>
       </header>
-      <main className="container relative z-10 px-4 py-8 mx-auto mt-16 lg:px-20">
+      <main className="container mx-auto px-4 lg:px-20 py-8 mt-16 relative z-10">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -304,10 +391,10 @@ const Admin = ({ onLoad }) => {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">
+                  <p className="text-sm text-neutral-400 font-medium">
                     {stat.label}
                   </p>
-                  <p className="mt-2 text-3xl font-bold text-white transition-colors group-hover:text-violet-200">
+                  <p className="text-3xl font-bold text-white mt-2 group-hover:text-violet-200 transition-colors">
                     {stat.value}
                   </p>
                 </div>
@@ -320,7 +407,7 @@ const Admin = ({ onLoad }) => {
         </div>
         {/* Main Content Tabs */}
         <div className="space-y-6">
-          <div className="inline-flex gap-2 p-1 border rounded-xl bg-neutral-900 border-neutral-800">
+          <div className="inline-flex gap-2 p-1 rounded-xl bg-neutral-900 border border-neutral-800">
             <button
               onClick={() => setActiveTab("contacts")}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
@@ -353,7 +440,7 @@ const Admin = ({ onLoad }) => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                <ContactResponsesTable responses={contactResponses} />
+                <ContactResponsesTable responses={contactResponses} onDelete={handleDeleteContact} onToggleRead={handleToggleReadStatus} />
               </motion.div>
             ) : (
               <motion.div
@@ -367,6 +454,8 @@ const Admin = ({ onLoad }) => {
                   events={events}
                   onEdit={setEditingEvent}
                   onDelete={handleDeleteEvent}
+                  onApproveRegistration={handleApproveRegistration}
+                  onRejectRegistration={handleRejectRegistration}
                 />
               </motion.div>
             )}
@@ -384,14 +473,12 @@ const Admin = ({ onLoad }) => {
         <AddEventDialog
           open={!!editingEvent}
           onOpenChange={(open) => !open && setEditingEvent(null)}
-          onSubmit={(data) => handleEditEvent({ ...editingEvent, ...data })}
+          onSubmit={(data) => handleEditEvent({ ...data, id: editingEvent.id })}
           initialData={editingEvent}
           isEditing
         />
       )}
     </div>
-  ) : (
-    <></>
   );
 };
 export default Admin;
