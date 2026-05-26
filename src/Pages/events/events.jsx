@@ -18,6 +18,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { fetchEvents, fetchFeaturedEvent } from "../../lib/getEvents";
 import { getUserDetails } from "../../lib/getUserDetails";
+import { uploadToCloudinary, getEventFolder } from "../../lib/cloudinary";
 
 const EventsSection = () => {
   const ref = useRef(null);
@@ -29,9 +30,11 @@ const EventsSection = () => {
 
     const [status, setStatus] = useState("checking");
     const [isRegistered, setIsRegistered] = useState(false);
+    const [registrationStatus, setRegistrationStatus] = useState(null);
 
     const [memberCount, setMemberCount] = useState(1);
     const [teamName, setTeamName] = useState("");
+    const [paymentFile, setPaymentFile] = useState(null);
 
     const { data: userData, isLoading } = useQuery({
       queryKey: ["user-data"],
@@ -81,11 +84,12 @@ const EventsSection = () => {
             return;
           }
           const data = snap.data();
-          const exists = data.participants?.some(
+          const existingTeam = data.participants?.find(
             (team) => team.team_lead_id === user.uid,
           );
           if (mounted) {
-            setIsRegistered(!!exists);
+            setIsRegistered(!!existingTeam);
+            setRegistrationStatus(existingTeam?.status || (existingTeam ? "approved" : null));
             setStatus("ready");
           }
         } catch (err) {
@@ -109,6 +113,7 @@ const EventsSection = () => {
       try {
         setStatus("submitting");
         const start = Date.now();
+        const isPaidEvent = !!event.paymentQr;
         const finalTeamName =
           memberCount === 1
             ? members[0].name
@@ -119,7 +124,20 @@ const EventsSection = () => {
           team_name: finalTeamName,
           members,
           count: memberCount,
+          status: isPaidEvent ? "pending" : "approved",
+          payment_proof: "",
         };
+
+        // Upload payment screenshot for paid events
+        if (isPaidEvent && paymentFile) {
+          const folder = getEventFolder(event.title);
+          const paymentUrl = await uploadToCloudinary(
+            paymentFile,
+            `${folder}/payments`,
+            user.uid
+          );
+          teamObject.payment_proof = paymentUrl;
+        }
 
         await Promise.all([
           updateDoc(userRef, {
@@ -150,12 +168,15 @@ const EventsSection = () => {
         onConfirm={handleConfirm}
         status={status}
         isRegistered={isRegistered}
+        registrationStatus={registrationStatus}
         memberCount={memberCount}
         setMemberCount={setMemberCount}
         teamName={teamName}
         setTeamName={setTeamName}
         members={members}
         setMembers={setMembers}
+        paymentFile={paymentFile}
+        setPaymentFile={setPaymentFile}
       />
     );
   };

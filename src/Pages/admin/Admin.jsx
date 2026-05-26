@@ -10,6 +10,7 @@ import {
   User,
   LogOut,
   Settings,
+  AlertCircle,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,6 +22,7 @@ import {
   query,
   onSnapshot,
   doc,
+  getDoc,
   updateDoc,
   deleteDoc,
   addDoc,
@@ -116,6 +118,16 @@ const Admin = ({ onLoad }) => {
     return () => unsubscribe();
   }, []);
 
+  // Count pending approvals across all events
+  const pendingApprovals = events.reduce((count, event) => {
+    return (
+      count +
+      (event.participants || []).filter(
+        (p) => typeof p === "object" && p.status === "pending"
+      ).length
+    );
+  }, 0);
+
   const stats = [
     {
       label: "Total Contacts",
@@ -142,12 +154,12 @@ const Admin = ({ onLoad }) => {
       borderColor: "border-emerald-500/20",
     },
     {
-      label: "Upcoming Events",
-      value: events.filter((e) => !e.is_over).length,
-      icon: Clock,
-      color: "text-purple-400",
-      bgColor: "bg-purple-500/10",
-      borderColor: "border-purple-500/20",
+      label: "Pending Approvals",
+      value: pendingApprovals,
+      icon: AlertCircle,
+      color: "text-orange-400",
+      bgColor: "bg-orange-500/10",
+      borderColor: "border-orange-500/20",
     },
   ];
 
@@ -239,6 +251,46 @@ const Admin = ({ onLoad }) => {
       await deleteDoc(doc(db, "contact-us", id));
     } catch (error) {
       console.error("Error deleting contact response:", error);
+    }
+  };
+
+  const handleApproveRegistration = async (eventId, teamLeadId) => {
+    try {
+      const eventRef = doc(db, "events", eventId);
+      const snap = await getDoc(eventRef);
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+      const updatedParticipants = (data.participants || []).map((team) => {
+        if (team.team_lead_id === teamLeadId) {
+          return { ...team, status: "approved" };
+        }
+        return team;
+      });
+
+      await updateDoc(eventRef, { participants: updatedParticipants });
+    } catch (error) {
+      console.error("Error approving registration:", error);
+    }
+  };
+
+  const handleRejectRegistration = async (eventId, teamLeadId) => {
+    try {
+      const eventRef = doc(db, "events", eventId);
+      const snap = await getDoc(eventRef);
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+      const updatedParticipants = (data.participants || []).map((team) => {
+        if (team.team_lead_id === teamLeadId) {
+          return { ...team, status: "rejected" };
+        }
+        return team;
+      });
+
+      await updateDoc(eventRef, { participants: updatedParticipants });
+    } catch (error) {
+      console.error("Error rejecting registration:", error);
     }
   };
 
@@ -402,6 +454,8 @@ const Admin = ({ onLoad }) => {
                   events={events}
                   onEdit={setEditingEvent}
                   onDelete={handleDeleteEvent}
+                  onApproveRegistration={handleApproveRegistration}
+                  onRejectRegistration={handleRejectRegistration}
                 />
               </motion.div>
             )}
