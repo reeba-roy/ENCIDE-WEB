@@ -15,6 +15,7 @@ import {
   Mail,
   Phone,
   User,
+  QrCode,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -110,6 +111,7 @@ const EventsManager = ({ events, onEdit, onDelete }) => {
                 <th className="px-6 py-4">Date & Deadline</th>
                 <th className="px-6 py-4">Location</th>
                 <th className="px-6 py-4">Registrations</th>
+                <th className="px-6 py-4">QR</th>
                 <th className="px-6 py-4">Status</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
@@ -170,6 +172,32 @@ const EventsManager = ({ events, onEdit, onDelete }) => {
                       <Users className="w-4 h-4 text-violet-400" />
                       {event.participants_count || 0}
                     </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    {event.paymentQr ? (
+                      <div className="relative group/qr">
+                        <img
+                          src={event.paymentQr}
+                          alt="QR"
+                          className="w-8 h-8 rounded border border-neutral-700 object-cover cursor-pointer"
+                        />
+                        {/* Hover enlargement */}
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/qr:block z-50">
+                          <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-2 shadow-2xl">
+                            <img
+                              src={event.paymentQr}
+                              alt="Payment QR"
+                              className="w-40 h-40 object-contain rounded-lg"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-neutral-600 flex items-center gap-1 text-xs">
+                        <QrCode className="w-3.5 h-3.5" />
+                        None
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4">{getStatusBadge(event)}</td>
                   <td className="px-6 py-4 text-right">

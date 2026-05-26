@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Calendar,
   Clock,
@@ -9,8 +9,13 @@ import {
   Tag,
   Star,
   CheckCircle,
+  Upload,
+  Loader2,
+  QrCode,
+  Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { uploadToCloudinary, getEventFolder } from "../../lib/cloudinary";
 
 // Helper: convert a Firestore Timestamp (or Date) to "YYYY-MM-DD" for <input type="date">
 const timestampToDateString = (ts) => {
@@ -21,6 +26,154 @@ const timestampToDateString = (ts) => {
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+};
+
+// Reusable file-drop zone
+const ImageUploadZone = ({
+  label,
+  icon: Icon,
+  file,
+  existingUrl,
+  onFileSelect,
+  onRemove,
+  progress,
+  accept = "image/*",
+  compact = false,
+}) => {
+  const inputRef = useRef(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const previewSrc = file ? URL.createObjectURL(file) : existingUrl || null;
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const dropped = e.dataTransfer.files[0];
+    if (dropped && dropped.type.startsWith("image/")) {
+      onFileSelect(dropped);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => setIsDragOver(false);
+
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
+        <Icon className="w-4 h-4 text-violet-400" />
+        {label}
+      </label>
+
+      {previewSrc ? (
+        // Preview state
+        <div className="relative group">
+          <div
+            className={`relative rounded-xl overflow-hidden border border-neutral-700 bg-neutral-950/30 ${
+              compact ? "h-[120px]" : "h-[160px]"
+            }`}
+          >
+            <img
+              src={previewSrc}
+              alt="Preview"
+              className="w-full h-full object-cover opacity-90"
+              onError={(e) => {
+                e.target.style.display = "none";
+              }}
+            />
+            {/* Upload progress overlay */}
+            {progress !== null && progress !== undefined && progress < 100 && (
+              <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-2">
+                <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+                <div className="w-32 h-1.5 rounded-full bg-neutral-700 overflow-hidden">
+                  <div
+                    className="h-full bg-violet-500 rounded-full transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <span className="text-xs text-neutral-300">{progress}%</span>
+              </div>
+            )}
+            {/* Uploaded badge */}
+            {existingUrl && !file && (
+              <div className="absolute top-2 left-2 px-2 py-1 rounded-md bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-medium flex items-center gap-1">
+                <CheckCircle className="w-3 h-3" />
+                Uploaded
+              </div>
+            )}
+          </div>
+          {/* Action buttons */}
+          <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="p-1.5 rounded-lg bg-neutral-900/90 border border-neutral-700 text-neutral-300 hover:text-white hover:border-violet-500/50 transition-all"
+              title="Replace image"
+            >
+              <Upload className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={onRemove}
+              className="p-1.5 rounded-lg bg-neutral-900/90 border border-neutral-700 text-neutral-300 hover:text-red-400 hover:border-red-500/50 transition-all"
+              title="Remove image"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        // Empty drop zone
+        <div
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onClick={() => inputRef.current?.click()}
+          className={`relative rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200 flex flex-col items-center justify-center gap-2 ${
+            compact ? "py-6" : "py-8"
+          } ${
+            isDragOver
+              ? "border-violet-500 bg-violet-500/5"
+              : "border-neutral-700 bg-neutral-950/30 hover:border-neutral-600 hover:bg-neutral-950/50"
+          }`}
+        >
+          <div
+            className={`p-2.5 rounded-xl ${
+              isDragOver ? "bg-violet-500/10" : "bg-neutral-800"
+            } transition-colors`}
+          >
+            <Upload
+              className={`w-5 h-5 ${
+                isDragOver ? "text-violet-400" : "text-neutral-500"
+              } transition-colors`}
+            />
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-neutral-400">
+              <span className="text-violet-400 font-medium">Click to upload</span>{" "}
+              or drag and drop
+            </p>
+            <p className="text-xs text-neutral-600 mt-1">PNG, JPG, WebP</p>
+          </div>
+        </div>
+      )}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) onFileSelect(f);
+          e.target.value = "";
+        }}
+      />
+    </div>
+  );
 };
 
 const AddEventDialog = ({
@@ -37,11 +190,18 @@ const AddEventDialog = ({
     location: "",
     description: "",
     image: "",
+    paymentQr: "",
     tag: "",
     highlighted: false,
     is_over: false,
   });
 
+  const [posterFile, setPosterFile] = useState(null);
+  const [qrFile, setQrFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState({
+    poster: null,
+    qr: null,
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -53,6 +213,7 @@ const AddEventDialog = ({
         location: initialData.location || "",
         description: initialData.description || "",
         image: initialData.image || "",
+        paymentQr: initialData.paymentQr || "",
         tag: initialData.tag || "",
         highlighted: initialData.highlighted || false,
         is_over: initialData.is_over || false,
@@ -65,18 +226,53 @@ const AddEventDialog = ({
         location: "",
         description: "",
         image: "",
+        paymentQr: "",
         tag: "",
         highlighted: false,
         is_over: false,
       });
     }
+    // Reset file selections when dialog opens/closes
+    setPosterFile(null);
+    setQrFile(null);
+    setUploadProgress({ poster: null, qr: null });
   }, [initialData, open]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
     try {
-      await onSubmit(formData);
+      const folder = getEventFolder(formData.title);
+      const finalData = { ...formData };
+
+      // Upload poster if a new file was selected
+      if (posterFile) {
+        setUploadProgress((p) => ({ ...p, poster: 0 }));
+        const posterUrl = await uploadToCloudinary(
+          posterFile,
+          folder,
+          "poster",
+          (pct) => setUploadProgress((p) => ({ ...p, poster: pct }))
+        );
+        finalData.image = posterUrl;
+      }
+
+      // Upload QR code if a new file was selected
+      if (qrFile) {
+        setUploadProgress((p) => ({ ...p, qr: 0 }));
+        const qrUrl = await uploadToCloudinary(
+          qrFile,
+          folder,
+          "payment-qr",
+          (pct) => setUploadProgress((p) => ({ ...p, qr: pct }))
+        );
+        finalData.paymentQr = qrUrl;
+      }
+
+      await onSubmit(finalData);
+
+      // Reset form
       setFormData({
         title: "",
         date: "",
@@ -84,14 +280,18 @@ const AddEventDialog = ({
         location: "",
         description: "",
         image: "",
+        paymentQr: "",
         tag: "",
         highlighted: false,
         is_over: false,
       });
+      setPosterFile(null);
+      setQrFile(null);
     } catch (err) {
       console.error("Error submitting event:", err);
     } finally {
       setIsSubmitting(false);
+      setUploadProgress({ poster: null, qr: null });
     }
   };
 
@@ -261,30 +461,36 @@ const AddEventDialog = ({
                   />
                 </div>
 
-                {/* Image URL */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                    <ImageIcon className="w-4 h-4 text-violet-400" />
-                    Image URL
-                  </label>
-                  <input
-                    value={formData.image}
-                    onChange={(e) => handleChange("image", e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 transition-all text-sm"
+                {/* Image Uploads — side by side */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {/* Event Poster Upload */}
+                  <ImageUploadZone
+                    label="Event Poster"
+                    icon={ImageIcon}
+                    file={posterFile}
+                    existingUrl={formData.image}
+                    onFileSelect={(f) => setPosterFile(f)}
+                    onRemove={() => {
+                      setPosterFile(null);
+                      handleChange("image", "");
+                    }}
+                    progress={uploadProgress.poster}
                   />
-                  {formData.image && (
-                    <div className="relative rounded-lg overflow-hidden border border-neutral-700 h-[160px] bg-neutral-950/30">
-                      <img
-                        src={formData.image}
-                        alt="Event preview"
-                        className="w-full h-full object-cover opacity-80"
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                        }}
-                      />
-                    </div>
-                  )}
+
+                  {/* Payment QR Code Upload */}
+                  <ImageUploadZone
+                    label="Payment QR Code"
+                    icon={QrCode}
+                    file={qrFile}
+                    existingUrl={formData.paymentQr}
+                    onFileSelect={(f) => setQrFile(f)}
+                    onRemove={() => {
+                      setQrFile(null);
+                      handleChange("paymentQr", "");
+                    }}
+                    progress={uploadProgress.qr}
+                    compact
+                  />
                 </div>
 
                 {/* Toggle switches */}
@@ -348,13 +554,20 @@ const AddEventDialog = ({
                 form="event-form"
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium transition-all shadow-lg shadow-violet-600/20 hover:shadow-violet-600/40 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="px-6 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium transition-all shadow-lg shadow-violet-600/20 hover:shadow-violet-600/40 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
               >
-                {isSubmitting
-                  ? "Saving..."
-                  : isEditing
-                  ? "Save Changes"
-                  : "Create Event"}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    {uploadProgress.poster !== null || uploadProgress.qr !== null
+                      ? "Uploading..."
+                      : "Saving..."}
+                  </>
+                ) : isEditing ? (
+                  "Save Changes"
+                ) : (
+                  "Create Event"
+                )}
               </button>
             </div>
             {/* Custom Styles for Scrollbar */}
@@ -372,7 +585,8 @@ const AddEventDialog = ({
               .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                 background: #525252; /* neutral-600 */
               }
-            `}</style>
+            `}
+            </style>
           </motion.div>
         </div>
       )}
