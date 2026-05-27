@@ -69,9 +69,9 @@ function LoginForm({ onLoad }) {
   return (
     <div className="relative flex items-center justify-center min-h-screen p-4 overflow-hidden bg-neutral-950">
       {/* Background effects */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(124,58,237,0.05),transparent_60%)] pointer-events-none" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-fuchsia-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(220, 38, 38,0.05),transparent_60%)] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -85,7 +85,7 @@ function LoginForm({ onLoad }) {
         {/* Login Form */}
         <div className="relative p-8 overflow-hidden border shadow-2xl bg-neutral-900/50 backdrop-blur-xl border-neutral-800 rounded-2xl">
           {/* Top highlight line */}
-          <div className="absolute top-0 left-0 w-full h-px opacity-50 bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
+          <div className="absolute top-0 left-0 w-full h-px opacity-50 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <label
@@ -95,7 +95,7 @@ function LoginForm({ onLoad }) {
                 Email Address
               </label>
               <div className="relative group">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 group-focus-within:text-violet-400 transition-colors duration-300" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 group-focus-within:text-red-400 transition-colors duration-300" />
                 <input
                   id="email"
                   name="email"
@@ -103,7 +103,7 @@ function LoginForm({ onLoad }) {
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full h-12 pr-4 text-white transition-all duration-300 border rounded-lg pl-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
+                  className="w-full h-12 pr-4 text-white transition-all duration-300 border rounded-lg pl-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 hover:border-neutral-700"
                   required
                 />
               </div>
@@ -118,13 +118,13 @@ function LoginForm({ onLoad }) {
                 </label>
                 <Link
                   to="#"
-                  className="text-xs font-medium transition-colors text-violet-400 hover:text-violet-300"
+                  className="text-xs font-medium transition-colors text-red-400 hover:text-red-300"
                 >
                   Forgot password?
                 </Link>
               </div>
               <div className="relative group">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 group-focus-within:text-violet-400 transition-colors duration-300" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 group-focus-within:text-red-400 transition-colors duration-300" />
                 <input
                   id="password"
                   name="password"
@@ -132,14 +132,14 @@ function LoginForm({ onLoad }) {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full h-12 pr-4 text-white transition-all duration-300 border rounded-lg pl-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 hover:border-neutral-700"
+                  className="w-full h-12 pr-4 text-white transition-all duration-300 border rounded-lg pl-11 bg-neutral-950/50 border-neutral-800 placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 hover:border-neutral-700"
                   required
                 />
               </div>
             </div>
             <button
               type="submit"
-              className="w-full relative overflow-hidden group bg-violet-600 hover:bg-violet-700 text-white font-medium h-12 rounded-lg transition-all duration-300  hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full relative overflow-hidden group bg-red-600 hover:bg-red-700 text-white font-medium h-12 rounded-lg transition-all duration-300  hover:scale-[1.02] active:scale-[0.98]"
               disabled={isLoading}
             >
               <div className="relative z-10 flex items-center justify-center gap-2">
@@ -164,7 +164,7 @@ function LoginForm({ onLoad }) {
               Don't have an account?{" "}
               <Link
                 to="/signup"
-                className="font-medium transition-colors text-violet-400 hover:text-violet-300 hover:underline underline-offset-4"
+                className="font-medium transition-colors text-red-400 hover:text-red-300 hover:underline underline-offset-4"
               >
                 Sign up
               </Link>

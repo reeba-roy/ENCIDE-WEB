@@ -44,8 +44,8 @@ const ProfileCard = ({ user: initialUser }) => {
       >
         <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-xl overflow-hidden h-full">
           {/* Banner Gradient */}
-          <div className="h-24 bg-gradient-to-r from-violet-900/40 to-violet-900/40 relative">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.2),transparent_50%)]" />
+          <div className="h-24 bg-gradient-to-r from-red-900/40 to-red-900/40 relative">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38,0.2),transparent_50%)]" />
           </div>
           <div className="px-6 pb-6 -mt-12 text-center">
             {/* Avatar */}
@@ -57,7 +57,7 @@ const ProfileCard = ({ user: initialUser }) => {
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <span className="text-violet-400 text-2xl font-bold">
+                <span className="text-red-400 text-2xl font-bold">
                   {getInitials(profileData.name)}
                 </span>
               )}
@@ -68,7 +68,7 @@ const ProfileCard = ({ user: initialUser }) => {
             </p>
             <button
               onClick={() => setIsEditing(true)}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg border border-neutral-700 bg-neutral-800/50 text-neutral-300 text-sm hover:bg-violet-600/20 hover:text-white hover:border-violet-500/50 transition-all duration-300"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg border border-neutral-700 bg-neutral-800/50 text-neutral-300 text-sm hover:bg-red-600/20 hover:text-white hover:border-red-500/50 transition-all duration-300"
             >
               <Edit3 className="w-3.5 h-3.5" />
               Edit Profile
@@ -78,8 +78,8 @@ const ProfileCard = ({ user: initialUser }) => {
           <div className="px-6 pb-6 space-y-4">
             {infoItems.map((item, index) => (
               <div key={index} className="flex items-center gap-3 text-sm">
-                <div className="p-1.5 rounded-lg bg-violet-500/10">
-                  <item.icon className="w-3.5 h-3.5 text-violet-400" />
+                <div className="p-1.5 rounded-lg bg-red-500/10">
+                  <item.icon className="w-3.5 h-3.5 text-red-400" />
                 </div>
                 <div className="flex-1 min-w-0 text-left">
                   <p className="text-xs text-neutral-500">{item.label}</p>

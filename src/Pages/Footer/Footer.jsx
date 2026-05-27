@@ -43,7 +43,7 @@ const Footer = () => {
               className="inline-flex items-center gap-2 mb-6 group"
             >
               <span className="font-display font-bold text-2xl text-white">
-                <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent">
                   ENCIDE
                 </span>{" "}
                 Club
@@ -59,7 +59,7 @@ const Footer = () => {
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:bg-violet-600 hover:text-white hover:border-violet-500 transition-all duration-300 shadow-sm hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.5)]"
+                  className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:bg-red-600 hover:text-white hover:border-red-500 transition-all duration-300 shadow-sm hover:shadow-[0_0_15px_-3px_rgba(220, 38, 38,0.5)]"
                 >
                   <social.icon className="w-5 h-5" />
                 </a>
@@ -76,7 +76,7 @@ const Footer = () => {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-neutral-400 hover:text-violet-400 transition-colors text-sm"
+                    className="text-neutral-400 hover:text-red-400 transition-colors text-sm"
                   >
                     {link.label}
                   </a>
@@ -93,7 +93,7 @@ const Footer = () => {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-neutral-400 hover:text-violet-400 transition-colors text-sm"
+                    className="text-neutral-400 hover:text-red-400 transition-colors text-sm"
                   >
                     {link.label}
                   </a>
@@ -110,7 +110,7 @@ const Footer = () => {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-neutral-400 hover:text-violet-400 transition-colors text-sm"
+                    className="text-neutral-400 hover:text-red-400 transition-colors text-sm"
                   >
                     {link.label}
                   </a>

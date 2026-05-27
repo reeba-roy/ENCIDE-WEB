@@ -45,8 +45,8 @@ const ContactResponsesTable = ({ responses, onDelete, onToggleRead }) => {
     <>
       <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-xl overflow-hidden">
         <div className="p-6 border-b border-neutral-800 flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-violet-500/10">
-            <Mail className="w-5 h-5 text-violet-400" />
+          <div className="p-2 rounded-lg bg-red-500/10">
+            <Mail className="w-5 h-5 text-red-400" />
           </div>
           <h2 className="text-lg font-bold text-white">
             Contact Form Responses
@@ -89,7 +89,7 @@ const ContactResponsesTable = ({ responses, onDelete, onToggleRead }) => {
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => handleOpenResponse(response)}
-                        className="p-2 rounded-lg hover:bg-violet-500/10 text-neutral-400 hover:text-violet-400 transition-colors"
+                        className="p-2 rounded-lg hover:bg-red-500/10 text-neutral-400 hover:text-red-400 transition-colors"
                         title="View Details"
                       >
                         <Eye className="w-4 h-4" />
@@ -166,7 +166,7 @@ const ContactResponsesTable = ({ responses, onDelete, onToggleRead }) => {
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
                           selectedResponse.status === "read"
                             ? "bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/20"
-                            : "bg-violet-600 hover:bg-violet-700 text-white"
+                            : "bg-red-600 hover:bg-red-700 text-white"
                         }`}
                       >
                         {selectedResponse.status === "read" ? (

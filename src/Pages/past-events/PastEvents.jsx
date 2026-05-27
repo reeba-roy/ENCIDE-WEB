@@ -53,13 +53,13 @@ const PastEventsSection = () => {
       ref={ref}
     >
       {/* Background Effects */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.05),transparent_40%)] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-fuchsia-600/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38,0.05),transparent_40%)] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-600/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="container mx-auto px-4 relative">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center min-h-[400px]">
-            <div className="w-12 h-12 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
+            <div className="w-12 h-12 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin" />
             <p className="text-neutral-400 font-medium mt-4 animate-pulse">
               Loading events...
             </p>
@@ -80,7 +80,7 @@ const PastEventsSection = () => {
               <div className="text-center max-w-2xl mx-auto">
                 <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3">
                   Our{" "}
-                  <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent">
                     Legacy
                   </span>
                 </h2>
@@ -93,7 +93,7 @@ const PastEventsSection = () => {
               <div className="hidden md:flex absolute right-0 bottom-0 items-center gap-3">
                 <button
                   onClick={prevSlide}
-                  className="p-3 rounded-full border border-neutral-800 bg-neutral-900/50 hover:bg-violet-600 hover:border-violet-600 hover:text-white text-neutral-400 transition-all duration-300 group"
+                  className="p-3 rounded-full border border-neutral-800 bg-neutral-900/50 hover:bg-red-600 hover:border-red-600 hover:text-white text-neutral-400 transition-all duration-300 group"
                 >
                   <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
                 </button>
@@ -104,7 +104,7 @@ const PastEventsSection = () => {
                       onClick={() => setActiveIndex(i)}
                       className={`h-2 rounded-full transition-all duration-300 ${
                         i === activeIndex
-                          ? "w-8 bg-violet-600"
+                          ? "w-8 bg-red-600"
                           : "w-2 bg-neutral-800 hover:bg-neutral-700"
                       }`}
                     />
@@ -112,7 +112,7 @@ const PastEventsSection = () => {
                 </div>
                 <button
                   onClick={nextSlide}
-                  className="p-3 rounded-full border border-neutral-800 bg-neutral-900/50 hover:bg-violet-600 hover:border-violet-600 hover:text-white text-neutral-400 transition-all duration-300 group"
+                  className="p-3 rounded-full border border-neutral-800 bg-neutral-900/50 hover:bg-red-600 hover:border-red-600 hover:text-white text-neutral-400 transition-all duration-300 group"
                 >
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
                 </button>
@@ -122,7 +122,7 @@ const PastEventsSection = () => {
             <div className="flex md:hidden items-center justify-center gap-3 mb-8">
               <button
                 onClick={prevSlide}
-                className="p-3 rounded-full border border-neutral-800 bg-neutral-900/50 hover:bg-violet-600 hover:border-violet-600 hover:text-white text-neutral-400 transition-all duration-300 group"
+                className="p-3 rounded-full border border-neutral-800 bg-neutral-900/50 hover:bg-red-600 hover:border-red-600 hover:text-white text-neutral-400 transition-all duration-300 group"
               >
                 <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
               </button>
@@ -133,7 +133,7 @@ const PastEventsSection = () => {
                     onClick={() => setActiveIndex(i)}
                     className={`h-2 rounded-full transition-all duration-300 ${
                       i === activeIndex
-                        ? "w-8 bg-violet-600"
+                        ? "w-8 bg-red-600"
                         : "w-2 bg-neutral-800 hover:bg-neutral-700"
                     }`}
                   />
@@ -141,7 +141,7 @@ const PastEventsSection = () => {
               </div>
               <button
                 onClick={nextSlide}
-                className="p-3 rounded-full border border-neutral-800 bg-neutral-900/50 hover:bg-violet-600 hover:border-violet-600 hover:text-white text-neutral-400 transition-all duration-300 group"
+                className="p-3 rounded-full border border-neutral-800 bg-neutral-900/50 hover:bg-red-600 hover:border-red-600 hover:text-white text-neutral-400 transition-all duration-300 group"
               >
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
               </button>
@@ -161,7 +161,7 @@ const PastEventsSection = () => {
                   className={`group relative rounded-2xl overflow-hidden transition-all duration-500`}
                 >
                   {/* Card with dynamic height */}
-                  <div className="relative bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 hover:border-violet-500/30 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl h-full flex flex-col">
+                  <div className="relative bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 hover:border-red-500/30 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl h-full flex flex-col">
                     {/* Image Container */}
                     <div className="relative h-48 overflow-hidden shrink-0">
                       <img
@@ -176,13 +176,13 @@ const PastEventsSection = () => {
                       </div>
                       {/* Date Badge */}
                       <div className="absolute top-4 right-4 flex items-center gap-1.5 text-xs text-neutral-300 bg-neutral-900/90 px-2.5 py-1 rounded-full border border-neutral-800 backdrop-blur-md">
-                        <Calendar className="w-3.5 h-3.5 text-violet-400" />
+                        <Calendar className="w-3.5 h-3.5 text-red-400" />
                         {event.date.toDateString()}
                       </div>
                     </div>
                     {/* Content */}
                     <div className="p-5 flex flex-col flex-1">
-                      <h3 className="font-display text-xl font-bold text-white mb-2 group-hover:text-violet-300 transition-colors">
+                      <h3 className="font-display text-xl font-bold text-white mb-2 group-hover:text-red-300 transition-colors">
                         {event.title}
                       </h3>
                       <p className="text-neutral-400 text-sm mb-6 line-clamp-2">
@@ -208,7 +208,7 @@ const PastEventsSection = () => {
                             </p>
                           </div> */}
                           <div className="text-center">
-                            <p className="text-lg font-bold text-fuchsia-400">
+                            <p className="text-lg font-bold text-red-500">
                               {event.winners}
                             </p>
                             <p className="text-[10px] uppercase tracking-wider text-neutral-500">
@@ -218,7 +218,7 @@ const PastEventsSection = () => {
                         </div>
                         {/* Hover Reveal Button */}
                         <div className="mt-5">
-                          <button className="w-full py-2.5 rounded-lg bg-neutral-800  text-white text-sm font-medium transition duration-300 flex items-center justify-center gap-2 group/btn border border-neutral-700 hover:bg-violet-600 hover:border-violet-500 hover:transition hover:duration-300">
+                          <button className="w-full py-2.5 rounded-lg bg-neutral-800  text-white text-sm font-medium transition duration-300 flex items-center justify-center gap-2 group/btn border border-neutral-700 hover:bg-red-600 hover:border-red-500 hover:transition hover:duration-300">
                             View Gallery
                             <ExternalLink className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
                           </button>
@@ -244,9 +244,9 @@ const PastEventsSection = () => {
               ].map((stat, index) => (
                 <div
                   key={index}
-                  className="text-center p-4 rounded-xl bg-neutral-900/30 border border-neutral-800 hover:border-violet-500/20 transition-colors"
+                  className="text-center p-4 rounded-xl bg-neutral-900/30 border border-neutral-800 hover:border-red-500/20 transition-colors"
                 >
-                  <p className="font-display text-2xl md:text-3xl font-bold bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                  <p className="font-display text-2xl md:text-3xl font-bold bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent">
                     {stat.value}
                   </p>
                   <p className="text-sm text-neutral-500 mt-1 uppercase tracking-wider font-medium">

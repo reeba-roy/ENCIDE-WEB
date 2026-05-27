@@ -200,9 +200,9 @@ const EventsSection = () => {
       ref={ref}
     >
       {/* Background Effects */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.08),transparent_40%)] pointer-events-none" />
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-fuchsia-600/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38,0.08),transparent_40%)] pointer-events-none" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-red-600/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="container mx-auto px-4 md:px-8 lg:px-16 relative z-10">
         {/* Section Header */}
         <motion.div
@@ -211,15 +211,15 @@ const EventsSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 md:mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 mb-4 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)]">
-            <Zap className="w-3.5 h-3.5 text-violet-400" />
-            <span className="text-violet-400 font-medium text-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 mb-4 shadow-[0_0_15px_-3px_rgba(220, 38, 38,0.3)]">
+            <Zap className="w-3.5 h-3.5 text-red-400" />
+            <span className="text-red-400 font-medium text-sm">
               Upcoming Events
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             Don't Miss{" "}
-            <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent">
               What's Next
             </span>
           </h2>
@@ -235,8 +235,8 @@ const EventsSection = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="mb-8"
           >
-            <div className="relative rounded-2xl overflow-hidden border border-neutral-800  backdrop-blur-sm group hover:border-violet-500/30 transition-all duration-500">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="relative rounded-2xl overflow-hidden border border-neutral-800  backdrop-blur-sm group hover:border-red-500/30 transition-all duration-500">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/5 via-transparent to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <div className="grid lg:grid-cols-[42%_58%] gap-0">
                 <div className="relative h-64 lg:h-auto min-h-[300px] overflow-hidden">
                   <img
@@ -246,7 +246,7 @@ const EventsSection = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-neutral-900/80 lg:block hidden" />
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/50 to-transparent lg:hidden" />
-                  <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-violet-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-violet-600/20">
+                  <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-red-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-red-600/20">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                     {featuredEvent.tag}
                   </div>
@@ -260,15 +260,15 @@ const EventsSection = () => {
                   </p>
                   <div className="flex flex-wrap gap-4 mb-6 text-sm">
                     <div className="flex items-center gap-2 text-neutral-400">
-                      <Calendar className="w-4 h-4 text-violet-400" />
+                      <Calendar className="w-4 h-4 text-red-400" />
                       <span>{featuredEvent.date.toDateString()}</span>
                     </div>
                     <div className="flex items-center gap-2 text-neutral-400">
-                      <MapPin className="w-4 h-4 text-violet-400" />
+                      <MapPin className="w-4 h-4 text-red-400" />
                       <span>{featuredEvent.location}</span>
                     </div>
                     <div className="flex items-center gap-2 text-neutral-400">
-                      <Users className="w-4 h-4 text-violet-400" />
+                      <Users className="w-4 h-4 text-red-400" />
                       <span>
                         {featuredEvent.participants_count}+ Participants
                       </span>
@@ -285,7 +285,7 @@ const EventsSection = () => {
                   )}
                   <button
                     onClick={() => setSelectedEvent(featuredEvent)}
-                    className="w-fit group/btn inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-medium transition-all shadow-[0_0_20px_-5px_theme(colors.violet.500/0.5)] hover:shadow-[0_0_25px_-5px_theme(colors.violet.500/0.7)] hover:scale-[1.02]"
+                    className="w-fit group/btn inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition-all shadow-[0_0_20px_-5px_theme(colors.red.500/0.5)] hover:shadow-[0_0_25px_-5px_theme(colors.red.500/0.7)] hover:scale-[1.02]"
                   >
                     Register Now
                     <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -302,7 +302,7 @@ const EventsSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-              className="group relative backdrop-blur-sm rounded-xl overflow-hidden border border-neutral-800 hover:border-violet-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              className="group relative backdrop-blur-sm rounded-xl overflow-hidden border border-neutral-800 hover:border-red-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
               <div className="flex flex-col sm:flex-row h-full">
                 {/* Image */}
@@ -320,7 +320,7 @@ const EventsSection = () => {
                 </div>
                 {/* Content */}
                 <div className="p-5 flex flex-col justify-center flex-1 min-w-0">
-                  <h3 className="font-display text-lg font-bold text-white mb-2 group-hover:text-violet-300 transition-colors truncate">
+                  <h3 className="font-display text-lg font-bold text-white mb-2 group-hover:text-red-300 transition-colors truncate">
                     {event.title}
                   </h3>
                   <p className="text-neutral-400 text-sm mb-4 line-clamp-2">
@@ -328,20 +328,20 @@ const EventsSection = () => {
                   </p>
                   <div className="flex flex-wrap gap-3 text-xs text-neutral-500 mb-4">
                     <span className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-violet-500" />
+                      <Calendar className="w-3.5 h-3.5 text-red-500" />
                       {event.date.toDateString()}
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-violet-500" />
+                      <MapPin className="w-3.5 h-3.5 text-red-500" />
                       {event.location}
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5 text-violet-500" />
+                      <Users className="w-3.5 h-3.5 text-red-500" />
                       {event.participants_count}+
                     </span>
                     {event.deadline && (
                       <span className="flex items-center gap-1.5 ">
-                        <Clock className="w-3.5 h-3.5 text-violet-500" />
+                        <Clock className="w-3.5 h-3.5 text-red-500" />
                         By{" "}
                         {event.deadline.toLocaleDateString(undefined, {
                           month: "short",
@@ -358,7 +358,7 @@ const EventsSection = () => {
                   </div>
                   <button
                     onClick={() => setSelectedEvent(event)}
-                    className="w-fit mt-auto px-4 py-2 rounded-lg bg-neutral-800 hover:bg-violet-600 text-white text-sm font-medium transition-all duration-300 flex items-center gap-2 group/btn border border-neutral-700 hover:border-violet-500 hover:shadow-lg hover:shadow-violet-500/20"
+                    className="w-fit mt-auto px-4 py-2 rounded-lg bg-neutral-800 hover:bg-red-600 text-white text-sm font-medium transition-all duration-300 flex items-center gap-2 group/btn border border-neutral-700 hover:border-red-500 hover:shadow-lg hover:shadow-red-500/20"
                   >
                     Register Now
                     <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />

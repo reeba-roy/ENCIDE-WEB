@@ -17,7 +17,7 @@ const EventsList = ({ events, title, emptyMessage, isUpcomming }) => {
         [&::-webkit-scrollbar-track]:bg-transparent
         [&::-webkit-scrollbar-thumb]:bg-neutral-800
         [&::-webkit-scrollbar-thumb]:rounded-full
-        [&::-webkit-scrollbar-thumb]:hover:bg-violet-500/50
+        [&::-webkit-scrollbar-thumb]:hover:bg-red-500/50
         transition-colors"
       >
         {events?.length === 0 ? (
@@ -39,12 +39,12 @@ const EventsList = ({ events, title, emptyMessage, isUpcomming }) => {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className="p-3 rounded-xl bg-neutral-900/30 border border-neutral-800 hover:border-violet-500/30 transition-all duration-300 group cursor-pointer"
+                  className="p-3 rounded-xl bg-neutral-900/30 border border-neutral-800 hover:border-red-500/30 transition-all duration-300 group cursor-pointer"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2 mb-2">
-                        <h4 className="font-medium text-neutral-200 text-sm truncate group-hover:text-violet-300 transition-colors">
+                        <h4 className="font-medium text-neutral-200 text-sm truncate group-hover:text-red-300 transition-colors">
                           {event.title}
                         </h4>
                         

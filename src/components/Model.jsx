@@ -96,7 +96,7 @@ function Model({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.97 }}
         transition={{ duration: 0.2 }}
-        className="relative bg-neutral-900 border border-violet-500/20 rounded-2xl p-8 w-full max-w-md lg:max-w-2xl shadow-2xl max-h-[85vh] overflow-y-auto"
+        className="relative bg-neutral-900 border border-red-500/20 rounded-2xl p-8 w-full max-w-md lg:max-w-2xl shadow-2xl max-h-[85vh] overflow-y-auto"
         style={{
           scrollbarWidth: "thin",
           scrollbarColor: "#404040 #171717",
@@ -130,15 +130,15 @@ function Model({
           <div className="space-y-6">
             {isChecking && (
               <div className="flex flex-col items-center gap-4 text-neutral-400 py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
+                <Loader2 className="w-8 h-8 animate-spin text-red-400" />
                 <p>Checking registration...</p>
               </div>
             )}
 
             {(isReady || isSubmitting) && (
               <>
-                <div className="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-violet-400" />
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-red-400" />
                 </div>
 
                 <h3 className="text-2xl font-bold text-white">
@@ -154,7 +154,7 @@ function Model({
                 ) : (
                   <p className="text-neutral-400">
                     Register for{" "}
-                    <span className="text-violet-300 font-medium">
+                    <span className="text-red-300 font-medium">
                       {event.title}
                     </span>
                   </p>
@@ -162,11 +162,11 @@ function Model({
 
                 <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-800 space-y-3 text-sm text-neutral-300">
                   <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-violet-400" />
+                    <Calendar className="w-4 h-4 text-red-400" />
                     {event.date.toString()}
                   </div>
                   <div className="flex items-center gap-3">
-                    <MapPin className="w-4 h-4 text-violet-400" />
+                    <MapPin className="w-4 h-4 text-red-400" />
                     {event.location}
                   </div>
                 </div>
@@ -208,7 +208,7 @@ function Model({
                         value={memberCount}
                         disabled={isSubmitting}
                         onChange={(e) => setMemberCount(Number(e.target.value))}
-                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-violet-500"
+                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
                       >
                         {[1, 2, 3, 4].map((num) => (
                           <option key={num} value={num}>
@@ -229,7 +229,7 @@ function Model({
                           value={teamName}
                           onChange={(e) => setTeamName(e.target.value)}
                           disabled={isSubmitting}
-                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-violet-500"
+                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
                           placeholder="Enter team name"
                         />
                         {!isTeamNameValid && (
@@ -260,7 +260,7 @@ function Model({
                             updated[index].name = e.target.value;
                             setMembers(updated);
                           }}
-                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-violet-500"
+                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
                         />
 
                         <input
@@ -273,7 +273,7 @@ function Model({
                             updated[index].email = e.target.value;
                             setMembers(updated);
                           }}
-                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-violet-500"
+                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
                         />
 
                         <input
@@ -286,7 +286,7 @@ function Model({
                             updated[index].phone = e.target.value;
                             setMembers(updated);
                           }}
-                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-violet-500"
+                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
                         />
                       </div>
                     ))}
@@ -334,7 +334,7 @@ function Model({
                                   onClick={() =>
                                     paymentInputRef.current?.click()
                                   }
-                                  className="p-1.5 rounded-lg bg-neutral-900/90 border border-neutral-700 text-neutral-300 hover:text-white hover:border-violet-500/50 transition-all"
+                                  className="p-1.5 rounded-lg bg-neutral-900/90 border border-neutral-700 text-neutral-300 hover:text-white hover:border-red-500/50 transition-all"
                                   title="Replace"
                                 >
                                   <Upload className="w-3.5 h-3.5" />
@@ -429,7 +429,7 @@ function Model({
                   <button
                     onClick={onConfirm}
                     disabled={isSubmitting || !isFormValid}
-                    className="flex-1 px-4 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white font-medium flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-medium flex items-center justify-center gap-2"
                   >
                     {isSubmitting ? (
                       <>

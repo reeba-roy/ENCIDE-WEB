@@ -7,7 +7,7 @@ const SkeletonModel = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="relative bg-neutral-900 border border-violet-500/20 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl overflow-hidden"
+        className="relative bg-neutral-900 border border-red-500/20 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl overflow-hidden"
       >
         {/* Close Button Skeleton */}
         <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-800 animate-pulse" />
