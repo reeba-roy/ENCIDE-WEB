@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import planetHorizon from "../../assets/planet-horizon.png";
 import encideLogo from "../../assets/encideLogo.png";
+import LiquidEther from "../../components/LiquidEther";
 
 const codeSnippets = [
   "const future = await dream.build();",
@@ -21,7 +22,7 @@ const codeSnippets = [
 // Floating code particles
 const CodeParticle = ({ delay, x, duration }) => (
   <motion.div
-    className="absolute text-violet-500/20 font-mono text-xs whitespace-nowrap"
+    className="absolute text-red-500/20 font-mono text-xs whitespace-nowrap"
     initial={{ y: "100vh", x: `${x}%`, opacity: 0 }}
     animate={{ y: "-100vh", opacity: [0, 0.5, 0.5, 0] }}
     transition={{
@@ -97,9 +98,9 @@ const TerminalWindow = () => {
       style={{ perspective: "1000px" }}
     >
       {/* Terminal glow */}
-      <div className="absolute -inset-4 bg-violet-500/20 rounded-2xl blur-2xl" />
+      <div className="absolute -inset-4 bg-red-500/20 rounded-2xl blur-2xl" />
       {/* Terminal container */}
-      <div className="relative bg-neutral-900/80 backdrop-blur-xl border border-neutral-800 rounded-xl overflow-hidden shadow-2xl shadow-violet-500/10">
+      <div className="relative bg-neutral-900/80 backdrop-blur-xl border border-neutral-800 rounded-xl overflow-hidden shadow-2xl shadow-red-500/10">
         {/* Terminal header */}
         <div className="flex items-center gap-2 px-4 py-3 bg-neutral-900/50 border-b border-neutral-800">
           <div className="flex gap-2">
@@ -114,10 +115,10 @@ const TerminalWindow = () => {
         {/* Terminal content */}
         <div className="p-4 font-mono text-sm space-y-2 min-h-[120px]">
           <div className="flex items-center gap-2">
-            <span className="text-violet-500">→</span>
+            <span className="text-red-500">→</span>
             <span className="text-neutral-200">{line1}</span>
             {!complete1 && (
-              <span className="animate-pulse text-violet-500">▊</span>
+              <span className="animate-pulse text-red-500">▊</span>
             )}
           </div>
           {complete1 && (
@@ -128,7 +129,7 @@ const TerminalWindow = () => {
             >
               <span className="text-neutral-400">{line2}</span>
               {!complete2 && (
-                <span className="animate-pulse text-violet-500">▊</span>
+                <span className="animate-pulse text-red-500">▊</span>
               )}
             </motion.div>
           )}
@@ -149,7 +150,7 @@ const TerminalWindow = () => {
 // Orbiting icons
 const OrbitingElement = ({ icon: Icon, delay, radius, duration }) => (
   <motion.div
-    className="absolute w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center backdrop-blur-sm"
+    className="absolute w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center backdrop-blur-sm"
     style={{
       left: "50%",
       top: "50%",
@@ -177,7 +178,7 @@ const OrbitingElement = ({ icon: Icon, delay, radius, duration }) => (
       ease: "linear",
     }}
   >
-    <Icon className="w-5 h-5 text-violet-400" />
+    <Icon className="w-5 h-5 text-red-400" />
   </motion.div>
 );
 const HeroSection = ({ loading }) => {
@@ -214,8 +215,33 @@ const HeroSection = ({ loading }) => {
         {/* Dark gradient overlay - fades bottom, keeps top clear */}
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent" />
       </motion.div>
+      {/* LiquidEther WebGL fluid simulation background */}
+      <div className="absolute inset-0 pointer-events-auto z-5">
+        <LiquidEther
+          colors={['#dc2626', '#ef4444', '#991b1b']}
+          mouseForce={20}
+          cursorSize={100}
+          isViscous={true}
+          viscous={30}
+          iterationsViscous={32}
+          iterationsPoisson={32}
+          resolution={0.5}
+          isBounce={false}
+          autoDemo={true}
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          takeoverDuration={0.25}
+          autoResumeDelay={3000}
+          autoRampDuration={0.6}
+          style={{
+            width: '100%',
+            height: '100%',
+            opacity: 0.6,
+          }}
+        />
+      </div>
       {/* Atmospheric glow overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-violet-900/10 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-red-900/10 via-transparent to-transparent pointer-events-none" />
       {/* Grid pattern overlay */}
       <div
         className="absolute inset-0 opacity-[0.03]"
@@ -232,7 +258,7 @@ const HeroSection = ({ loading }) => {
         ))}
       </div>
       {/* Central radial glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-violet-600/5 blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-red-600/5 blur-[100px] pointer-events-none" />
       {/* Main content */}
       <div className="container mx-auto px-4 lg:px-16 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -243,17 +269,18 @@ const HeroSection = ({ loading }) => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="mb-4"
+              className="mb-4 -ml-[15px]"
             >
-              <img src={encideLogo} className="items-center" />
+              <img src={encideLogo} className="w-[270px] h-auto mx-auto lg:mx-0" />
             </motion.div>
             {/* Motto */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="mb-6"
+              className="mb-6 relative"
             >
+              <div className="absolute -left-4 top-0 w-1 h-12 bg-gradient-to-b from-red-500 to-transparent rounded-full opacity-60" />
               <p className="text-xl md:text-2xl lg:text-3xl font-display font-medium text-neutral-200">
                 Code what you can't
               </p>
@@ -263,14 +290,13 @@ const HeroSection = ({ loading }) => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="text-lg text-neutral-400 mb-8 max-w-xl mx-auto lg:mx-0"
+              className="text-lg text-neutral-400 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
               Where impossible becomes{" "}
-              <span className="text-violet-400 font-mono">
+              <span className="text-red-300 font-semibold bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent">
                 {"{ possible }"}
               </span>
-              . Join a community of passionate developers crafting the future,
-              one line at a time.
+              . <span className="text-neutral-300">Join a community crafting the future, one line at a time.</span>
             </motion.p>
             {/* CTA Buttons - Pure Tailwind Replacements */}
             <motion.div
@@ -285,11 +311,12 @@ const HeroSection = ({ loading }) => {
                     .getElementById("contact")
                     ?.scrollIntoView({ behavior: "smooth" })
                 }
-                className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold text-white bg-violet-600 rounded-xl hover:bg-violet-500 transition-all duration-300 shadow-lg shadow-violet-600/25 hover:shadow-violet-600/40 hover:-translate-y-0.5"
+                className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold text-white bg-gradient-to-br from-red-600 to-red-700 rounded-lg transition-all duration-300 shadow-[0_8px_16px_-4px_rgba(220,38,38,0.4)] hover:shadow-[0_12px_24px_-4px_rgba(220,38,38,0.6)] hover:scale-105 overflow-hidden border border-red-500/20"
               >
-                <Code2 className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                Join ENCIDE
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Code2 className="w-5 h-5 group-hover:rotate-12 transition-transform relative z-10" />
+                <span className="relative z-10">Join ENCIDE</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
               </button>
               <button
                 onClick={() =>
@@ -297,10 +324,10 @@ const HeroSection = ({ loading }) => {
                     .getElementById("events")
                     ?.scrollIntoView({ behavior: "smooth" })
                 }
-                className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold text-white bg-neutral-900/50 border border-neutral-800 rounded-xl hover:bg-neutral-800 hover:border-violet-500/30 transition-all duration-300"
+                className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold text-white bg-neutral-900/40 border-2 border-neutral-700 rounded-lg hover:bg-neutral-800/60 hover:border-red-500/50 transition-all duration-300 backdrop-blur-sm hover:scale-105"
               >
-                <Sparkles className="w-5 h-5 text-neutral-400 group-hover:text-violet-400 transition-colors" />
-                Explore Events
+                <Sparkles className="w-5 h-5 text-neutral-400 group-hover:text-red-300 transition-colors" />
+                <span>Explore Events</span>
               </button>
             </motion.div>
             {/* Stats */}
@@ -311,14 +338,14 @@ const HeroSection = ({ loading }) => {
               className="flex flex-wrap gap-8 justify-center lg:justify-start"
             >
               {[
-                { value: 500, label: "Members", suffix: "+" },
-                { value: 50, label: "Projects Built", suffix: "+" },
-                { value: 10, label: "Years Legacy", suffix: "+" },
+                { value: 50, label: "Members", suffix: "+" },
+                { value: 50, label: "Events Held", suffix: "+" },
+                { value: 4, label: "Years Legacy", suffix: "+" },
               ].map((stat, index) => (
                 <div key={index} className="text-center lg:text-left">
                   <p className="text-3xl md:text-4xl font-display font-bold text-white">
                     <AnimatedNumber target={stat.value} />
-                    <span className="text-violet-400">{stat.suffix}</span>
+                    <span className="text-red-400">{stat.suffix}</span>
                   </p>
                   <p className="text-sm text-neutral-500">{stat.label}</p>
                 </div>
@@ -359,7 +386,7 @@ const HeroSection = ({ loading }) => {
               transition={{ delay: 1.2, duration: 0.6 }}
               className="absolute -right-4 top-1/4 px-4 py-2 rounded-lg bg-neutral-900/60 backdrop-blur-md border border-neutral-800 font-mono text-xs text-neutral-400 shadow-xl"
             >
-              <span className="text-violet-400">const</span> passion ={" "}
+              <span className="text-red-400">const</span> passion ={" "}
               <span className="text-emerald-400">'∞'</span>;
             </motion.div>
             <motion.div
@@ -368,9 +395,9 @@ const HeroSection = ({ loading }) => {
               transition={{ delay: 1.4, duration: 0.6 }}
               className="absolute -left-8 bottom-1/4 px-4 py-2 rounded-lg bg-neutral-900/60 backdrop-blur-md border border-neutral-800 font-mono text-xs text-neutral-400 shadow-xl"
             >
-              <span className="text-violet-400">{"<"}</span>
+              <span className="text-red-400">{"<"}</span>
               <span className="text-amber-400">Innovation</span>
-              <span className="text-violet-400">{" />"}</span>
+              <span className="text-red-400">{"/>"}</span>
             </motion.div>
           </div>
         </div>
@@ -389,7 +416,7 @@ const HeroSection = ({ loading }) => {
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         >
-          <ChevronDown className="w-5 h-5 text-violet-500" />
+          <ChevronDown className="w-5 h-5 text-red-500" />
         </motion.div>
       </motion.div>
     </section>
