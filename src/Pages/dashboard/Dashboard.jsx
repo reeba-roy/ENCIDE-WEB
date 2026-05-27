@@ -43,11 +43,11 @@ const Dashboard = ({ onLoad }) => {
   });
 
   return (
-    <div className="min-h-screen bg-neutral-950 relative overflow-hidden font-sans selection:bg-violet-500/30 font-display">
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.05),transparent_50%)] pointer-events-none" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen bg-neutral-950 relative overflow-hidden font-sans selection:bg-red-500/30 font-display">
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38,0.05),transparent_50%)] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-600/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-600/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -63,8 +63,8 @@ const Dashboard = ({ onLoad }) => {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2"
           >
-            <div className="p-2 rounded-lg bg-violet-500/10 border border-violet-500/20">
-              <LayoutDashboard className="w-5 h-5 text-violet-400" />
+            <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
+              <LayoutDashboard className="w-5 h-5 text-red-400" />
             </div>
             <h1 className="text-xl font-bold text-white">Dashboard</h1>
           </motion.div>

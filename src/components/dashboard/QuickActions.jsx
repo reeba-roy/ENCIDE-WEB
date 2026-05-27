@@ -20,13 +20,13 @@ const QuickActions = () => {
       icon: Calendar,
       label: "Browse Events",
       href: "/#events",
-      color: "text-violet-400",
+      color: "text-red-400",
     },
     {
       icon: Users,
       label: "Meet Team",
       href: "/#team",
-      color: "text-fuchsia-400",
+      color: "text-red-500",
     },
     {
       icon: Mail,
@@ -60,7 +60,7 @@ const QuickActions = () => {
             <Link
               key={index}
               to={action.href}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-violet-500/30 hover:bg-neutral-800 transition-all duration-300 group"
+              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-red-500/30 hover:bg-neutral-800 transition-all duration-300 group"
             >
               <div className="p-2 rounded-lg bg-neutral-950 group-hover:scale-110 transition-transform">
                 <action.icon className={`w-4 h-4 ${action.color}`} />
@@ -73,7 +73,7 @@ const QuickActions = () => {
           <Link
             to={"/"}
             onClick={logout}
-            className="flex flex-col items-center gap-2 p-3 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-violet-500/30 hover:bg-neutral-800 transition-all duration-300 group"
+            className="flex flex-col items-center gap-2 p-3 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-red-500/30 hover:bg-neutral-800 transition-all duration-300 group"
           >
             <div className="p-2 rounded-lg bg-neutral-950 group-hover:scale-110 transition-transform">
               <LogOut className={`w-4 h-4 text-blue-400`} />

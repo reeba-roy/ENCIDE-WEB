@@ -99,8 +99,8 @@ const EventsManager = ({
   const EventTable = ({ events: tableEvents, title }) => (
     <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-xl overflow-hidden mb-8">
       <div className="p-6 border-b border-neutral-800 flex items-center gap-3">
-        <div className="p-2 rounded-lg bg-violet-500/10">
-          <Calendar className="w-5 h-5 text-violet-400" />
+        <div className="p-2 rounded-lg bg-red-500/10">
+          <Calendar className="w-5 h-5 text-red-400" />
         </div>
         <h2 className="text-lg font-bold text-white flex items-center gap-3">
           {title}
@@ -159,7 +159,7 @@ const EventsManager = ({
                           </p>
                           <div className="flex items-center gap-2 mt-0.5">
                             {event.tag && (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-violet-400 bg-violet-500/10 px-1.5 py-0.5 rounded border border-violet-500/20">
+                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">
                                 <Tag className="w-2.5 h-2.5" />
                                 {event.tag}
                               </span>
@@ -192,7 +192,7 @@ const EventsManager = ({
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <span className="flex items-center gap-1.5 text-white font-medium">
-                          <Users className="w-4 h-4 text-violet-400" />
+                          <Users className="w-4 h-4 text-red-400" />
                           {event.participants_count || 0}
                         </span>
                         {pendingCount > 0 && (
@@ -236,7 +236,7 @@ const EventsManager = ({
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleViewRegistrations(event)}
-                          className="p-2 rounded-lg hover:bg-violet-500/10 text-neutral-400 hover:text-violet-400 transition-colors relative"
+                          className="p-2 rounded-lg hover:bg-red-500/10 text-neutral-400 hover:text-red-400 transition-colors relative"
                           title="View Registrations"
                         >
                           <Eye className="w-4 h-4" />
@@ -246,7 +246,7 @@ const EventsManager = ({
                         </button>
                         <button
                           onClick={() => onEdit(event)}
-                          className="p-2 rounded-lg hover:bg-violet-500/10 text-neutral-400 hover:text-violet-400 transition-colors"
+                          className="p-2 rounded-lg hover:bg-red-500/10 text-neutral-400 hover:text-red-400 transition-colors"
                           title="Edit Event"
                         >
                           <Edit className="w-4 h-4" />
@@ -367,7 +367,7 @@ const EventsManager = ({
                 <div>
                   <h2 className="text-xl font-bold text-white flex items-center gap-3">
                     Registrations
-                    <span className="bg-violet-500/10 text-violet-400 text-sm font-medium px-2.5 py-0.5 rounded-full border border-violet-500/20">
+                    <span className="bg-red-500/10 text-red-400 text-sm font-medium px-2.5 py-0.5 rounded-full border border-red-500/20">
                       {selectedEventForRegistrations.participants_count || 0}{" "}
                       registered
                     </span>
@@ -397,7 +397,7 @@ const EventsManager = ({
                     placeholder="Search by team name, member, email, phone..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 transition-all"
+                    className="w-full bg-neutral-950 border border-neutral-800 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all"
                   />
                 </div>
 
@@ -414,7 +414,7 @@ const EventsManager = ({
                         onClick={() => setStatusFilter(status)}
                         className={`text-xs px-3 py-1.5 rounded-md font-medium transition-all ${
                           statusFilter === status
-                            ? "bg-violet-600 text-white shadow"
+                            ? "bg-red-600 text-white shadow"
                             : "text-neutral-400 hover:text-white hover:bg-neutral-900"
                         }`}
                       >
@@ -422,7 +422,7 @@ const EventsManager = ({
                         <span
                           className={`ml-1.5 text-[10px] px-1 py-0.2 rounded-full border ${
                             statusFilter === status
-                              ? "bg-violet-500/20 text-white border-violet-400/30"
+                              ? "bg-red-500/20 text-white border-red-400/30"
                               : "bg-neutral-800 text-neutral-500 border-neutral-700"
                           }`}
                         >
@@ -468,8 +468,8 @@ const EventsManager = ({
                         {/* Team Header */}
                         <div className="px-5 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-neutral-900/50 border-b border-neutral-800">
                           <div className="flex items-center gap-3">
-                            <div className="p-2 rounded-lg bg-violet-500/10">
-                              <Users className="w-4 h-4 text-violet-400" />
+                            <div className="p-2 rounded-lg bg-red-500/10">
+                              <Users className="w-4 h-4 text-red-400" />
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
@@ -567,7 +567,7 @@ const EventsManager = ({
                                   <p className="text-sm font-medium text-white flex items-center gap-2">
                                     {member.name || "No name"}
                                     {mIdx === 0 && (
-                                      <span className="text-[10px] text-violet-400 bg-violet-500/10 px-1.5 py-0.5 rounded border border-violet-500/20 font-semibold">
+                                      <span className="text-[10px] text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20 font-semibold">
                                         Lead
                                       </span>
                                     )}

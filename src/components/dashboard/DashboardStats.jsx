@@ -7,8 +7,8 @@ const DashboardStats = ({ upcomingCount, completedCount, totalEvents }) => {
       label: "Upcoming Events",
       value: upcomingCount,
       icon: Clock,
-      color: "text-violet-400",
-      bgColor: "bg-violet-500/10",
+      color: "text-red-400",
+      bgColor: "bg-red-500/10",
     },
     {
       label: "Completed",
@@ -21,8 +21,8 @@ const DashboardStats = ({ upcomingCount, completedCount, totalEvents }) => {
       label: "Total Registered",
       value: totalEvents,
       icon: Calendar,
-      color: "text-fuchsia-400",
-      bgColor: "bg-fuchsia-500/10",
+      color: "text-red-500",
+      bgColor: "bg-red-500/10",
     },
     {
       label: "Attendance Rate",
@@ -44,7 +44,7 @@ const DashboardStats = ({ upcomingCount, completedCount, totalEvents }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: index * 0.1 }}
         >
-          <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 hover:border-violet-500/30 transition-all duration-300 rounded-xl p-4">
+          <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 hover:border-red-500/30 transition-all duration-300 rounded-xl p-4">
             <div className="flex items-center gap-3">
               <div className={`p-2.5 rounded-xl ${stat.bgColor}`}>
                 <stat.icon className={`w-5 h-5 ${stat.color}`} />

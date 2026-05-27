@@ -295,9 +295,9 @@ const Admin = ({ onLoad }) => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-violet-500/30">
+    <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-red-500/30">
       {/* Background Effects */}
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(124,58,237,0.05),transparent_50%)] pointer-events-none" />
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38,0.05),transparent_50%)] pointer-events-none" />
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800">
         <div className="container mx-auto px-4 py-3">
@@ -311,7 +311,7 @@ const Admin = ({ onLoad }) => {
               </Link>
               <div className="h-6 w-px bg-neutral-800 mx-2 hidden md:block" />
               <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-violet-600">
+                <div className="p-1.5 rounded-lg bg-red-600">
                   <LayoutDashboard className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-lg font-bold text-white hidden md:block">
@@ -322,7 +322,7 @@ const Admin = ({ onLoad }) => {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsAddEventOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-medium text-sm transition-all shadow-lg shadow-violet-600/20"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium text-sm transition-all shadow-lg shadow-red-600/20"
               >
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">Add Event</span>
@@ -331,7 +331,7 @@ const Admin = ({ onLoad }) => {
               <div className="relative">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-800 border-2 border-neutral-700 hover:border-violet-500 hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.5)] transition-all overflow-hidden"
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-800 border-2 border-neutral-700 hover:border-red-500 hover:shadow-[0_0_15px_-3px_rgba(220, 38, 38,0.5)] transition-all overflow-hidden"
                 >
                   <User className="w-5 h-5 text-neutral-400" />
                 </button>
@@ -394,7 +394,7 @@ const Admin = ({ onLoad }) => {
                   <p className="text-sm text-neutral-400 font-medium">
                     {stat.label}
                   </p>
-                  <p className="text-3xl font-bold text-white mt-2 group-hover:text-violet-200 transition-colors">
+                  <p className="text-3xl font-bold text-white mt-2 group-hover:text-red-200 transition-colors">
                     {stat.value}
                   </p>
                 </div>
@@ -412,7 +412,7 @@ const Admin = ({ onLoad }) => {
               onClick={() => setActiveTab("contacts")}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "contacts"
-                  ? "bg-violet-600 text-white shadow-lg "
+                  ? "bg-red-600 text-white shadow-lg "
                   : "text-neutral-400 hover:text-white hover:bg-neutral-800"
               }`}
             >
@@ -423,7 +423,7 @@ const Admin = ({ onLoad }) => {
               onClick={() => setActiveTab("events")}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "events"
-                  ? "bg-violet-600 text-white shadow-lg "
+                  ? "bg-red-600 text-white shadow-lg "
                   : "text-neutral-400 hover:text-white hover:bg-neutral-800"
               }`}
             >

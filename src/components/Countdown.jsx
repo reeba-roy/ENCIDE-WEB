@@ -32,8 +32,8 @@ const Countdown = ({ targetDate }) => {
         { value: timeLeft.secs, label: "Sec" },
       ].map((item, i) => (
         <div key={i} className="text-center">
-          <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center backdrop-blur-sm">
-            <span className="font-display text-lg md:text-xl font-bold text-violet-400">
+          <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center backdrop-blur-sm">
+            <span className="font-display text-lg md:text-xl font-bold text-red-400">
               {String(item.value).padStart(2, "0")}
             </span>
           </div>

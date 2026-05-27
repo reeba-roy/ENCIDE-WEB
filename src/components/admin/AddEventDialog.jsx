@@ -64,7 +64,7 @@ const ImageUploadZone = ({
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-        <Icon className="w-4 h-4 text-violet-400" />
+        <Icon className="w-4 h-4 text-red-400" />
         {label}
       </label>
 
@@ -87,10 +87,10 @@ const ImageUploadZone = ({
             {/* Upload progress overlay */}
             {progress !== null && progress !== undefined && progress < 100 && (
               <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-2">
-                <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+                <Loader2 className="w-6 h-6 text-red-400 animate-spin" />
                 <div className="w-32 h-1.5 rounded-full bg-neutral-700 overflow-hidden">
                   <div
-                    className="h-full bg-violet-500 rounded-full transition-all duration-300"
+                    className="h-full bg-red-500 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -110,7 +110,7 @@ const ImageUploadZone = ({
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="p-1.5 rounded-lg bg-neutral-900/90 border border-neutral-700 text-neutral-300 hover:text-white hover:border-violet-500/50 transition-all"
+              className="p-1.5 rounded-lg bg-neutral-900/90 border border-neutral-700 text-neutral-300 hover:text-white hover:border-red-500/50 transition-all"
               title="Replace image"
             >
               <Upload className="w-3.5 h-3.5" />
@@ -136,24 +136,24 @@ const ImageUploadZone = ({
             compact ? "py-6" : "py-8"
           } ${
             isDragOver
-              ? "border-violet-500 bg-violet-500/5"
+              ? "border-red-500 bg-red-500/5"
               : "border-neutral-700 bg-neutral-950/30 hover:border-neutral-600 hover:bg-neutral-950/50"
           }`}
         >
           <div
             className={`p-2.5 rounded-xl ${
-              isDragOver ? "bg-violet-500/10" : "bg-neutral-800"
+              isDragOver ? "bg-red-500/10" : "bg-neutral-800"
             } transition-colors`}
           >
             <Upload
               className={`w-5 h-5 ${
-                isDragOver ? "text-violet-400" : "text-neutral-500"
+                isDragOver ? "text-red-400" : "text-neutral-500"
               } transition-colors`}
             />
           </div>
           <div className="text-center">
             <p className="text-sm text-neutral-400">
-              <span className="text-violet-400 font-medium">Click to upload</span>{" "}
+              <span className="text-red-400 font-medium">Click to upload</span>{" "}
               or drag and drop
             </p>
             <p className="text-xs text-neutral-600 mt-1">PNG, JPG, WebP</p>
@@ -357,7 +357,7 @@ const AddEventDialog = ({
                     value={formData.title}
                     onChange={(e) => handleChange("title", e.target.value)}
                     placeholder="Enter event title"
-                    className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 transition-all text-sm"
+                    className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all text-sm"
                     required
                   />
                 </div>
@@ -366,27 +366,27 @@ const AddEventDialog = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-violet-400" />
+                      <Calendar className="w-4 h-4 text-red-400" />
                       Event Date
                     </label>
                     <input
                       type="date"
                       value={formData.date}
                       onChange={(e) => handleChange("date", e.target.value)}
-                      className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 transition-all text-sm [color-scheme:dark]"
+                      className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all text-sm [color-scheme:dark]"
                       required
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-violet-400" />
+                      <Clock className="w-4 h-4 text-red-400" />
                       Registration Deadline
                     </label>
                     <input
                       type="date"
                       value={formData.deadline}
                       onChange={(e) => handleChange("deadline", e.target.value)}
-                      className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 transition-all text-sm [color-scheme:dark]"
+                      className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all text-sm [color-scheme:dark]"
                       required
                     />
                   </div>
@@ -396,27 +396,27 @@ const AddEventDialog = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-violet-400" />
+                      <MapPin className="w-4 h-4 text-red-400" />
                       Location
                     </label>
                     <input
                       value={formData.location}
                       onChange={(e) => handleChange("location", e.target.value)}
                       placeholder="Enter event location"
-                      className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 transition-all text-sm"
+                      className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all text-sm"
                       required
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                      <Tag className="w-4 h-4 text-violet-400" />
+                      <Tag className="w-4 h-4 text-red-400" />
                       Event Tag
                     </label>
                     <div className="relative">
                       <select
                         value={formData.tag}
                         onChange={(e) => handleChange("tag", e.target.value)}
-                        className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 transition-all appearance-none text-sm cursor-pointer"
+                        className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all appearance-none text-sm cursor-pointer"
                         required
                       >
                         <option value="" disabled>
@@ -447,7 +447,7 @@ const AddEventDialog = ({
                 {/* Description */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-violet-400" />
+                    <FileText className="w-4 h-4 text-red-400" />
                     Description
                   </label>
                   <textarea
@@ -456,7 +456,7 @@ const AddEventDialog = ({
                       handleChange("description", e.target.value)
                     }
                     placeholder="Enter event description"
-                    className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 transition-all resize-none min-h-[120px] text-sm custom-scrollbar"
+                    className="w-full bg-neutral-950/30 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all resize-none min-h-[120px] text-sm custom-scrollbar"
                     required
                   />
                 </div>
@@ -496,7 +496,7 @@ const AddEventDialog = ({
                 {/* Toggle switches */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Highlighted toggle */}
-                  <label className="flex items-center justify-between p-4 rounded-xl border border-neutral-700 bg-neutral-950/30 cursor-pointer hover:border-violet-500/30 transition-colors group">
+                  <label className="flex items-center justify-between p-4 rounded-xl border border-neutral-700 bg-neutral-950/30 cursor-pointer hover:border-red-500/30 transition-colors group">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg ${formData.highlighted ? 'bg-amber-500/10' : 'bg-neutral-800'} transition-colors`}>
                         <Star className={`w-4 h-4 ${formData.highlighted ? 'text-amber-400' : 'text-neutral-500'} transition-colors`} />
@@ -518,7 +518,7 @@ const AddEventDialog = ({
                   </label>
 
                   {/* Is Over toggle */}
-                  <label className="flex items-center justify-between p-4 rounded-xl border border-neutral-700 bg-neutral-950/30 cursor-pointer hover:border-violet-500/30 transition-colors group">
+                  <label className="flex items-center justify-between p-4 rounded-xl border border-neutral-700 bg-neutral-950/30 cursor-pointer hover:border-red-500/30 transition-colors group">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg ${formData.is_over ? 'bg-emerald-500/10' : 'bg-neutral-800'} transition-colors`}>
                         <CheckCircle className={`w-4 h-4 ${formData.is_over ? 'text-emerald-400' : 'text-neutral-500'} transition-colors`} />
@@ -554,7 +554,7 @@ const AddEventDialog = ({
                 form="event-form"
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium transition-all shadow-lg shadow-violet-600/20 hover:shadow-violet-600/40 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
+                className="px-6 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-all shadow-lg shadow-red-600/20 hover:shadow-red-600/40 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
               >
                 {isSubmitting ? (
                   <>

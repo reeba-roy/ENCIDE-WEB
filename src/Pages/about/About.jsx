@@ -15,8 +15,8 @@ const AboutSection = () => {
         ref={ref}
       >
         {/* Background Effects */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(124,58,237,0.05),transparent_50%)] pointer-events-none" />
-        <div className="absolute top-1/4 right-0 w-96 h-96 bg-fuchsia-600/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(220, 38, 38,0.05),transparent_50%)] pointer-events-none" />
+        <div className="absolute top-1/4 right-0 w-96 h-96 bg-red-600/5 rounded-full blur-[100px] pointer-events-none" />
         <div className="container mx-auto px-4 lg:px-16 relative z-10">
           {/* Section Header */}
           <motion.div
@@ -25,12 +25,12 @@ const AboutSection = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-violet-500/10 text-violet-400 font-medium text-sm mb-4 border border-violet-500/20 shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)]">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-red-500/10 text-red-400 font-medium text-sm mb-4 border border-red-500/20 shadow-[0_0_15px_-3px_rgba(220, 38, 38,0.3)]">
               About Us
             </span>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
               Building Tomorrow's{" "}
-              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent">
                 Leaders
               </span>
             </h2>
@@ -47,7 +47,7 @@ const AboutSection = () => {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="relative"
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-neutral-800 group hover:border-violet-500/30 transition-colors duration-500">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-neutral-800 group hover:border-red-500/30 transition-colors duration-500">
                 <img
                   src={heroImage}
                   alt="About Nexus Club"
@@ -65,11 +65,11 @@ const AboutSection = () => {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="absolute -bottom-6 -right-6 bg-neutral-900/90 backdrop-blur-md rounded-xl p-4 shadow-xl border border-neutral-800 hidden md:block hover:border-fuchsia-500/30 transition-colors duration-300"
+                className="absolute -bottom-6 -right-6 bg-neutral-900/90 backdrop-blur-md rounded-xl p-4 shadow-xl border border-neutral-800 hidden md:block hover:border-red-500/30 transition-colors duration-300"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-fuchsia-500/10 flex items-center justify-center shadow-[0_0_15px_-3px_rgba(217,70,239,0.3)]">
-                    <Heart className="w-6 h-6 text-fuchsia-400" />
+                  <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center shadow-[0_0_15px_-3px_rgba(220, 38, 38,0.3)]">
+                    <Heart className="w-6 h-6 text-red-500" />
                   </div>
                   <div>
                     <p className="font-display font-bold text-white">
@@ -105,12 +105,12 @@ const AboutSection = () => {
               </p>
               {/* Features */}
               <div className="grid sm:grid-cols-2 gap-4 pt-4">
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-fuchsia-500/30 hover:bg-neutral-900 transition-all duration-300 group">
-                  <div className="w-10 h-10 rounded-lg bg-fuchsia-500/10 flex items-center justify-center shrink-0 group-hover:bg-fuchsia-500/20 transition-colors">
-                    <Lightbulb className="w-5 h-5 text-fuchsia-400" />
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-red-500/30 hover:bg-neutral-900 transition-all duration-300 group">
+                  <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 group-hover:bg-red-500/20 transition-colors">
+                    <Lightbulb className="w-5 h-5 text-red-500" />
                   </div>
                   <div>
-                    <h4 className="font-display font-semibold text-white group-hover:text-fuchsia-200 transition-colors">
+                    <h4 className="font-display font-semibold text-white group-hover:text-red-200 transition-colors">
                       Innovation
                     </h4>
                     <p className="text-sm text-neutral-400">
@@ -118,12 +118,12 @@ const AboutSection = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-violet-500/30 hover:bg-neutral-900 transition-all duration-300 group">
-                  <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0 group-hover:bg-violet-500/20 transition-colors">
-                    <Target className="w-5 h-5 text-violet-400" />
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-red-500/30 hover:bg-neutral-900 transition-all duration-300 group">
+                  <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 group-hover:bg-red-500/20 transition-colors">
+                    <Target className="w-5 h-5 text-red-400" />
                   </div>
                   <div>
-                    <h4 className="font-display font-semibold text-white group-hover:text-violet-200 transition-colors">
+                    <h4 className="font-display font-semibold text-white group-hover:text-red-200 transition-colors">
                       Excellence
                     </h4>
                     <p className="text-sm text-neutral-400">
