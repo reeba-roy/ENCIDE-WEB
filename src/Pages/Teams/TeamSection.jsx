@@ -51,7 +51,7 @@ const TeamSection = () => {
     >
       {/* Background Effects */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38,0.05),transparent_40%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38,0.08),transparent_40%)] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-600/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute top-1/4 left-0 w-64 h-64 bg-red-600/5 rounded-full blur-[80px] pointer-events-none" />
       <div className="container mx-auto px-4 lg:px-12 relative z-10">
