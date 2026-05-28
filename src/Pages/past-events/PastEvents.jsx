@@ -54,7 +54,7 @@ const PastEventsSection = () => {
     >
       {/* Background Effects */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38, 0.04),transparent_40%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220,38,38,0.05),transparent_15%)] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-600/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="container mx-auto px-4 relative">
         {isLoading ? (
@@ -102,11 +102,10 @@ const PastEventsSection = () => {
                     <button
                       key={i}
                       onClick={() => setActiveIndex(i)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        i === activeIndex
+                      className={`h-2 rounded-full transition-all duration-300 ${i === activeIndex
                           ? "w-8 bg-red-600"
                           : "w-2 bg-neutral-800 hover:bg-neutral-700"
-                      }`}
+                        }`}
                     />
                   ))}
                 </div>
@@ -131,11 +130,10 @@ const PastEventsSection = () => {
                   <button
                     key={i}
                     onClick={() => setActiveIndex(i)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      i === activeIndex
+                    className={`h-2 rounded-full transition-all duration-300 ${i === activeIndex
                         ? "w-8 bg-red-600"
                         : "w-2 bg-neutral-800 hover:bg-neutral-700"
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -167,7 +165,7 @@ const PastEventsSection = () => {
                       <img
                         src={event.image}
                         alt={event.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/20 to-transparent" />
                       {/* Category Badge */}
@@ -199,14 +197,7 @@ const PastEventsSection = () => {
                               Joined
                             </p>
                           </div>
-                          {/* <div className="text-center">
-                            <p className="text-lg font-bold text-white">
-                              {event.stats.projects}
-                            </p>
-                            <p className="text-[10px] uppercase tracking-wider text-neutral-500">
-                              Built
-                            </p>
-                          </div> */}
+
                           <div className="text-center">
                             <p className="text-lg font-bold text-red-500">
                               {event.winners}
@@ -215,13 +206,6 @@ const PastEventsSection = () => {
                               Winners
                             </p>
                           </div>
-                        </div>
-                        {/* Hover Reveal Button */}
-                        <div className="mt-5">
-                          <button className="w-full py-2.5 rounded-lg bg-neutral-800  text-white text-sm font-medium transition duration-300 flex items-center justify-center gap-2 group/btn border border-neutral-700 hover:bg-red-600 hover:border-red-500 hover:transition hover:duration-300">
-                            View Gallery
-                            <ExternalLink className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -244,7 +228,7 @@ const PastEventsSection = () => {
               ].map((stat, index) => (
                 <div
                   key={index}
-                  className="text-center p-4 rounded-xl bg-neutral-900/30 border border-neutral-800 hover:border-red-500/20 transition-colors"
+                  className="text-center p-4 rounded-xl bg-neutral-900/15 border border-neutral-800 hover:border-red-500/20 transition-colors"
                 >
                   <p className="font-display text-2xl md:text-3xl font-bold bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent">
                     {stat.value}
