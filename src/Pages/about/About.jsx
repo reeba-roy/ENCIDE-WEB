@@ -2,7 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Lightbulb, Target, Heart } from "lucide-react";
 import VisionMission from "../VisionMission/VisionMission";
-import heroImage from "../../assets/hero-students.jpg";
+import heroImage from "./d1.jpg";
 
 const AboutSection = () => {
   const ref = useRef(null);
@@ -15,8 +15,8 @@ const AboutSection = () => {
         ref={ref}
       >
         {/* Background Effects */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(220, 38, 38,0.05),transparent_50%)] pointer-events-none" />
-        <div className="absolute top-1/4 right-0 w-96 h-96 bg-red-600/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(220,38,38,0.05),transparent_50%)] pointer-events-none" />
+        <div className="absolute top-1/4 right-0 w-96 h-96 bg-fuchsia-600/5 rounded-full blur-[100px] pointer-events-none" />
         <div className="container mx-auto px-4 lg:px-16 relative z-10">
           {/* Section Header */}
           <motion.div
@@ -51,7 +51,7 @@ const AboutSection = () => {
                 <img
                   src={heroImage}
                   alt="About Nexus Club"
-                  className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-[400px] object-cover transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/20 to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
@@ -88,21 +88,16 @@ const AboutSection = () => {
               className="space-y-6"
             >
               <p className="text-neutral-400 text-md leading-relaxed">
-                Our community brings together passionate programmers, fostering
-                a vibrant ecosystem of knowledge sharing, collaboration, and
-                skill development. Members engage in challenging coding
-                competitions, hackathons, and coding challenges that push their
-                limits, helping them grow into more capable and confident
-                programmers.
+                We are a vibrant community of passionate programmers dedicated to continuous learning and skill development. Through high-energy hackathons, coding competitions, hands-on workshops, and expert mentorship, we bridge the gap between students and industry leaders. Here, our members don't just learn theory—they collaborate, build real-world innovations, and make a tangible impact in the tech world.
               </p>
-              <p className="text-neutral-400 text-md leading-relaxed">
+              {/* <p className="text-neutral-400 text-md leading-relaxed">
                 Beyond competitions, we host workshops, study jams, and
                 mentorship programs to ensure continuous learning for every
                 skill level. By connecting students with industry experts and
                 peers, we create opportunities to innovate, build real-world
                 projects, and contribute to open-source initiatives, empowering
                 our members to make a meaningful impact in the tech world.
-              </p>
+              </p> */}
               {/* Features */}
               <div className="grid sm:grid-cols-2 gap-4 pt-4">
                 <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-red-500/30 hover:bg-neutral-900 transition-all duration-300 group">
