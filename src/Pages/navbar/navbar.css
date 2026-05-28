@@ -2,6 +2,25 @@
   scroll-behavior: smooth;
 }
 
+/* Global Navbar Container */
+.navbar-container {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 120;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scrolled-up {
+  transform: translateY(0);
+}
+
+.scrolled-down {
+  transform: translateY(-100%);
+}
+
+/* Desktop Navbar Structure */
 .navbar {
   width: 100%;
   color: white;
@@ -9,120 +28,207 @@
   flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  background: rgba(10, 10, 10, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  position: fixed;
-  z-index: 120;
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-sizing: border-box;
-  margin-bottom: 20px;
+  padding: 1.2rem 4rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.scrolled-up .navbar {
-  transform: translateY(0);
+/* Scrolled State for Desktop Navbar */
+.scrolled .navbar {
+  padding: 0.95rem 4rem;
+  background: rgba(10, 10, 10, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.scrolled-down .navbar {
-  transform: translateY(-100%);
+.at-top .navbar {
+  background: rgba(10, 10, 10, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
+/* Logo styling */
+.logo {
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Main Navigation Links List */
 .nav_main {
   display: flex;
-  gap: 1.5rem;
+  gap: 2.2rem;
   align-items: center;
   justify-content: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.logo {
-  text-align: center;
-  background-color: transparent;
-}
-
-.events {
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  background: rgba(239, 68, 68, 0.05);
-  border-radius: 6px;
+.nav_main li {
+  position: relative;
+  font-weight: 550;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.05);
-}
-
-.in_bord {
-  width: 100%;
-}
-
-.events:hover {
-  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-  border-color: #ef4444;
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
-  transform: translateY(-1px);
-}
-
-.events:hover .in_bord {
-  background-color: transparent;
-  color: white;
-  transition-duration: 0.3s;
   cursor: pointer;
 }
 
-.cur {
-  position: relative;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  transition: color 0.3s ease;
+.nav_main li:not(.nav_btn_item) a {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  transition: all 0.25s ease;
+  padding: 0.4rem 0.1rem;
+  display: inline-block;
 }
 
-.cur:hover,
-.active {
-  color: #f87171; /* red-400 */
-  text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
-  transition-duration: 0.3s;
+.nav_main li:not(.nav_btn_item) a:hover,
+.nav_main li.active:not(.nav_btn_item) a {
+  color: #ef4444; /* Red color theme to blend */
 }
 
-/* Slide underline indicator for desktop */
-.nav_main .nav_link {
-  position: relative;
-  padding-bottom: 2px;
-}
-
-.nav_main .nav_link::after {
+/* Minimalist Flat Slide Indicator */
+.nav_main li:not(.nav_btn_item) a::after {
   content: '';
   position: absolute;
   width: 100%;
   transform: scaleX(0);
-  height: 2px;
-  bottom: -6px;
+  height: 1px;
+  bottom: -2px;
   left: 0;
-  background: linear-gradient(90deg, transparent, #ef4444, transparent);
+  background: #ef4444;
   transform-origin: bottom center;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.nav_main .nav_link:hover::after,
-.nav_main .active::after {
+.nav_main li:not(.nav_btn_item):hover a::after,
+.nav_main li.active:not(.nav_btn_item) a::after {
   transform: scaleX(1);
 }
 
+/* Premium Custom BUTTON items */
+.nav_btn_item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Minimalist Events Button */
+.nav_events_btn {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem !important;
+  transition: all 0.2s ease;
+  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: none !important;
+}
+
+.nav_events_btn:hover {
+  border-color: #ef4444;
+  color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.nav_events_btn:active {
+  transform: translateY(1px);
+}
+
+/* Minimalist Desktop Login Button */
+.navbar_login_btn {
+  background: #ffffff;
+  color: #000000 !important;
+  border: 1px solid #ffffff;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.navbar_login_btn:hover {
+  background: transparent;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.navbar_login_btn:active {
+  transform: translateY(1px);
+}
+
+/* Round Profile Button (Dashboard Link) - Mathematically Centered */
+.navbar_profile_btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* Reset browser default padding */
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.navbar_profile_btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0; /* Prevent visual distortion */
+}
+
+.navbar_profile_btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.navbar_profile_btn:active {
+  transform: scale(0.96);
+}
+
+/* Mobile Styling */
 .MobileNav {
-  background: radial-gradient(circle at 50% 100%, rgba(220, 38, 38, 0.12), transparent 60%), rgba(10, 10, 10, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-  border-radius: 16px;
-  padding: 5px;
+  background: rgba(12, 12, 12, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border-radius: 14px;
+  padding: 6px;
   display: none;
   justify-content: space-evenly;
   align-items: center;
-  height: 70px;
+  height: 65px;
   width: 95%;
   left: 2.5%;
   overflow-x: auto;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  transition: all 0.3s ease;
 }
 
 .nav_link {
@@ -134,38 +240,62 @@
   flex-direction: column;
   align-content: center;
   text-align: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+button.nav_link {
+  background: none;
+  border: none;
+  outline: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+/* Mobile Icon Customization */
+.icons {
+  height: 20px;
+  width: 20px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.55);
+  stroke-width: 2px;
+  transition: all 0.3s ease;
 }
 
 .mob:hover .icons,
 .active .icons {
-  fill: #ef4444; /* red-500 */
-  filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));
-  transform: scale(1.05);
+  color: #ef4444 !important;
+  transform: scale(1.1);
+}
+
+.icontext {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.72rem;
+  font-weight: 550;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+  transition: color 0.3s ease;
 }
 
 .mob:hover .icontext,
 .active .icontext {
   color: #ef4444;
-  transition: 0.3s ease-in-out;
 }
 
-.icons {
-  height: 40%;
-  margin: 0px;
-  padding: 0px;
-  fill: rgba(255, 255, 255, 0.6);
-  transition: all 0.3s ease;
-}
-
-.icontext {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.75rem;
-  font-weight: 500;
-  transition: color 0.3s ease;
+/* Media Queries */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 1.2rem 2rem;
+  }
+  .scrolled .navbar {
+    padding: 0.95rem 2rem;
+  }
 }
 
 @media (max-width: 768px) {
-  .navbar {
+  .navbar-container.desktop-nav-container {
     display: none;
   }
 
@@ -173,11 +303,11 @@
     display: flex;
     position: fixed;
     z-index: 900;
-    transition: transform 0.1s ease-in;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .scrolled-up .MobileNav {
-    transform: translateY(87vh);
+    transform: translateY(85vh);
   }
 
   .scrolled-down .MobileNav {

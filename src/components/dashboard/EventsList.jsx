@@ -20,7 +20,7 @@ const EventsList = ({ events, title, emptyMessage, isUpcomming }) => {
         [&::-webkit-scrollbar-thumb]:hover:bg-red-500/50
         transition-colors"
       >
-        {events?.length === 0 ? (
+        {!events || events.length === 0 ? (
           <p className="text-neutral-500 text-center py-8 text-sm">
             {emptyMessage}
           </p>
@@ -29,7 +29,8 @@ const EventsList = ({ events, title, emptyMessage, isUpcomming }) => {
             {events?.map((event, index) => {
               // Find logged in user's registration status for this event
               const registration = (event.participants || []).find(
-                (p) => typeof p === "object" && p.team_lead_id === user?.uid
+                (p) => typeof p === "object" && 
+                (p.team_lead_id === user?.uid || p.members?.[0]?.team_lead_id === user?.uid)
               );
               const status = registration?.status || (registration ? "approved" : null);
 

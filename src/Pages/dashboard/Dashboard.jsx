@@ -74,10 +74,10 @@ const Dashboard = ({ onLoad }) => {
           {!isPending ? (
             <DashboardStats
               upcomingCount={
-                allEvents?.filter((e) => e.is_over === false).length
+                allEvents?.filter((e) => e.is_over === false).length || 0
               }
-              completedCount={allEvents?.filter((e) => e.is_over).length}
-              totalEvents={allEvents?.length}
+              completedCount={allEvents?.filter((e) => e.is_over).length || 0}
+              totalEvents={allEvents?.length || 0}
             />
           ) : (
             <SkeletonDashboardStats />
@@ -97,7 +97,9 @@ const Dashboard = ({ onLoad }) => {
               <div className="flex-1 min-h-0">
                 {!isPending ? (
                   <EventsList
-                    events={allEvents?.filter((e) => e.is_over === false)}
+                    events={allEvents
+                      ?.filter((e) => e.is_over === false)
+                      .sort((a, b) => (b.date || 0) - (a.date || 0))}
                     title="Upcoming Events"
                     emptyMessage="No upcoming events."
                     isUpcomming={true}
@@ -109,7 +111,9 @@ const Dashboard = ({ onLoad }) => {
               <div className="flex-1 min-h-0">
                 {!isPending ? (
                   <EventsList
-                    events={allEvents?.filter((e) => e.is_over)}
+                    events={allEvents
+                      ?.filter((e) => e.is_over)
+                      .sort((a, b) => (b.date || 0) - (a.date || 0))}
                     title="Completed Events"
                     emptyMessage="No completed events yet."
                   />
