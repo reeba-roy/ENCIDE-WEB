@@ -25,7 +25,7 @@ const AboutSection = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-red-500/10 text-red-400 font-medium text-sm mb-4 border border-red-500/20 shadow-[0_0_15px_-3px_rgba(220, 38, 38,0.3)]">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-red-500/10 text-red-100 font-medium text-sm mb-4 border border-red-500/20 shadow-[0_0_15px_-3px_rgba(220, 38, 38,0.3)]">
               About Us
             </span>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
@@ -34,7 +34,7 @@ const AboutSection = () => {
                 Leaders
               </span>
             </h2>
-            <p className="text-neutral-400 max-w-2xl mx-auto text-lg">
+            <p className="text-neutral-400 max-w-2xl mx-auto text-md">
               We are a student-led community dedicated to fostering innovation,
               leadership, and personal growth through impactful experiences.
             </p>
@@ -90,14 +90,7 @@ const AboutSection = () => {
               <p className="text-neutral-400 text-md leading-relaxed">
                 We are a vibrant community of passionate programmers dedicated to continuous learning and skill development. Through high-energy hackathons, coding competitions, hands-on workshops, and expert mentorship, we bridge the gap between students and industry leaders. Here, our members don't just learn theory—they collaborate, build real-world innovations, and make a tangible impact in the tech world.
               </p>
-              {/* <p className="text-neutral-400 text-md leading-relaxed">
-                Beyond competitions, we host workshops, study jams, and
-                mentorship programs to ensure continuous learning for every
-                skill level. By connecting students with industry experts and
-                peers, we create opportunities to innovate, build real-world
-                projects, and contribute to open-source initiatives, empowering
-                our members to make a meaningful impact in the tech world.
-              </p> */}
+
               {/* Features */}
               <div className="grid sm:grid-cols-2 gap-4 pt-4">
                 <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-red-500/30 hover:bg-neutral-900 transition-all duration-300 group">
