@@ -5,40 +5,45 @@ import { Linkedin, Twitter, Mail } from "lucide-react";
 const teamMembers = [
   {
     id: 1,
-    name: "Alex Johnson",
-    role: "President",
-    image:
-      "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=400&fit=crop&q=80",
+    name: "Amrita Suresh",
+    role: "Director",
+    image: "/team/Amritha Suresh_Director.jpg",
     bio: "Computer Science major with a passion for building inclusive communities.",
-    socials: { linkedin: "#", twitter: "#", email: "alex@nexusclub.edu" },
+    socials: { linkedin: "#", twitter: "#", email: "#" },
   },
   {
     id: 2,
-    name: "Sarah Chen",
-    role: "Vice President",
-    image:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&q=80",
-    bio: "Business Administration student focused on event management and partnerships.",
-    socials: { linkedin: "#", twitter: "#", email: "sarah@nexusclub.edu" },
+    name: "Jassim Mohammed Salim",
+    role: "Secretary",
+    image: "/team/Jassim-Secretary.jpg",
+    bio: "Electronics and Communication major with a passion for building inclusive communities.",
+    socials: { linkedin: "#", twitter: "#", email: "#" },
   },
   {
     id: 3,
-    name: "Marcus Williams",
-    role: "Tech Lead",
-    image:
-      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop&q=80",
-    bio: "Software Engineering enthusiast driving our technical initiatives forward.",
-    socials: { linkedin: "#", twitter: "#", email: "marcus@nexusclub.edu" },
+    name: "Haritheerth M",
+    role: "Co-Director",
+    image: "/team/HaritheerthM_CoDirector.webp",
+    bio: "Computer Science major with a passion for building inclusive communities.",
+    socials: { linkedin: "#", twitter: "#", email: "#" },
   },
   {
     id: 4,
-    name: "Emily Rodriguez",
-    role: "Creative Director",
-    image:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&q=80",
-    bio: "Design major bringing creativity and visual storytelling to our brand.",
-    socials: { linkedin: "#", twitter: "#", email: "emily@nexusclub.edu" },
+    name: "Dhia Shams",
+    role: "Co-Director",
+    image: "/team/Dhia Shams_ Codirector.jpg",
+    bio: "Computer Science major with a passion for building inclusive communities.",
+    socials: { linkedin: "#", twitter: "#", email: "#" },
   },
+  {
+    id: 5,
+    name: "Ryan Nelson",
+    role: "Treasurer",
+    image:
+      "/team/RyanNelson.png",
+    bio: "Computer Science major with a passion for building inclusive communities.",
+    socials: { linkedin: "#", twitter: "#", email: "#" },
+  }
 ];
 const TeamSection = () => {
   const ref = useRef(null);
