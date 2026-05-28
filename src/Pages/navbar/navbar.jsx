@@ -246,8 +246,8 @@ function NavComponent() {
       >
         <nav className="p-4 px-4 navbar sm:px-16 bg-transparent">
           <div className="text-2xl font-bold logo">
-            <Link to="/#home">
-              ENCIDE <span className="text-[#9a00b3] font-extrabold">MACE</span>
+            <Link to="/#home" className="transition-all duration-300 hover:opacity-90">
+              ENCIDE <span className="bg-gradient-to-r from-red-500 to-rose-600 bg-clip-text text-transparent font-extrabold tracking-wide">MACE</span>
             </Link>
           </div>
           <ul className="flex text-sm nav_main gap-x-7">

@@ -9,13 +9,16 @@
   flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.873);
-  backdrop-filter: blur(12px);
+  background: rgba(10, 10, 10, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   position: fixed;
   z-index: 120;
   box-sizing: border-box;
   margin-bottom: 20px;
-  transition: transform 0.2s ease-in-out;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .scrolled-up .navbar {
@@ -28,7 +31,7 @@
 
 .nav_main {
   display: flex;
-  gap: 1.2rem;
+  gap: 1.5rem;
   align-items: center;
   justify-content: center;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -41,44 +44,76 @@
 }
 
 .events {
-  border: 2px solid rgba(154, 0, 179, 1);
-  border-radius: 5px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.05);
 }
 
 .in_bord {
   width: 100%;
 }
 
+.events:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  border-color: #ef4444;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+  transform: translateY(-1px);
+}
+
 .events:hover .in_bord {
-  background-color: rgba(154, 0, 179, 1);
+  background-color: transparent;
   color: white;
-  outline: solid 3px black;
-  outline-offset: -2px;
-  transition-duration: 0.5s;
-  animation: prev-btn 0.5s ease-in-out;
+  transition-duration: 0.3s;
   cursor: pointer;
 }
 
-@keyframes prev-btn {
-  from {
-    background-color: transparent;
-    color: #ecd7d7;
-  }
-  to {
-    background-color: #9a00b3;
-    color: #ecd7d7;
-  }
+.cur {
+  position: relative;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease;
 }
 
 .cur:hover,
 .active {
-  color: rgb(219, 134, 233);
-  transition-duration: 0.5s;
+  color: #f87171; /* red-400 */
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+  transition-duration: 0.3s;
+}
+
+/* Slide underline indicator for desktop */
+.nav_main .nav_link {
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.nav_main .nav_link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: -6px;
+  left: 0;
+  background: linear-gradient(90deg, transparent, #ef4444, transparent);
+  transform-origin: bottom center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav_main .nav_link:hover::after,
+.nav_main .active::after {
+  transform: scaleX(1);
 }
 
 .MobileNav {
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(15px);
+  background: radial-gradient(circle at 50% 100%, rgba(220, 38, 38, 0.12), transparent 60%), rgba(10, 10, 10, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  border-radius: 16px;
   padding: 5px;
   display: none;
   justify-content: space-evenly;
@@ -86,11 +121,8 @@
   height: 70px;
   width: 95%;
   left: 2.5%;
-  border-radius: 15px;
-  outline: 1px dashed rgba(139, 0, 130, 0.593);
   overflow-x: auto;
-  font-family: system-ui, -apple-system, "Segoe UI", "Open Sans",
-    "Helvetica Neue", sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 .nav_link {
@@ -104,29 +136,32 @@
   text-align: center;
 }
 
-.mob:hover,
-.active {
-  .icons {
-    fill: #ecd7d7;
-    transition: 0.3s ease-in-out;
-    scale: 0.9;
-  }
-  .icontext {
-    color: rgb(156, 43, 226);
-    transition: 0.3s ease-in-out;
-    text-shadow: 0.5px 0.6px rgba(255, 255, 255, 0.178);
-  }
+.mob:hover .icons,
+.active .icons {
+  fill: #ef4444; /* red-500 */
+  filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));
+  transform: scale(1.05);
+}
+
+.mob:hover .icontext,
+.active .icontext {
+  color: #ef4444;
+  transition: 0.3s ease-in-out;
 }
 
 .icons {
   height: 40%;
   margin: 0px;
   padding: 0px;
-  fill: bluered;
+  fill: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
 }
 
 .icontext {
-  color: white;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 @media (max-width: 768px) {
