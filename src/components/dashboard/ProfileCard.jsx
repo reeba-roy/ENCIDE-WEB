@@ -10,15 +10,15 @@ const ProfileCard = ({ user: initialUser }) => {
   const [profileData, setProfileData] = useState(initialUser);
   const [isEditing, setIsEditing] = useState(false);
 
-  const editUserDetails = async (updatedUser)=>{
+  const editUserDetails = async (updatedUser) => {
     setProfileData(updatedUser)
-    console.log("Updated user : ",updatedUser)
+    console.log("Updated user : ", updatedUser)
     try {
       const userRef = doc(db, "users", initialUser.id)
       await updateDoc(userRef, updatedUser)
 
     } catch (error) {
-      console.log("Some error occured",error)
+      console.log("Some error occured", error)
     }
   }
 
@@ -44,8 +44,9 @@ const ProfileCard = ({ user: initialUser }) => {
       >
         <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-xl overflow-hidden h-full">
           {/* Banner Gradient */}
-          <div className="h-24 bg-gradient-to-r from-red-900/40 to-red-900/40 relative">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38,0.2),transparent_50%)]" />
+          <div className="h-24 bg-red-950/40 backdrop-blur-md border-b border-red-500/10 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(220,38,38,0.15),transparent_70%)]" />
           </div>
           <div className="px-6 pb-6 -mt-12 text-center">
             {/* Avatar */}
