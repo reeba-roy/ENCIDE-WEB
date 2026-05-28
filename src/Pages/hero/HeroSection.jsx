@@ -311,7 +311,7 @@ const HeroSection = ({ loading }) => {
                     .getElementById("contact")
                     ?.scrollIntoView({ behavior: "smooth" })
                 }
-                className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-semibold text-white bg-gradient-to-br from-red-600 to-red-700 rounded-lg transition-all duration-300 shadow-[0_8px_16px_-4px_rgba(220,38,38,0.4)] hover:shadow-[0_12px_24px_-4px_rgba(220,38,38,0.6)] hover:scale-105 overflow-hidden border border-red-500/20"
+                className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-white bg-gradient-to-br from-red-600 to-red-700 rounded-lg transition-all duration-300 shadow-[0_8px_16px_-4px_rgba(220,38,38,0.4)] hover:shadow-[0_12px_24px_-4px_rgba(220,38,38,0.6)] hover:scale-105 overflow-hidden border border-red-500/20"
               >
                 <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <Code2 className="w-5 h-5 group-hover:rotate-12 transition-transform relative z-10" />
@@ -402,23 +402,6 @@ const HeroSection = ({ loading }) => {
           </div>
         </div>
       </div>
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
-      >
-        <span className="text-xs text-neutral-500 font-mono">
-          scroll.explore()
-        </span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <ChevronDown className="w-5 h-5 text-red-500" />
-        </motion.div>
-      </motion.div>
     </section>
   );
 };
