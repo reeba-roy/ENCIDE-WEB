@@ -24,6 +24,16 @@ const EventsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleRegisterClick = (eventToRegister) => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      setSelectedEvent(eventToRegister);
+    }
+  };
 
   const RegistrationModal = ({ event, onClose }) => {
     const { user } = useContext(AuthContext);
@@ -284,7 +294,7 @@ const EventsSection = () => {
                     </div>
                   )}
                   <button
-                    onClick={() => setSelectedEvent(featuredEvent)}
+                    onClick={() => handleRegisterClick(featuredEvent)}
                     className="w-fit group/btn inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition-all shadow-[0_0_20px_-5px_theme(colors.red.500/0.5)] hover:shadow-[0_0_25px_-5px_theme(colors.red.500/0.7)] hover:scale-[1.02]"
                   >
                     Register Now
@@ -361,7 +371,7 @@ const EventsSection = () => {
                     )}
                   </div>
                   <button
-                    onClick={() => setSelectedEvent(event)}
+                    onClick={() => handleRegisterClick(event)}
                     className="w-fit mt-auto px-4 py-2 rounded-lg bg-neutral-800 hover:bg-red-600 text-white text-sm font-medium transition-all duration-300 flex items-center gap-2 group/btn border border-neutral-700 hover:border-red-500 hover:shadow-lg hover:shadow-red-500/20"
                   >
                     Register Now
