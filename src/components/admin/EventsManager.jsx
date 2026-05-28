@@ -159,7 +159,7 @@ const EventsManager = ({
                           </p>
                           <div className="flex items-center gap-2 mt-0.5">
                             {event.tag && (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">
+                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20">
                                 <Tag className="w-2.5 h-2.5" />
                                 {event.tag}
                               </span>
