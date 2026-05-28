@@ -304,16 +304,20 @@ const EventsSection = () => {
               transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
               className="group relative backdrop-blur-sm rounded-xl overflow-hidden border border-neutral-800 hover:border-red-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="flex flex-col sm:flex-row h-full">
+              <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row h-full">
                 {/* Image */}
-                <div className="relative w-full h-48 sm:w-72 sm:h-auto shrink-0 overflow-hidden">
+
+                <div className="relative w-full h-48 sm:w-72 sm:h-auto lg:w-full lg:h-48 xl:w-72 xl:h-auto shrink-0 overflow-hidden">
                   <img
                     src={event.image}
                     alt={event.title}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-neutral-900/80 hidden sm:block" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 to-transparent sm:hidden" />
+
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-neutral-900/80 hidden sm:block lg:hidden xl:block" />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 to-transparent sm:hidden lg:block xl:hidden" />
+
                   <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-neutral-950/80 border border-neutral-800 text-white text-xs font-medium backdrop-blur-md">
                     {event.tag}
                   </span>
