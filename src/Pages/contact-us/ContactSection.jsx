@@ -62,7 +62,7 @@ const ContactSection = () => {
   return (
     <section
       id="contact"
-      className="py-24 bg-[radial-gradient(circle_at_0%_0%,rgba(220, 38, 38,0.05),transparent_30%)]"
+      className="py-24 bg-[radial-gradient(circle_at_0%_0%,rgba(220,38,38,0.05),transparent_30%)]"
       ref={ref}
     >
       <div className="container mx-auto px-4 lg:px-16">
