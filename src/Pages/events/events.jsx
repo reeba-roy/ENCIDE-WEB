@@ -203,7 +203,7 @@ const EventsSection = () => {
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38, 0.08),transparent_40%)] pointer-events-none" />
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-red-600/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="container mx-auto px-4 md:px-8 lg:px-16 relative z-10">
+      <div className="container mx-auto px-4 md:px-8 lg:px-16 xl:px-28 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -213,7 +213,7 @@ const EventsSection = () => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 mb-4 shadow-[0_0_15px_-3px_rgba(220, 38, 38,0.3)]">
             <Zap className="w-3.5 h-3.5 text-red-400" />
-            <span className="text-red-400 font-medium text-sm">
+            <span className="text-red-100 font-medium text-sm">
               Upcoming Events
             </span>
           </div>
