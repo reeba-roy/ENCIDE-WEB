@@ -56,9 +56,9 @@ const TeamSection = () => {
     >
       {/* Background Effects */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220, 38, 38, 0.08),transparent_40%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(220,38,38,0.05),transparent_40%)] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-600/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute top-1/4 left-0 w-64 h-64 bg-red-600/5 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute top-1/4 left-0 w-64 h-64 bg-fuchsia-600/5 rounded-full blur-[80px] pointer-events-none" />
       <div className="container mx-auto px-4 lg:px-12 relative z-10">
         {/* Section Header */}
         <motion.div
@@ -79,14 +79,15 @@ const TeamSection = () => {
           </p>
         </motion.div>
         {/* Team Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-6 xl:px-20 gap-8 ">
           {teamMembers.map((member, index) => (
             <motion.div
               key={member.id}
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group text-center"
+              className={`group text-center lg:col-span-2 ${index === 3 ? 'lg:col-start-2' : ''
+                }`}
             >
               {/* Image Container */}
               <div className="relative mb-6 mx-auto w-48 h-48">
@@ -136,6 +137,7 @@ const TeamSection = () => {
             </motion.div>
           ))}
         </div>
+
       </div>
     </section>
   );
